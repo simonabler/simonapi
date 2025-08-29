@@ -9,7 +9,7 @@
 }
 
 
-body { background: #f6f7fb; }
+body { background: linear-gradient(180deg, #f7f8fc 0%, #f3f5fb 100%); }
 
 .card { border-radius: var(--radius-lg); transition: box-shadow .2s ease, transform .06s ease; }
 .card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.08); transform: translateY(-1px); }

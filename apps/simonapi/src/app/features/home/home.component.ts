@@ -29,6 +29,22 @@ type ServiceCard = {
   </div>
 </section>
 
+<!-- Profil vor den Services -->
+<section class="profile card border-0 shadow-sm mb-4">
+  <div class="card-body d-flex align-items-center gap-3">
+    <div class="avatar fw-semibold">{{ avatarInitials }}</div>
+    <div class="flex-fill">
+      <h2 class="h5 mb-1">{{ profile.name }}</h2>
+      <p class="text-secondary mb-2">{{ profile.role }} · {{ profile.location }}</p>
+      <p class="mb-2 small text-secondary">{{ profile.bio }}</p>
+      <div class="d-flex gap-2 flex-wrap">
+        <a *ngFor="let l of profile.links" class="btn btn-sm btn-outline-secondary" [href]="l.href" target="_blank" rel="noopener">{{ l.label }}</a>
+      </div>
+    </div>
+  </div>
+  
+</section>
+
 <section>
   <h2 class="h4 mb-3">Services</h2>
   <div class="row g-3">
@@ -61,23 +77,33 @@ type ServiceCard = {
   </div>
 </section>
 
-<section class="mt-4">
-  <h2 class="h5 mb-2">Schnellstart</h2>
-  <ol class="small text-secondary ps-3 mb-0">
-    <li>Backend starten: <code>http://localhost:3000/api</code></li>
-    <li>Frontend: <code>nx serve simonapi</code></li>
-    <li>Testen: nutze die Service-Karten oder rufe Endpunkte via cURL auf</li>
-  </ol>
-</section>
 `,
   styles: [`
   .hero { background: linear-gradient(135deg, #0ea5e9, #6366f1); }
   .service-card .nav-link { cursor: pointer; }
   .code { background: #0f172a; color: #e2e8f0; border-radius: .5rem; padding: .75rem; overflow: auto; }
   .code code { white-space: pre-wrap; word-break: break-word; }
+  .profile .avatar { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, #22d3ee, #818cf8); color: #0b1020; }
+  .profile { backdrop-filter: saturate(1.2); }
   `],
 })
 export class HomeComponent {
+  profile = {
+    name: 'Dein Name',
+    role: 'Software Engineer',
+    location: 'Your City',
+    bio: 'Ich baue APIs, Frontends und Dev-Tools mit Fokus auf Developer Experience.',
+    links: [
+      { label: 'GitHub', href: 'https://github.com/' },
+      { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
+    ],
+  };
+  get avatarInitials() {
+    const n = this.profile.name?.trim() || '';
+    const parts = n.split(/\s+/).filter(Boolean);
+    const initials = parts.slice(0, 2).map(p => p[0]?.toUpperCase() || '').join('');
+    return initials || 'DN';
+  }
   services: ServiceCard[] = [
     {
       key: 'qr',
