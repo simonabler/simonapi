@@ -4,11 +4,15 @@
 
 /* Custom Styles optional */
 :root {
---brand: #0d6efd;
+  --brand: #0d6efd;
+  --radius-lg: 1rem;
 }
 
 
-body { background: #f8f9fa; }
+body { background: #f6f7fb; }
+
+.card { border-radius: var(--radius-lg); transition: box-shadow .2s ease, transform .06s ease; }
+.card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.08); transform: translateY(-1px); }
 
 
 .app-container { min-height: 100vh; display: flex; flex-direction: column; }

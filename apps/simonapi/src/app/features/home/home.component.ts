@@ -1,36 +1,106 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
+type ServiceCard = {
+  key: string;
+  title: string;
+  description: string;
+  route?: string;
+  apiTitle: string;
+  curl: string;
+  activeTab: 'info' | 'api';
+};
 
 @Component({
   standalone: true,
   selector: 'app-home',
-  imports: [RouterLink],
+  imports: [CommonModule, RouterLink],
   template: `
-<div class="row g-4">
-  <div class="col-12 col-lg-8">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h1 class="h3 mb-3">Willkommen bei simonapi</h1>
-        <p class="text-muted">Frontend zum Erkunden und Testen deiner NestJS-APIs im Nx-Workspace.</p>
-        <a class="btn btn-primary me-2" routerLink="/apis">APIs ansehen</a>
-        <a class="btn btn-outline-secondary" routerLink="/tester">API testen</a>
+<section class="hero rounded-4 p-4 p-lg-5 mb-4 text-white shadow-sm">
+  <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
+    <div class="flex-fill">
+      <h1 class="display-6 fw-semibold mb-2">simonapi</h1>
+      <p class="lead mb-3">Ein schlankes Frontend, um deine NestJS-Services zu entdecken, auszuprobieren und via cURL direkt zu nutzen.</p>
+      <div class="d-flex gap-2">
+        <a routerLink="/qr" class="btn btn-light text-dark">QR Code Editor öffnen</a>
       </div>
     </div>
   </div>
-  <div class="col-12 col-lg-4">
-    <div class="card border-0 bg-dark text-white shadow-sm">
-      <div class="card-body">
-        <h2 class="h5">Schnellstart</h2>
-        <ol class="mb-0 small">
-          <li>Backend (Nest) starten auf <code>http://localhost:3000</code></li>
-          <li>Frontend mit Proxy aufrufen: <code>nx serve simonapi</code></li>
-          <li>APIs unter <code>/api/*</code> testen</li>
-        </ol>
+</section>
+
+<section>
+  <h2 class="h4 mb-3">Services</h2>
+  <div class="row g-3">
+    <div class="col-12 col-lg-6" *ngFor="let s of services">
+      <div class="card service-card shadow-sm h-100">
+        <div class="card-header bg-transparent border-0 pb-0 d-flex align-items-center justify-content-between">
+          <h3 class="h5 m-0">{{ s.title }}</h3>
+          <ul class="nav nav-pills small">
+            <li class="nav-item"><a class="nav-link" [class.active]="s.activeTab==='info'" (click)="s.activeTab='info'">Info</a></li>
+            <li class="nav-item"><a class="nav-link" [class.active]="s.activeTab==='api'" (click)="s.activeTab='api'">API</a></li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <ng-container *ngIf="s.activeTab==='info'; else apiTpl">
+            <p class="text-secondary mb-3">{{ s.description }}</p>
+            <a *ngIf="s.route" [routerLink]="s.route" class="btn btn-primary btn-sm">Jetzt ausprobieren</a>
+          </ng-container>
+          <ng-template #apiTpl>
+            <div>
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <strong>{{ s.apiTitle }}</strong>
+                <button class="btn btn-outline-secondary btn-sm" (click)="copy(s.curl)">Copy</button>
+              </div>
+              <pre class="code"><code>{{ s.curl }}</code></pre>
+            </div>
+          </ng-template>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
+
+<section class="mt-4">
+  <h2 class="h5 mb-2">Schnellstart</h2>
+  <ol class="small text-secondary ps-3 mb-0">
+    <li>Backend starten: <code>http://localhost:3000/api</code></li>
+    <li>Frontend: <code>nx serve simonapi</code></li>
+    <li>Testen: nutze die Service-Karten oder rufe Endpunkte via cURL auf</li>
+  </ol>
+</section>
 `,
+  styles: [`
+  .hero { background: linear-gradient(135deg, #0ea5e9, #6366f1); }
+  .service-card .nav-link { cursor: pointer; }
+  .code { background: #0f172a; color: #e2e8f0; border-radius: .5rem; padding: .75rem; overflow: auto; }
+  .code code { white-space: pre-wrap; word-break: break-word; }
+  `],
 })
-export class HomeComponent {}
+export class HomeComponent {
+  services: ServiceCard[] = [
+    {
+      key: 'qr',
+      title: 'QR Code Service',
+      description: 'Erzeuge QR Codes aus URL, Text, E-Mail, Telefon, SMS, vCard oder WLAN. Export als PNG/SVG – ideal für Sharing & Druck.',
+      route: '/qr',
+      apiTitle: 'POST /api/qr',
+      curl: `curl -X POST http://localhost:3000/api/qr -H "Content-Type: application/json" -d '{"type":"url","payload":{"url":"https://example.com"},"format":"svg","size":512,"margin":2,"ecc":"M"}'`,
+      activeTab: 'info',
+    },
+    {
+      key: 'root',
+      title: 'API Root',
+      description: 'Ein einfacher Health-/Info-Endpunkt, um die API-Verbindung zu prüfen.',
+      apiTitle: 'GET /api',
+      curl: `curl http://localhost:3000/api`,
+      activeTab: 'info',
+    },
+  ];
+
+  async copy(text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {}
+  }
+}
