@@ -1,0 +1,26 @@
+# --- Build stage -----------------------------------------------------------
+FROM node:20-alpine AS build
+
+WORKDIR /workspace/simonapi
+
+# Install dependencies
+COPY simonapi/package*.json ./
+RUN npm ci
+
+# Copy workspace and build Angular app
+COPY ./ ./
+RUN npx nx build simonapi --configuration=production
+
+
+# --- Runtime stage ---------------------------------------------------------
+FROM nginx:alpine AS runtime
+
+# Copy custom nginx config for SPA fallback
+COPY dockerfiles/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy compiled app
+COPY --from=build /workspace/simonapi/dist/apps/simonapi /usr/share/nginx/html
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+

@@ -1,0 +1,33 @@
+# --- Build stage -----------------------------------------------------------
+FROM node:20-alpine AS build
+
+WORKDIR /workspace/simonapi
+
+# Install dependencies first (leverages Docker layer cache)
+COPY simonapi/package*.json ./
+RUN npm ci
+
+# Copy workspace and build the NestJS server
+COPY ./ ./
+
+# Build using the project-local webpack config (outputs to dist/apps/server)
+WORKDIR /workspace/simonapi/apps/server
+RUN npx webpack-cli build --node-env=production
+
+# Install only production deps for the generated server bundle
+WORKDIR /workspace/simonapi/dist/apps/server
+RUN if [ -f package.json ]; then npm install --omit=dev; fi
+
+
+# --- Runtime stage ---------------------------------------------------------
+FROM node:20-alpine AS runtime
+
+ENV NODE_ENV=production
+WORKDIR /app
+
+# Copy built server and its production deps
+COPY --from=build /workspace/simonapi/dist/apps/server ./
+
+EXPOSE 3000
+CMD ["node", "main.js"]
+
