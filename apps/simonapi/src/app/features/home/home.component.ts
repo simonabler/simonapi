@@ -21,7 +21,7 @@ type ServiceCard = {
   <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
     <div class="flex-fill">
       <h1 class="display-6 fw-semibold mb-2">simonapi</h1>
-      <p class="lead mb-3">Ein schlankes Frontend, um deine NestJS-Services zu entdecken, auszuprobieren und via cURL direkt zu nutzen.</p>
+      <p class="lead mb-3">Ein schlankes Frontend, um deine NestJS-Services zu entdecken, auszuprobieren (QR, Dev-Utils) und via cURL direkt zu nutzen.</p>
       <div class="d-flex gap-2">
         <a routerLink="/qr" class="btn btn-light text-dark">QR Code Editor öffnen</a>
       </div>
@@ -88,14 +88,53 @@ export class HomeComponent {
       curl: `curl -X POST http://localhost:3000/api/qr -H "Content-Type: application/json" -d '{"type":"url","payload":{"url":"https://example.com"},"format":"svg","size":512,"margin":2,"ecc":"M"}'`,
       activeTab: 'info',
     },
+    // Dev/Utility – Einzelkarten
     {
-      key: 'root',
-      title: 'API Root',
-      description: 'Ein einfacher Health-/Info-Endpunkt, um die API-Verbindung zu prüfen.',
-      apiTitle: 'GET /api',
-      curl: `curl http://localhost:3000/api`,
+      key: 'echo',
+      title: 'Echo/IP-API',
+      description: 'Gibt Client-IP, Headers und User-Agent zurück – ideal zum Debuggen von Proxies und Requests.',
+      route: '/dev-utils',
+      apiTitle: 'GET /api/utils/echo',
+      curl: `curl http://localhost:3000/api/utils/echo`,
       activeTab: 'info',
     },
+    {
+      key: 'id',
+      title: 'UUID/ULID-Generator',
+      description: 'Generiert IDs (ULID oder UUID) für Tests, Seeds und Korrelationen.',
+      route: '/dev-utils',
+      apiTitle: 'GET /api/utils/id?type=ulid',
+      curl: `curl "http://localhost:3000/api/utils/id?type=ulid"`,
+      activeTab: 'info',
+    },
+    {
+      key: 'slugify',
+      title: 'Slugify/Transliteration',
+      description: 'Wandelt Texte in URL-Slugs um (transliteriert, kleinschreibung, Trennzeichen „-”).',
+      route: '/dev-utils',
+      apiTitle: 'POST /api/utils/slugify',
+      curl: `curl -X POST http://localhost:3000/api/utils/slugify -H "Content-Type: application/json" -d '{"text":"Äpfel & Öl – groß!"}'`,
+      activeTab: 'info',
+    },
+    {
+      key: 'hash',
+      title: 'Hashing-Service',
+      description: 'Erzeugt Hashes (md5/sha256/bcrypt) für Prüfungen, Integrität und Passwort-Workflows.',
+      route: '/dev-utils',
+      apiTitle: 'POST /api/utils/hash?algo=sha256',
+      curl: `curl -X POST "http://localhost:3000/api/utils/hash?algo=sha256" -H "Content-Type: application/json" -d '{"text":"hello"}'`,
+      activeTab: 'info',
+    },
+    {
+      key: 'md2html',
+      title: 'Markdown → HTML (sanitized)',
+      description: 'Sichere Umwandlung von Markdown in HTML für Previews und Editor-Features.',
+      route: '/dev-utils',
+      apiTitle: 'POST /api/utils/md2html',
+      curl: `curl -X POST http://localhost:3000/api/utils/md2html -H "Content-Type: application/json" -d '{"markdown":"# Hello\\n\\n- item"}'`,
+      activeTab: 'info',
+    },
+  
   ];
 
   async copy(text: string) {

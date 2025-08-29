@@ -1,0 +1,101 @@
+<div class="devutils">
+  <h1 class="h3 mb-3">Dev / Utility</h1>
+  <p class="text-secondary mb-4">Schnelle Tools zum Testen von API-Hilfsendpunkten.</p>
+
+  <div class="grid">
+    <!-- Echo -->
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h5 d-flex justify-content-between align-items-center">Echo/IP
+          <button class="btn btn-sm btn-primary" (click)="runEcho()" [disabled]="echoLoading">{{echoLoading ? '...' : 'GET /api/utils/echo'}}</button>
+        </h2>
+        <p class="text-secondary">Gibt Client-IP, Header, User-Agent zurück.</p>
+        <pre class="code" *ngIf="echoResult as r"><code>{{ r | json }}</code></pre>
+      </div>
+    </div>
+
+    <!-- ID Generator -->
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h5">UUID / ULID</h2>
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <select class="form-select form-select-sm" [(ngModel)]="idType">
+            <option value="ulid">ULID</option>
+            <option value="uuid">UUID</option>
+          </select>
+          <button class="btn btn-sm btn-primary" (click)="runId()" [disabled]="idLoading">{{idLoading ? '...' : 'GET /api/utils/id'}}</button>
+        </div>
+        <div *ngIf="idResult as id">
+          <div class="input-group input-group-sm">
+            <input class="form-control" [value]="(id.ids || id) | json" readonly>
+            <button class="btn btn-outline-secondary" (click)="copy((id.id || id).toString())">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slugify -->
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h5">Slugify / Transliteration</h2>
+        <div class="d-flex gap-2 mb-2">
+          <input class="form-control form-control-sm" [(ngModel)]="slugInput" placeholder="Text für Slug">
+          <button class="btn btn-sm btn-primary" (click)="runSlug()" [disabled]="slugLoading">{{slugLoading ? '...' : 'POST /api/utils/slugify'}}</button>
+        </div>
+        <div *ngIf="slugResult">
+          <div class="input-group input-group-sm">
+            <input class="form-control" [value]="slugResult" readonly>
+            <button class="btn btn-outline-secondary" (click)="copy(slugResult)">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hashing -->
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h5">Hashing</h2>
+        <div class="row g-2 align-items-center mb-2">
+          <div class="col-12 col-sm-8">
+            <input class="form-control form-control-sm" [(ngModel)]="hashInput" placeholder="Text zu hashen">
+          </div>
+          <div class="col-6 col-sm-2">
+            <select class="form-select form-select-sm" [(ngModel)]="hashAlgo">
+              <option>md5</option>
+              <option>sha256</option>
+              <option>bcrypt</option>
+            </select>
+          </div>
+          <div class="col-6 col-sm-2 d-grid">
+            <button class="btn btn-sm btn-primary" (click)="runHash()" [disabled]="hashLoading">{{hashLoading ? '...' : 'POST /api/utils/hash'}}</button>
+          </div>
+        </div>
+        <div *ngIf="hashResult">
+          <div class="input-group input-group-sm">
+            <input class="form-control" [value]="hashResult" readonly>
+            <button class="btn btn-outline-secondary" (click)="copy(hashResult)">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Markdown -->
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h5 d-flex justify-content-between align-items-center">Markdown → HTML
+          <button class="btn btn-sm btn-primary" (click)="runMd()" [disabled]="mdLoading">{{mdLoading ? '...' : 'POST /api/utils/md2html'}}</button>
+        </h2>
+        <div class="row g-2">
+          <div class="col-12 col-lg-6">
+            <textarea class="form-control" rows="8" [(ngModel)]="mdInput"></textarea>
+          </div>
+          <div class="col-12 col-lg-6">
+            <div class="preview" [innerHTML]="mdHtml || ''"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
