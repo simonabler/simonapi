@@ -22,8 +22,9 @@ type ServiceCard = {
     <div class="flex-fill">
       <h1 class="display-6 fw-semibold mb-2">simonapi</h1>
       <p class="lead mb-3">Ein schlankes Frontend, um deine NestJS-Services zu entdecken, auszuprobieren (QR, Dev-Utils) und via cURL direkt zu nutzen.</p>
-      <div class="d-flex gap-2">
+      <div class="d-flex gap-2 flex-wrap">
         <a routerLink="/qr" class="btn btn-light text-dark">QR Code Editor öffnen</a>
+        <a href="/api/docs" target="_blank" rel="noopener" class="btn btn-outline-light">API Docs</a>
       </div>
     </div>
   </div>
@@ -79,8 +80,9 @@ type ServiceCard = {
 
 `,
   styles: [`
-  .hero { background: linear-gradient(135deg, #0ea5e9, #6366f1); }
+  .hero { background: linear-gradient(135deg, var(--brand-2), var(--brand)); }
   .service-card .nav-link { cursor: pointer; }
+  .service-card .nav-pills .nav-link.active { background: linear-gradient(135deg, var(--brand-2), var(--brand)); }
   .code { background: #0f172a; color: #e2e8f0; border-radius: .5rem; padding: .75rem; overflow: auto; }
   .code code { white-space: pre-wrap; word-break: break-word; }
   .profile .avatar { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, #22d3ee, #818cf8); color: #0b1020; }

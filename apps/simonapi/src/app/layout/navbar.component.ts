@@ -7,7 +7,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   standalone: true,
   imports: [RouterLink, RouterLinkActive],
   template: `
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark app-navbar">
       <div class="container">
         <a class="navbar-brand" routerLink="/">simonapi</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
@@ -20,6 +20,9 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
             <li class="nav-item"><a class="nav-link" routerLink="/qr" routerLinkActive="active">QR Code</a></li>
             <li class="nav-item"><a class="nav-link" routerLink="/dev-utils" routerLinkActive="active">Dev-Utils</a></li>
           </ul>
+          <div class="d-flex">
+            <a class="btn btn-sm btn-outline-secondary" href="/api/docs" target="_blank" rel="noopener">API Docs</a>
+          </div>
         </div>
       </div>
     </nav>

@@ -1,6 +1,5 @@
 .devutils { max-width: 1200px; margin: 0 auto; }
 .grid { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0,1fr)); }
-.code { background: #0f172a; color: #e2e8f0; border-radius: .5rem; padding: .75rem; overflow: auto; }
-.preview { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: .5rem; padding: .75rem; min-height: 180px; }
+.code { background: #0f172a; color: #e2e8f0; border-radius: .5rem; padding: .75rem; overflow: auto; border: 1px solid #0b1220; }
+.preview { background: color-mix(in oklab, var(--surface), white 6%); border: 1px solid var(--border); border-radius: .5rem; padding: .75rem; min-height: 180px; }
 @media (max-width: 992px){ .grid { grid-template-columns: 1fr; } }
-

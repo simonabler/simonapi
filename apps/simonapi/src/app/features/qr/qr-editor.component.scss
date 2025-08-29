@@ -12,9 +12,10 @@
 }
 
 .panel {
-  background: #fff;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
+  box-shadow: var(--shadow-sm);
   padding: 1rem;
 }
 
@@ -36,8 +37,8 @@ textarea {
   width: 100%;
   padding: .5rem .6rem;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--surface), white 0%);
 }
 
 textarea {
@@ -81,7 +82,7 @@ button:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f1f5f9;
+  background: color-mix(in oklab, var(--surface), white 6%);
   border-radius: 12px;
   padding: 1rem;
   min-height: 300px;
