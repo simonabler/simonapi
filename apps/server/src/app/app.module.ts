@@ -8,9 +8,22 @@ import { seconds, ThrottlerModule } from '@nestjs/throttler';
 import { BarcodesModule } from './barcode/barcodes.module';
 import { SignpackModule } from './signpack/signpack.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
+import appConfig from './config/app.config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+      expandVariables: true,
+      envFilePath: [
+        `.env.${process.env.NODE_ENV ?? ''}`.replace(/\.$/, ''),
+        '.env.local',
+        '.env',
+      ],
+      load: [appConfig],
+    }),
     TypeOrmModule.forRootAsync({
       useFactory: () => {
         const url = process.env.TYPEORM_URL;
@@ -30,7 +43,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         };
       },
     }),
-  ThrottlerModule.forRoot({
+    ThrottlerModule.forRoot({
       // v5+: mehrere „throttlers“ möglich; ttl in **Millisekunden**
       throttlers: [{ ttl: seconds(60), limit: 60 }],
       // Tracker = Schlüssel je Nutzer: API-Key bevorzugen, sonst IP
