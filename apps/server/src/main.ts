@@ -3,7 +3,7 @@
  * This is only a minimal backend to get started.
  */
 
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -11,32 +11,36 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
-
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: false,
+    })
+  );
   app.enableCors();
   app.set('trust proxy', 'loopback'); // Trust requests from the loopback address
 
   // Swagger/OpenAPI
   const config = new DocumentBuilder()
-    .setTitle('simonapi')
-    .setDescription('API Documentation')
+    .setTitle('Simon API Hub – Barcode/GS1')
+    .setDescription('API for standard barcodes and GS1 rendering')
     .setVersion('1.0.0')
     .addServer('http://localhost:3000')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document, {
-    useGlobalPrefix: true,
+  SwaggerModule.setup('api', app, document, {
+    useGlobalPrefix: false,
     swaggerOptions: { persistAuthorization: true },
-    customSiteTitle: 'simonapi – API Docs',
+    customSiteTitle: 'Simon API Hub – Barcode/GS1',
   });
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
-  );
-  Logger.log(`📚 Swagger UI: http://localhost:${port}/${globalPrefix}/docs`);
+  Logger.log(`🚀 App running: http://localhost:${port}`);
+  Logger.log(`📚 Swagger UI: http://localhost:${port}/api`);
 }
 
 bootstrap();

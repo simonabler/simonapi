@@ -1,4 +1,4 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import { CallHandler, ExecutionContext, HttpException, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable, catchError, finalize, throwError } from 'rxjs';
 import { UsageService } from './usage.service';
 
@@ -16,10 +16,10 @@ export class UsageInterceptor implements NestInterceptor {
 
     const check = this.usage.checkAndCount(key, path);
     if (!check.allowed) {
-      throw new TooManyRequestsException({
-        message: 'Fair use limit exceeded',
-        reason: check.reason,
-        path,
+      throw new HttpException("Fair use limit exceeded", 429,{
+      //throw new TooManyRequestsException({
+      //  reason: check.reason,
+      //  path,
       });
     }
 

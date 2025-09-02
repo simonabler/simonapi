@@ -5,6 +5,7 @@ import { QrModule } from './qr/qr.module';
 import { UtilityModule } from './utils/utility.module';
 import { ReportsController } from './reports.controller';
 import { seconds, ThrottlerModule } from '@nestjs/throttler';
+import { BarcodesModule } from './barcode/barcodes.module';
 
 @Module({
   imports: [
@@ -17,10 +18,10 @@ import { seconds, ThrottlerModule } from '@nestjs/throttler';
       // storage: ...
     }),
     QrModule,
+    BarcodesModule,
     UtilityModule,
   ],
   controllers: [AppController, ReportsController],
   providers: [AppService],
 })
 export class AppModule {}
-
