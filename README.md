@@ -1,34 +1,173 @@
-# Simonapi
+# Simon API Hub
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+Produktionsnahes NestJS/Nx-Backend mit Barcodes/GS1 und Signpack-Service.
+
+## Überblick
+
+Dieser Server bündelt mehrere kleine, nützliche Micro-APIs (z. B. QR-/Barcode-Generator, Signpack, Dev/Utility-Tools) hinter einer einheitlichen Oberfläche. Optional kann ein Angular-Frontend ergänzend eine Doku pro API mit Beispielaufrufen (cURL) und einfache Demo-Ansichten anzeigen.
+
+## Features
+
+- Mehrere REST-APIs in einem NestJS-Monorepo (Module je Feature)
+- Angular-Frontend (optional): Doku & Mini-Apps zu jeder API
+- OpenAPI/Swagger fürs Backend (Swagger UI: `/api`)
+- Docker-fähig (lokal & Home-Server)
+- Fair-Use/Rate-Limit (optional via `@nestjs/throttler`)
+- Statistiken (optional; z. B. Requests/Minute, Top-Endpunkte, Fehlerquote)
+
+## Architektur
+
+- Backend (NestJS)
+  - Module je API (z. B. `qrcode`, `barcode`, `signpack`, `utils`)
+  - Controller → Service → (optional) Repository (TypeORM)
+  - Swagger unter `/api`
+- Frontend (Angular) – optional
+  - Seiten: Übersicht, API-Details, Live-Demos
+  - Code-Beispiele & cURL-Snippets
+- Reverse Proxy (optional)
+  - z. B. nginx/Caddy vor Backend/Frontend
 
 [Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
 
-## Finish your CI setup
+## Funktionsumfang
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/7FovN4jpZK)
+- Barcodes/GS1
+  - Standard-Barcodes: code128, ean13, ean8, upca, code39, itf14, pdf417, datamatrix
+  - GS1: GS1-128 & GS1 DataMatrix mit AI-Auswahl, Validierung (GTIN/SSCC Mod10, Datum YYMMDD, Längen/ASCII) und automatischer Prüfziffer-Ergänzung
+  - PNG & SVG Ausgabe; Endpunkte: GET /barcodes/png|svg, GET /barcodes/gs1/png|svg, POST /barcodes/gs1/render
+  - Swagger/OpenAPI unter /api
+- Signpack Microservice
+  - Upload → Signieren → Abrufen → optionales Destroy; Speicherung lokal unter DATA_DIR (Default ./data/signpacks)
+  - Endpunkte: POST /api/signpacks, GET /:id/meta|original|signed, POST /:id/sign (multipart oder {remoteUrl}), GET /:id/bundle.zip[&destroy=true], DELETE /:id
+  - TypeORM (SQLite Standard, Postgres via TYPEORM_URL), Cron-Aufräumen stündlich, einfache Rate-Limits
+
+## API Beispiele
+
+Beachte: Standardmäßig läuft der Server auf Port 3000. Swagger UI: http://localhost:3000/api
+
+- Barcodes – Standard PNG (Code128)
+  ```bash
+  curl -L "http://localhost:3000/barcodes/png?type=code128&text=Hello123&includetext=true" -o code128.png
+  ```
+
+- Barcodes – Standard SVG (EAN-13)
+  ```bash
+  curl -L "http://localhost:3000/barcodes/svg?type=ean13&text=5901234123457&includetext=true" -o ean13.svg
+  ```
+
+- GS1-128 via POST (GTIN 13-stellig → Prüfziffer automatisch)
+  ```bash
+  curl -X POST http://localhost:3000/barcodes/gs1/render \
+    -H "Content-Type: application/json" \
+    -d '{
+          "symbology":"gs1-128",
+          "format":"png",
+          "includetext":true,
+          "scale":3,
+          "height":12,
+          "items":[
+            {"ai":"01","value":"0950600013437"},
+            {"ai":"10","value":"BATCH42"},
+            {"ai":"17","value":"251231"}
+          ]
+        }' -o gs1-128.png
+  ```
+
+- GS1 DataMatrix mit SSCC 17-stellig → Prüfziffer automatisch
+  ```bash
+  curl -X POST http://localhost:3000/barcodes/gs1/render \
+    -H "Content-Type: application/json" \
+    -d '{
+          "symbology":"gs1datamatrix",
+          "format":"svg",
+          "items":[
+            {"ai":"00","value":"12345678901234567"},
+            {"ai":"21","value":"SN-001"}
+          ]
+        }' -o sscc.svg
+  ```
+
+- Signpack – Upload (multipart)
+  ```bash
+  curl -X POST http://localhost:3000/api/signpacks \
+    -F file=@./example.pdf \
+    -F expiresInMinutes=60
+  # Antwort enthält { id, token, ... }
+  ```
+
+- Signpack – Metadaten abrufen
+  ```bash
+  curl "http://localhost:3000/api/signpacks/<ID>/meta?token=<TOKEN>"
+  ```
+
+- Signpack – Original herunterladen
+  ```bash
+  curl -L "http://localhost:3000/api/signpacks/<ID>/original?token=<TOKEN>" -o original.bin
+  ```
+
+- Signpack – Signierte Datei hochladen (multipart)
+  ```bash
+  curl -X POST "http://localhost:3000/api/signpacks/<ID>/sign?token=<TOKEN>" \
+    -F file=@./signed.pdf
+  ```
+
+- Signpack – Signierte Datei via Remote-URL
+  ```bash
+  curl -X POST "http://localhost:3000/api/signpacks/<ID>/sign?token=<TOKEN>" \
+    -H "Content-Type: application/json" \
+    -d '{"remoteUrl":"https://example.com/file.pdf"}'
+  ```
+
+- Signpack – Bundle herunterladen (+ optionales Destroy)
+  ```bash
+  curl -L "http://localhost:3000/api/signpacks/<ID>/bundle.zip?token=<TOKEN>&destroy=true" -o bundle.zip
+  ```
+
+- Signpack – Sofort löschen
+  ```bash
+  curl -X DELETE "http://localhost:3000/api/signpacks/<ID>?token=<TOKEN>"
+  ```
+
+## Deployment (Docker)
+
+Beispiel-Deployment des Backends mit bereitgestelltem Dockerfile:
+
+```bash
+# Build
+docker build -f dockerfiles/Dockerfile.backend -t simonapi-backend .
+
+# Run (persistente Daten + SQLite)
+docker run -d --name simonapi-backend -p 3000:3000 \
+  -e NODE_ENV=production \
+  -e TYPEORM_DB=/data/signpacks/signpacks.sqlite \
+  -v $(pwd)/data:/data/signpacks \
+  simonapi-backend
+
+# Alternativ: Postgres verwenden
+# -e TYPEORM_URL=postgres://user:pass@host:5432/db
+```
 
 
 ## Run tasks
 
-To run the dev server for your app, use:
+Dev-Server starten:
 
 ```sh
-npx nx serve simonapi
+npx nx serve server
 ```
 
-To create a production bundle:
+Production-Build:
 
 ```sh
-npx nx build simonapi
+npx nx build server
 ```
 
-To see all available targets to run for a project, run:
+Verfügbare Targets für ein Projekt anzeigen:
 
 ```sh
-npx nx show project simonapi
+npx nx show project server
 ```
 
 These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
@@ -66,17 +205,23 @@ Nx Console is an editor extension that enriches your developer experience. It le
 
 [Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
-## Useful links
+## Konfiguration (ENV)
 
-Learn more:
+- DATA_DIR – Speicherpfad (Default: ./data/signpacks)
+- TOKEN_LENGTH – Tokenlänge (Default: 32)
+- FILE_MAX_BYTES – Max. Uploadgröße in Bytes (Default: 26214400)
+- PURGE_CRON – Cron-Expression für Aufräumen (Default: 0 * * * *)
+- TYPEORM_DB – SQLite-Datei (Default: ./signpacks.sqlite)
+- TYPEORM_URL – Postgres Connection-URL (aktiviert Postgres, überschreibt TYPEORM_DB)
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Swagger UI: http://localhost:3000/api
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Haftungsausschluss („AS IS“)
+
+Die Software wird „AS IS“ bereitgestellt – ohne Gewährleistung jeglicher Art, ausdrücklich oder stillschweigend, einschließlich, aber nicht beschränkt auf Marktgängigkeit, Eignung für einen bestimmten Zweck und Nichtverletzung von Rechten. In keinem Fall haften die Autor:innen für Ansprüche, Schäden oder sonstige Haftung, sei es aus Vertrag, unerlaubter Handlung oder anderweitig, die aus der Software oder der Nutzung bzw. dem Umgang mit der Software entstehen.
+
+Nutzung: ausschließlich nicht-kommerziell. Für kommerzielle Nutzung bitte vorher Kontakt aufnehmen.
+
+## Beitragende
+
+Beiträge sind willkommen – bitte beachte die Lizenz. Für größere Änderungen öffne vorab ein Issue und beschreibe dein Vorhaben.
