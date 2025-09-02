@@ -6,9 +6,30 @@ import { UtilityModule } from './utils/utility.module';
 import { ReportsController } from './reports.controller';
 import { seconds, ThrottlerModule } from '@nestjs/throttler';
 import { BarcodesModule } from './barcode/barcodes.module';
+import { SignpackModule } from './signpack/signpack.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
+    TypeOrmModule.forRootAsync({
+      useFactory: () => {
+        const url = process.env.TYPEORM_URL;
+        if (url) {
+          return {
+            type: 'postgres' as const,
+            url,
+            autoLoadEntities: true,
+            synchronize: true,
+          };
+        }
+        return {
+          type: 'sqlite' as const,
+          database: process.env.TYPEORM_DB ?? './signpacks.sqlite',
+          autoLoadEntities: true,
+          synchronize: true,
+        };
+      },
+    }),
   ThrottlerModule.forRoot({
       // v5+: mehrere „throttlers“ möglich; ttl in **Millisekunden**
       throttlers: [{ ttl: seconds(60), limit: 60 }],
@@ -19,6 +40,7 @@ import { BarcodesModule } from './barcode/barcodes.module';
     }),
     QrModule,
     BarcodesModule,
+    SignpackModule,
     UtilityModule,
   ],
   controllers: [AppController, ReportsController],
