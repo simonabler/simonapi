@@ -4,7 +4,7 @@ import { GenerateRequest, QrPreset } from './models';
 import { firstValueFrom, Observable } from 'rxjs';
 
 
-const API = (window as any).env?.API_BASE_URL || 'http://localhost:3000/api'; // optional
+const API = (window as any).env?.API_BASE_URL || window.origin + '/api';
 
 
 @Injectable({ providedIn: 'root' })

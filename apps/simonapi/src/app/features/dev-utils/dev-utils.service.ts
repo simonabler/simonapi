@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
-const API = (window as any).env?.API_BASE_URL || 'http://localhost:3000/api';
+const API = (window as any).env?.API_BASE_URL || window.origin + '/api';
 
 @Injectable({ providedIn: 'root' })
 export class DevUtilsService {
