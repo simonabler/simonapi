@@ -10,6 +10,8 @@ import { SignpackModule } from './signpack/signpack.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import appConfig from './config/app.config';
+//dummyload for NX project.json
+import { } from 'sqlite3'
 
 @Module({
   imports: [

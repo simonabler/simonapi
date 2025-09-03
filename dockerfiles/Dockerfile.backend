@@ -16,9 +16,11 @@ RUN npx nx build server
 FROM node:24-alpine AS runtime
 
 ENV NODE_ENV=production
-USER node
 
 WORKDIR /app
+RUN chown node:node -R .
+
+USER node
 
 # Copy built server and its production deps
 COPY --from=build --chown=node:node /build/simonapi/dist/apps/server ./

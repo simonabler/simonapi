@@ -1,0 +1,31 @@
+services:
+  frontend:
+    image: simonapi-frontend:latest
+    container_name: simonapi-frontend
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.simonapi-frontend.tls=true"
+      - "traefik.http.routers.simonapi-frontend.tls.certresolver=letsEncrypt"
+      - "traefik.http.routers.simonapi-frontend.entrypoints=websecure"
+      - "traefik.http.routers.simonapi-frontend.rule=Host(`hub.abler.tirol`) && PathPrefix(`/`)"
+      - "traefik.http.routers.simonapi-frontend.priority=10"
+      # Interner Container-Port des Frontends (ggf. anpassen)
+      - "traefik.http.services.simonapi-frontend.loadbalancer.server.port=80"
+
+  backend:
+    image: simonapi-backend:latest
+    container_name: simonapi-backend
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.simonapi-backend.tls=true"
+      - "traefik.http.routers.simonapi-backend.tls.certresolver=letsEncrypt"
+      - "traefik.http.routers.simonapi-backend.entrypoints=websecure"
+      - "traefik.http.routers.simonapi-backend.rule=Host(`hub.abler.tirol`) && PathPrefix(`/api`)"
+      # Strippt das Prefix /api bevor es an den Service geht
+      - "traefik.http.middlewares.simonapi-backend-strip.stripprefixregex.regex=/api"
+      - "traefik.http.routers.simonapi-backend.middlewares=simonapi-backend-strip@docker"
+      - "traefik.http.routers.simonapi-backend.priority=100"
+      # Interner Container-Port des Backends (ggf. anpassen)
+      - "traefik.http.services.simonapi-backend.loadbalancer.server.port=8080"
