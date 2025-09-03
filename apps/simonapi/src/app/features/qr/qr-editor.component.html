@@ -125,11 +125,6 @@
         <button type="button" (click)="download('svg')">Als SVG herunterladen</button>
       </div>
 
-
-      <div class="preset-actions">
-        <input placeholder="Preset-Name" formControlName="presetName" />
-        <button type="button" [disabled]="saving" (click)="savePreset()">Preset speichern</button>
-      </div>
     </form>
 
 
@@ -139,16 +134,6 @@
       <ng-template #empty>
         <p>Gib Daten ein, um die Vorschau zu erzeugen.</p>
       </ng-template>
-
-
-      <h3>Presets</h3>
-      <ul class="presets">
-        <li *ngFor="let p of presets">
-          <span>{{p.name}} <small>({{p.type}})</small></span>
-          <button (click)="applyPreset(p)">Laden</button>
-          <button (click)="deletePreset(p)">Löschen</button>
-        </li>
-      </ul>
     </div>
   </div>
 </div>
