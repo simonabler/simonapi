@@ -28,13 +28,13 @@ async function bootstrap() {
     .setTitle('Simon API Hub – Barcode/GS1')
     .setDescription('API for standard barcodes and GS1 rendering')
     .setVersion('1.0.0')
-    .addServer('http://localhost:3000')
+    .addServer('https://hub.abler.tirol')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {
     useGlobalPrefix: false,
     swaggerOptions: { persistAuthorization: true },
-    customSiteTitle: 'Simon API Hub – Barcode/GS1',
+    customSiteTitle: 'Simon API Hub',
   });
 
   const port = process.env.PORT || 3000;

@@ -17,6 +17,14 @@ FROM node:24-alpine AS runtime
 
 ENV NODE_ENV=production
 
+RUN apk update && apk upgrade
+RUN apk add --no-cache python3 make g++ sqlite-dev py3-setuptools
+
+
+
+# ENV npm_config_build_from_source=true
+# RUN npm rebuild sqlite3 -g --build-from-sourcepy3-setuptools
+
 WORKDIR /app
 RUN chown node:node -R .
 
@@ -26,6 +34,7 @@ USER node
 COPY --from=build --chown=node:node /build/simonapi/dist/apps/server ./
 RUN if [ -f package.json ]; then npm ci --omit=dev --ignore-scripts; fi
 
+RUN npm rebuild sqlite3 --build-from-source
 COPY --chown=node:node ./apps/server/entrypoint.backend.sh .
 
 EXPOSE 3000

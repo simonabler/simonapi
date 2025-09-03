@@ -66,21 +66,21 @@ This server aggregates several small, useful micro‑APIs (QR/Barcode generator,
 
 ## API Examples
 
-Server runs on port 3000 by default. Swagger UI: http://localhost:3000/api
+Server runs on port 3000 by default. Swagger UI: https://hub.abler.tirol/api
 
 - Barcode — standard PNG (Code128)
   ```bash
-  curl -L "http://localhost:3000/api/barcode/png?type=code128&text=Hello123&includetext=true" -o code128.png
+  curl -L "https://hub.abler.tirol/api/barcode/png?type=code128&text=Hello123&includetext=true" -o code128.png
   ```
 
 - Barcode — standard SVG (EAN-13)
   ```bash
-  curl -L "http://localhost:3000/api/barcode/svg?type=ean13&text=5901234123457&includetext=true" -o ean13.svg
+  curl -L "https://hub.abler.tirol/api/barcode/svg?type=ean13&text=5901234123457&includetext=true" -o ean13.svg
   ```
 
 - GS1-128 via POST (GTIN → auto check digit)
   ```bash
-  curl -X POST http://localhost:3000/api/barcode/gs1/render \
+  curl -X POST https://hub.abler.tirol/api/barcode/gs1/render \
     -H "Content-Type: application/json" \
     -d '{
           "symbology":"gs1-128",
@@ -98,7 +98,7 @@ Server runs on port 3000 by default. Swagger UI: http://localhost:3000/api
 
 - QR — URL to SVG (inline)
   ```bash
-  curl -X POST http://localhost:3000/api/qr \
+  curl -X POST https://hub.abler.tirol/api/qr \
     -H "Content-Type: application/json" \
     -d '{
           "type":"url",
@@ -112,7 +112,7 @@ Server runs on port 3000 by default. Swagger UI: http://localhost:3000/api
 
 - QR — WiFi as PNG (download)
   ```bash
-  curl -L "http://localhost:3000/api/qr?download=1" \
+  curl -L "https://hub.abler.tirol/api/qr?download=1" \
     -H "Content-Type: application/json" \
     --data '{
       "type":"wifi",
@@ -123,7 +123,7 @@ Server runs on port 3000 by default. Swagger UI: http://localhost:3000/api
 
 - Signpack — upload (multipart)
   ```bash
-  curl -X POST http://localhost:3000/api/signpacks \
+  curl -X POST https://hub.abler.tirol/api/signpacks \
     -F file=@./example.pdf \
     -F expiresInMinutes=60
   # Response contains { id, token, ... }
@@ -131,35 +131,35 @@ Server runs on port 3000 by default. Swagger UI: http://localhost:3000/api
 
 - Signpack — fetch metadata
   ```bash
-  curl "http://localhost:3000/api/signpacks/<ID>/meta?token=<TOKEN>"
+  curl "https://hub.abler.tirol/api/signpacks/<ID>/meta?token=<TOKEN>"
   ```
 
 - Signpack — download original
   ```bash
-  curl -L "http://localhost:3000/api/signpacks/<ID>/original?token=<TOKEN>" -o original.bin
+  curl -L "https://hub.abler.tirol/api/signpacks/<ID>/original?token=<TOKEN>" -o original.bin
   ```
 
 - Signpack — upload signed file (multipart)
   ```bash
-  curl -X POST "http://localhost:3000/api/signpacks/<ID>/sign?token=<TOKEN>" \
+  curl -X POST "https://hub.abler.tirol/api/signpacks/<ID>/sign?token=<TOKEN>" \
     -F file=@./signed.pdf
   ```
 
 - Signpack — provide signed file via remote URL
   ```bash
-  curl -X POST "http://localhost:3000/api/signpacks/<ID>/sign?token=<TOKEN>" \
+  curl -X POST "https://hub.abler.tirol/api/signpacks/<ID>/sign?token=<TOKEN>" \
     -H "Content-Type: application/json" \
     -d '{"remoteUrl":"https://example.com/file.pdf"}'
   ```
 
 - Signpack — download bundle (+ optional destroy)
   ```bash
-  curl -L "http://localhost:3000/api/signpacks/<ID>/bundle.zip?token=<TOKEN>&destroy=true" -o bundle.zip
+  curl -L "https://hub.abler.tirol/api/signpacks/<ID>/bundle.zip?token=<TOKEN>&destroy=true" -o bundle.zip
   ```
 
 - Signpack — delete immediately
   ```bash
-  curl -X DELETE "http://localhost:3000/api/signpacks/<ID>?token=<TOKEN>"
+  curl -X DELETE "https://hub.abler.tirol/api/signpacks/<ID>?token=<TOKEN>"
   ```
 
 ## Deployment (Docker)
@@ -216,7 +216,7 @@ These targets are either [inferred automatically](https://nx.dev/concepts/inferr
 - TYPEORM_DB: SQLite file path (default: `./signpacks.sqlite`)
 - TYPEORM_URL: Postgres connection URL (enables Postgres, overrides `TYPEORM_DB`)
 
-Swagger UI: http://localhost:3000/api
+Swagger UI: https://hub.abler.tirol/api
 
 ## Disclaimer ("AS IS")
 
