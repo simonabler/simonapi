@@ -108,10 +108,10 @@ describe('SignpackService', () => {
       updatedAt: new Date(),
     } as any;
     (repo.findOne as any).mockResolvedValue(nowSp);
-    const spyUnlink = jest.spyOn(fs, 'unlinkSync');
     await service.destroy(nowSp.id, 'tok');
-    expect(spyUnlink).toHaveBeenCalled();
+    // verify files have been deleted instead of spying on fs.unlinkSync
+    expect(fs.existsSync(p1)).toBe(false);
+    expect(fs.existsSync(p2)).toBe(false);
     expect(nowSp.status).toBe('DELETED');
   });
 });
-

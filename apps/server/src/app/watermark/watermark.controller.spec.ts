@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { WatermarkModule } from './watermark.module';
 import * as Sharp from 'sharp';
 
@@ -38,4 +38,3 @@ describe('WatermarkController (e2e-light)', () => {
     expect(res.body.length).toBeGreaterThan(100);
   });
 });
-
