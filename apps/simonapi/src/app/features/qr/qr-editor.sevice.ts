@@ -2,9 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GenerateRequest, QrPreset } from './models';
 import { firstValueFrom, Observable } from 'rxjs';
+import { environment } from '../../../environments/environments';
 
 
-const API = (window as any).env?.API_BASE_URL || window.origin + '/api';
+const API = (environment.API_BASE_URL || window.origin ) + '/api';
 
 
 @Injectable({ providedIn: 'root' })
@@ -33,6 +34,7 @@ export class QrService {
 
   preview$(req: GenerateRequest): Observable<Blob> {
     const body = { ...req, format: 'png' }; // PNG für Vorschau
+    body.size = 256;
     return this.http.post(`${API}/qr`, body, { responseType: 'blob' });
   }
 

@@ -4,19 +4,22 @@
   padding: 0 1rem;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  align-items: start;
+.lucide-center {
+  display: block;
+  margin: 0 auto;
+  position: absolute;
+  top: calc(50% - 13px);
+  left: calc(50% - 10px);
 }
 
-.panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: var(--shadow-sm);
-  padding: 1rem;
+.qrbox {
+  min-height: 200px;
+  background-color:hsl( 210 40% 96.1%);
+}
+
+.place-items-center {
+  display: grid;
+  place-items: center;
 }
 
 .cols {
@@ -65,14 +68,7 @@ textarea {
   margin-top: 1rem;
 }
 
-button {
-  padding: .5rem .9rem;
-  border: 0;
-  border-radius: 10px;
-  background: #0ea5e9;
-  color: white;
-  cursor: pointer;
-}
+
 
 button:hover {
   filter: brightness(.95);

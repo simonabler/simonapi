@@ -5,10 +5,11 @@ import { GenerateRequest, QrDataType, QrPreset } from './models';
 import { CommonModule } from '@angular/common';
 import { debounceTime, distinctUntilChanged, map, startWith, switchMap, takeUntil, catchError } from 'rxjs/operators';
 import { Subject, EMPTY } from 'rxjs';
+import { LucideAngularModule, QrCodeIcon } from 'lucide-angular';
 
 
 @Component({
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
   selector: 'app-qr-editor',
   templateUrl: './qr-editor.component.html',
   styleUrls: ['./qr-editor.component.scss']
@@ -16,6 +17,8 @@ import { Subject, EMPTY } from 'rxjs';
 export class QrEditorComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private api = inject(QrService);
+
+  readonly QrCodeIcon = QrCodeIcon;
 
 
   svgPreview: string | null = null;
@@ -52,7 +55,6 @@ export class QrEditorComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.reloadPresets();
 
     // Debounced Live-Preview
     this.form.valueChanges.pipe(
@@ -64,7 +66,11 @@ export class QrEditorComponent implements OnInit, OnDestroy {
       switchMap(req => {
         this.loading = true;
         return this.api.preview$(req).pipe(
-          catchError(err => { console.error(err); this.revokePreview(); return EMPTY; })
+          catchError(err => { 
+            console.error(err); 
+            this.revokePreview(); 
+            return EMPTY;
+           })
         );
       }),
       takeUntil(this.destroy$)
@@ -115,29 +121,4 @@ export class QrEditorComponent implements OnInit, OnDestroy {
   }
 
 
-  async savePreset() {
-    const name = this.form.value.presetName?.trim();
-    if (!name) return;
-    this.saving = true;
-    const req = this.buildPayload();
-    await this.api.createPreset({ name, type: req.type, payload: req.payload });
-    this.form.patchValue({ presetName: '' });
-  }
-
-  async applyPreset(p: QrPreset) {
-    this.form.patchValue({ type: p.type });
-    switch (p.type) {
-      case 'url': this.form.patchValue({ url: p.payload['url'] }); break;
-      case 'text': this.form.patchValue({ text: p.payload['text'] }); break;
-      case 'email': this.form.patchValue({ email_to: p.payload['to'], email_subject: p.payload['subject'], email_body: p.payload['body'] }); break;
-      case 'phone': this.form.patchValue({ phone_number: p.payload['number'] }); break;
-      case 'sms': this.form.patchValue({ sms_number: p.payload['number'], sms_message: p.payload['message'] }); break;
-      case 'vcard': this.form.patchValue({ v_firstName: p.payload['firstName'], v_lastName: p.payload['lastName'], v_org: p.payload['organization'], v_title: p.payload['title'], v_phone: p.payload['phone'], v_email: p.payload['email'], v_website: p.payload['website'], v_address: p.payload['address'], v_note: p.payload['note'] }); break;
-      case 'wifi': this.form.patchValue({ wifi_ssid: p.payload['ssid'], wifi_password: p.payload['password'], wifi_hidden: p.payload['hidden'], wifi_encryption: p.payload['encryption'] }); break;
-    }
-  }
-
-
-  async deletePreset(p: QrPreset) { await this.api.deletePreset(p.id); await this.reloadPresets(); }
-  async reloadPresets() { this.presets = await this.api.listPresets(); }
 }

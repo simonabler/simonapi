@@ -1,14 +1,24 @@
-<div class="qr-editor">
-  <h1>QR Code Editor</h1>
+<div class="card rounded-card h-100">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="d-flex align-items-center gap-2">
+        <div class="d-inline-grid place-items-center bg-body-secondary rounded-3"
+          style="width:36px;height:36px; position:relative">
+          <lucide-icon class="lucide-center" [img]="QrCodeIcon" [size]="20"></lucide-icon>
+        </div>
+        <div>
+          <div class="fw-semibold">QR Code Generator</div>
+          <div class="text-body-secondary small">Client‑Preview</div>
+        </div>
+      </div>
+      <span class="badge text-bg-dark">utility</span>
+    </div>
 
 
-  <div class="grid">
+
     <form (ngSubmit)="$event.preventDefault()" [formGroup]="form" class="panel">
-      <h2>Eingabe</h2>
-
-
       <label>Typ
-        <select [formControl]="form.controls.type" >
+        <select [formControl]="form.controls.type">
           <option value="url">URL</option>
           <option value="text">Text</option>
           <option value="email">Email</option>
@@ -23,8 +33,7 @@
       <!-- URL -->
       @if(form.value.type==='url'){
       <div>
-        <label>URL <input type="url" formControlName="url" 
-            placeholder="https://..." /></label>
+        <label>URL <input type="url" formControlName="url" placeholder="https://..." /></label>
       </div>
       }
 
@@ -32,7 +41,7 @@
       <!-- Text -->
       @if(form.value.type==='text'){
       <div>
-        <label>Text <textarea formControlName="text" ></textarea></label>
+        <label>Text <textarea formControlName="text"></textarea></label>
       </div>
       }
 
@@ -40,9 +49,9 @@
       <!-- Email -->
       @if(form.value.type==='email'){
       <div *ngIf="form.value.type==='email'" class="cols">
-        <label>Empfänger <input formControlName="email_to"  /></label>
-        <label>Betreff <input formControlName="email_subject"  /></label>
-        <label>Nachricht <textarea formControlName="email_body" ></textarea></label>
+        <label>Empfänger <input formControlName="email_to" /></label>
+        <label>Betreff <input formControlName="email_subject" /></label>
+        <label>Nachricht <textarea formControlName="email_body"></textarea></label>
       </div>
       }
 
@@ -50,7 +59,7 @@
       <!-- Phone -->
       @if(form.value.type==='phone'){
       <div>
-        <label>Telefonnummer <input formControlName="phone_number"  /></label>
+        <label>Telefonnummer <input formControlName="phone_number" /></label>
       </div>
       }
 
@@ -58,8 +67,8 @@
       <!-- SMS -->
       @if(form.value.type==='sms'){
       <div class="cols">
-        <label>Nummer <input formControlName="sms_number"  /></label>
-        <label>Nachricht <input formControlName="sms_message"  /></label>
+        <label>Nummer <input formControlName="sms_number" /></label>
+        <label>Nachricht <input formControlName="sms_message" /></label>
       </div>
       }
 
@@ -67,73 +76,71 @@
       <!-- vCard -->
       @if(form.value.type==='vcard'){
       <div class="cols">
-        <label>Vorname <input formControlName="v_firstName"  /></label>
-        <label>Nachname <input formControlName="v_lastName"  /></label>
-        <label>Firma <input formControlName="v_org"  /></label>
-        <label>Titel <input formControlName="v_title"  /></label>
-        <label>Telefon <input formControlName="v_phone"  /></label>
-        <label>Email <input formControlName="v_email"  /></label>
-        <label>Web <input formControlName="v_website"  /></label>
-        <label>Adresse <input formControlName="v_address"  /></label>
-        <label>Notiz <input formControlName="v_note"  /></label>
+        <label>Vorname <input formControlName="v_firstName" /></label>
+        <label>Nachname <input formControlName="v_lastName" /></label>
+        <label>Firma <input formControlName="v_org" /></label>
+        <label>Titel <input formControlName="v_title" /></label>
+        <label>Telefon <input formControlName="v_phone" /></label>
+        <label>Email <input formControlName="v_email" /></label>
+        <label>Web <input formControlName="v_website" /></label>
+        <label>Adresse <input formControlName="v_address" /></label>
+        <label>Notiz <input formControlName="v_note" /></label>
       </div>
       }
 
       <!-- WiFi -->
       @if(form.value.type==='wifi'){
       <div class="cols">
-        <label>SSID <input formControlName="wifi_ssid"  /></label>
-        <label>Passwort <input formControlName="wifi_password"  /></label>
+        <label>SSID <input formControlName="wifi_ssid" /></label>
+        <label>Passwort <input formControlName="wifi_password" /></label>
         <label>Verschlüsselung
-          <select formControlName="wifi_encryption" >
+          <select formControlName="wifi_encryption">
             <option>WPA</option>
             <option>WEP</option>
             <option>nopass</option>
           </select>
         </label>
         <label class="checkbox">
-          <input type="checkbox" formControlName="wifi_hidden"  /> SSID versteckt
+          <input type="checkbox" formControlName="wifi_hidden" /> SSID versteckt
         </label>
       </div>
       }
 
       <fieldset>
-        <legend>Optionen</legend>
         <div class="cols">
           <label>Größe (px)
-            <input type="number" [formControl]="form.controls.options.controls.size"  min="64"
-              max="4096" />
+            <input type="number" [formControl]="form.controls.options.controls.size" min="64" max="4096" />
           </label>
-          <label>Rand (Module)
-            <input type="number" [formControl]="form.controls.options.controls.margin"  min="0"
-              max="20" />
-          </label>
+          
           <label>Fehlerkorrektur
-            <select [formControl]="form.controls.options.controls.ecc" >
+            <select [formControl]="form.controls.options.controls.ecc">
               <option>M</option>
               <option>L</option>
               <option>Q</option>
               <option>H</option>
             </select>
           </label>
+
+          <input type="number" style="visibility: collapse; display: none;" [formControl]="form.controls.options.controls.margin" min="0"
+            max="20" />
         </div>
       </fieldset>
 
 
       <div class="actions">
-        <button type="button" (click)="download('png')">Als PNG herunterladen</button>
-        <button type="button" (click)="download('svg')">Als SVG herunterladen</button>
+        <button type="button" class="btn btn-secondary" (click)="download('png')">Als PNG herunterladen</button>
+        <button type="button" class="btn btn-secondary" (click)="download('svg')">Als SVG herunterladen</button>
       </div>
 
     </form>
 
-
-    <div class="panel preview">
-      <h2>Vorschau</h2>
-        <img *ngIf="previewUrl as url" [src]="url" alt="QR Vorschau" class="qr-preview-img" />
-      <ng-template #empty>
-        <p>Gib Daten ein, um die Vorschau zu erzeugen.</p>
-      </ng-template>
+    <div class="border rounded p-3 mt-2 qrbox d-flex align-items-center justify-content-center">     
+      @if(previewUrl; as url){
+      <img [src]="url" alt="QR Vorschau" class="qr-preview-img" />
+      } @else {
+      
+      }
     </div>
   </div>
 </div>
+
