@@ -1,0 +1,6 @@
+@import '../qr/qr-editor-item.component.scss';
+
+.ai-row { display: grid; grid-template-columns: 140px 1fr auto; gap: .5rem; align-items: center; }
+@media (max-width: 900px) { .ai-row { grid-template-columns: 1fr; } }
+.hint { color: var(--bs-secondary-color, #6c757d); font-size: .875rem; }
+

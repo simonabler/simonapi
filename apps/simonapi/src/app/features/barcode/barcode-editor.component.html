@@ -11,6 +11,6 @@
     <ng-container *ngFor="let it of items; trackBy: trackById">
       <app-barcode-editor-item [removable]="true" (remove)="remove(it.id)"></app-barcode-editor-item>
     </ng-container>
+    <app-barcode-gs1-editor-item></app-barcode-gs1-editor-item>
   </div>
 </div>
-

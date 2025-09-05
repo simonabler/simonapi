@@ -37,20 +37,20 @@ export class BarcodesController {
     return this.svc.toSvg(q);
   }
 
-  @Get('gs1/png')
+  @Post('gs1/png')
   @ApiOperation({ summary: 'Render GS1 barcode (GS1-128/DataMatrix) as PNG' })
   @Header('Content-Type', 'image/png')
   @HttpCode(HttpStatus.OK)
-  async gs1Png(@Query() q: GenerateGs1QueryDto, @Res() response: Response){
+  async gs1Png(@Body() q: GenerateGs1QueryDto, @Res() response: Response){
     const { symbology, items, includetext, scale, height } = q;
      response.send(await  this.svc.gs1ToPng({ symbology, items, includetext, scale, height }));
   }
 
-  @Get('gs1/svg')
+  @Post('gs1/svg')
   @ApiOperation({ summary: 'Render GS1 barcode (GS1-128/DataMatrix) as SVG' })
   @Header('Content-Type', 'image/svg+xml; charset=utf-8')
   @HttpCode(HttpStatus.OK)
-  async gs1Svg(@Query() q: GenerateGs1QueryDto): Promise<string> {
+  async gs1Svg(@Body() q: GenerateGs1QueryDto): Promise<string> {
     const { symbology, items, includetext, scale, height } = q;
     return this.svc.gs1ToSvg({ symbology, items, includetext, scale, height });
   }

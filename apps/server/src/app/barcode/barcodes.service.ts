@@ -69,8 +69,7 @@ export class BarcodesService {
       const { symbology, includetext = false, scale = 3, height } = params;
       const opts: any = { bcid: symbology, text, parse: true, includetext, scale };
       if (height) opts.height = height;
-      const buf = await bwipjs.toBuffer(opts);
-      return buf as Buffer;
+     return bwipjs.toBuffer(opts);
     } catch (e: any) {
       throw new BadRequestException(e?.message || 'GS1 rendering failed');
     }

@@ -49,7 +49,7 @@ import { APP_GUARD } from '@nestjs/core';
     }),
     ThrottlerModule.forRoot({
       // v5+: mehrere „throttlers“ möglich; ttl in **Millisekunden**
-      throttlers: [{ ttl: seconds(60), limit: 10 }],
+      throttlers: [{ ttl: seconds(60), limit: 100 }],
       // Tracker = Schlüssel je Nutzer: API-Key bevorzugen, sonst IP
       getTracker: (req: any) => req.headers['x-api-key']?.toString().trim() || req.ip,
       // Optional: eigenen Redis-Storage o.ä. einsetzen (siehe unten)

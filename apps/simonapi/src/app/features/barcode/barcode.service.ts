@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom, Observable } from 'rxjs';
 import { environment } from '../../../environments/environments';
-import { BarcodeRequest } from './models';
+import { BarcodeRequest, Gs1Request } from './models';
 
 const API = (environment.API_BASE_URL || window.origin) + '/api';
 
@@ -45,5 +45,28 @@ export class BarcodeService {
     a.click();
     URL.revokeObjectURL(url);
   }
-}
 
+  // GS1
+  previewGs1$(req: Gs1Request): Observable<Blob> {
+    const body = { ...req};
+    return this.http.post(`${API}/barcode/gs1/png`, body, { responseType: 'blob' });
+  }
+
+  async downloadGs1(req: Gs1Request, format: 'png' | 'svg'): Promise<void> {
+    const body = { ...req, format } as const;
+    if (format === 'png') {
+      const blob = await firstValueFrom(this.http.post(`${API}/barcode/gs1/render`, body, { responseType: 'blob' }));
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `gs1-${req.symbology}.png`; a.click();
+      URL.revokeObjectURL(url);
+      return;
+    }
+    const svgText = await firstValueFrom(this.http.post(`${API}/barcode/gs1/render`, body, { responseType: 'text' }));
+    const blob = new Blob([svgText], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `gs1-${req.symbology}.svg`; a.click();
+    URL.revokeObjectURL(url);
+  }
+}
