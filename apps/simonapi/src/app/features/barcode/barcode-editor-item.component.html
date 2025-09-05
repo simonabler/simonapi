@@ -1,0 +1,69 @@
+<div class="card rounded-card h-100">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="d-flex align-items-center gap-2">
+        <div class="d-inline-grid place-items-center bg-body-secondary rounded-3" style="width:36px;height:36px; position:relative">
+          <lucide-icon class="lucide-center" [img]="BarcodeIcon" [size]="20"></lucide-icon>
+        </div>
+        <div>
+          <div class="fw-semibold">Barcode Generator</div>
+          <div class="text-body-secondary small">Client‑Preview</div>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge text-bg-dark">utility</span>
+        @if(removable){
+          <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove.emit()">
+            <lucide-icon [img]="Trash2Icon" [size]="16"></lucide-icon>
+          </button>
+        }
+      </div>
+    </div>
+
+    <form (ngSubmit)="$event.preventDefault()" [formGroup]="form" class="panel">
+      <div class="cols">
+        <label>Typ
+          <select [formControl]="form.controls.type">
+            <option value="code128">Code 128</option>
+            <option value="ean13">EAN-13</option>
+            <option value="ean8">EAN-8</option>
+            <option value="upca">UPC-A</option>
+            <option value="code39">Code 39</option>
+            <option value="itf14">ITF-14</option>
+            <option value="pdf417">PDF417</option>
+            <option value="datamatrix">Data Matrix</option>
+          </select>
+        </label>
+        <label>Inhalt
+          <input type="text" formControlName="text" placeholder="Text / Zahlen" />
+        </label>
+      </div>
+
+      <fieldset>
+        <div class="cols">
+          <label class="checkbox">
+            <input type="checkbox" [formControl]="form.controls.includetext" /> Text unter Barcode anzeigen
+          </label>
+          <label>Skalierung
+            <input type="number" [formControl]="form.controls.scale" min="1" max="10" />
+          </label>
+          <label>Höhe
+            <input type="number" [formControl]="form.controls.height" min="0" max="200" />
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" (click)="download('png')">Als PNG herunterladen</button>
+        <button type="button" class="btn btn-secondary" (click)="download('svg')">Als SVG herunterladen</button>
+      </div>
+    </form>
+
+    <div class="border rounded p-3 mt-2 qrbox d-flex align-items-center justify-content-center">
+      @if(previewUrl; as url){
+        <img [src]="url" alt="Barcode Vorschau" class="barcode-preview-img" />
+      }
+    </div>
+  </div>
+</div>
+

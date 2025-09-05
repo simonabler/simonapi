@@ -1,0 +1,16 @@
+<div class="barcode-editor">
+  <div class="page-header d-flex justify-content-between align-items-center mb-3">
+    <h2 class="m-0">Barcode Generator</h2>
+    <button class="btn btn-primary d-inline-flex align-items-center gap-1" (click)="add()">
+      <lucide-icon [img]="PlusIcon" [size]="18"></lucide-icon>
+      <span>Hinzufügen</span>
+    </button>
+  </div>
+
+  <div class="grid">
+    <ng-container *ngFor="let it of items; trackBy: trackById">
+      <app-barcode-editor-item [removable]="true" (remove)="remove(it.id)"></app-barcode-editor-item>
+    </ng-container>
+  </div>
+</div>
+
