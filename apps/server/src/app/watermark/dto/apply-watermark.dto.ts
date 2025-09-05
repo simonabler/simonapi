@@ -1,4 +1,5 @@
 import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
 enum Mode { LOGO = 'logo', TEXT = 'text' }
@@ -41,6 +42,7 @@ export class ApplyWatermarkDto {
 
   @ApiPropertyOptional({ default: 24 })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   margin?: number = 24;
 

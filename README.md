@@ -43,6 +43,13 @@ This server aggregates several small, useful micro‑APIs (QR/Barcode generator,
   - Generate QR as `svg` (default) or `png`
   - Body: `{ type: 'url'|'text'|'email'|'phone'|'sms'|'vcard'|'wifi', payload: {...}, format?: 'svg'|'png', size?: 512, margin?: 2, ecc?: 'L'|'M'|'Q'|'H' }`
   - Optional: `?download=1` forces file download (sets `Content-Disposition`).
+- Watermark: base `/api/watermark`
+  - `POST /api/watermark/apply` (multipart): add logo/text watermark to an image.
+    - Files: `file` (required), `logo` (optional, required if `mode=logo` unless default asset exists)
+    - Fields: `mode=logo|text`, `position=center|top-left|top-right|bottom-left|bottom-right|top-center|bottom-center|center-left|center-right` (default: `bottom-right`),
+      `opacity` (0..1, default `0.5`), `scale` (logo width ratio, default `0.2`), `margin` (px, default `24`), `rotate` (deg, default `0`),
+      `tile` (boolean, default `false`), `gap` (px for tiling, default `128`). Text mode also supports `text`, `fontSize`, `fontFamily`, `color`, `strokeColor`, `strokeWidth`.
+    - Accepts/returns: JPEG, PNG, WebP, AVIF (keeps original format when possible). Optional `download=true` forces download.
 - Signpack: base `/api/signpacks`
   - `POST /api/signpacks` (multipart) → create pack from upload; returns `{ id, token, links... }`
   - `GET /api/signpacks/:id/meta|original|signed?token=...`
@@ -119,6 +126,42 @@ Server runs on port 3000 by default. Swagger UI: https://hub.abler.tirol/api
       "payload": { "ssid": "MyWifi", "password": "secret", "encryption":"WPA", "hidden": false },
       "format":"png"
     }' -o wifi.png
+  ```
+
+- Watermark — text watermark (bottom-right)
+  ```bash
+  curl -X POST https://hub.abler.tirol/api/watermark/apply \
+    -F "file=@./photo.jpg" \
+    -F "mode=text" \
+    -F "text=© Ematric 2025" \
+    -F "position=bottom-right" \
+    -F "opacity=0.5" \
+    -o watermarked.jpg
+  ```
+
+- Watermark — logo watermark (scale 20%)
+  ```bash
+  curl -X POST https://hub.abler.tirol/api/watermark/apply \
+    -F "file=@./photo.jpg" \
+    -F "logo=@./logo.png" \
+    -F "mode=logo" \
+    -F "scale=0.2" \
+    -F "position=bottom-right" \
+    -F "opacity=0.5" \
+    -o watermarked.jpg
+  ```
+
+- Watermark — tiled text pattern
+  ```bash
+  curl -X POST https://hub.abler.tirol/api/watermark/apply \
+    -F "file=@./photo.png" \
+    -F "mode=text" \
+    -F "text=CONFIDENTIAL" \
+    -F "tile=true" \
+    -F "gap=160" \
+    -F "rotate=-30" \
+    -F "opacity=0.2" \
+    -o watermarked.png
   ```
 
 - Signpack — upload (multipart)
