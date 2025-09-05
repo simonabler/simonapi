@@ -5,6 +5,7 @@ import { QrModule } from './qr/qr.module';
 import { UtilityModule } from './utils/utility.module';
 import { ReportsController } from './reports.controller';
 import { seconds, ThrottlerModule } from '@nestjs/throttler';
+import { WatermarkModule } from './watermark/watermark.module';
 import { BarcodesModule } from './barcode/barcodes.module';
 import { SignpackModule } from './signpack/signpack.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -56,6 +57,7 @@ import { } from 'sqlite3'
     QrModule,
     BarcodesModule,
     SignpackModule,
+    WatermarkModule,
     UtilityModule,
   ],
   controllers: [AppController, ReportsController],
