@@ -32,6 +32,12 @@
       },
       "configurations": {
         "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/simonapi/src/environments/environments.ts",
+              "with": "apps/simonapi/src/environments/environments.prod.ts"
+            }
+          ],
           "budgets": [
             {
               "type": "initial",
