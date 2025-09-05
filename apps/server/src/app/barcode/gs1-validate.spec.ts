@@ -49,4 +49,3 @@ describe('GS1 Validation', () => {
     expect(() => validateAndNormalizeGs1Item('3922', '12a')).toThrow();
   });
 });
-

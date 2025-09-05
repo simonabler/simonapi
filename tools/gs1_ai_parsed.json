@@ -1,0 +1,6074 @@
+[
+  {
+    "ai": "00",
+    "title": "SSCC",
+    "description": "Serial Shipping Container Code (SSCC)",
+    "regex": "^(?:\\d{18})$",
+    "source": "https://ref.gs1.org/ai/00"
+  },
+  {
+    "ai": "01",
+    "title": "GTIN",
+    "description": "Global Trade Item Number (GTIN)",
+    "regex": "^(?:\\d{14})$",
+    "excludes": [
+      "02",
+      "03",
+      "37",
+      "255"
+    ],
+    "source": "https://ref.gs1.org/ai/01"
+  },
+  {
+    "ai": "02",
+    "title": "CONTENT",
+    "description": "Global Trade Item Number (GTIN) of contained trade items",
+    "regex": "^(?:\\d{14})$",
+    "excludes": [
+      "01",
+      "03"
+    ],
+    "requires": [
+      "00",
+      "37"
+    ],
+    "source": "https://ref.gs1.org/ai/02"
+  },
+  {
+    "ai": "03",
+    "title": "MTO GTIN",
+    "description": "Identification of a Made-to-Order (MtO) trade item (GTIN)",
+    "regex": "^(?:\\d{14})$",
+    "excludes": [
+      "01",
+      "02",
+      "37"
+    ],
+    "source": "https://ref.gs1.org/ai/03"
+  },
+  {
+    "ai": "10",
+    "title": "BATCH/LOT",
+    "description": "Batch or lot number",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02",
+      "03",
+      "8006",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/10"
+  },
+  {
+    "ai": "11",
+    "title": "PROD DATE",
+    "description": "Production date (YYMMDD)",
+    "regex": "^(?:\\d{2}(?:0\\d|1[0-2])(?:[0-2]\\d|3[01]))$",
+    "requires": [
+      "01",
+      "02",
+      "8006",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/11"
+  },
+  {
+    "ai": "12",
+    "title": "DUE DATE",
+    "description": "Due date (YYMMDD)",
+    "regex": "^(?:\\d{2}(?:0\\d|1[0-2])(?:[0-2]\\d|3[01]))$",
+    "requires": [
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/12"
+  },
+  {
+    "ai": "13",
+    "title": "PACK DATE",
+    "description": "Packaging date (YYMMDD)",
+    "regex": "^(?:\\d{2}(?:0\\d|1[0-2])(?:[0-2]\\d|3[01]))$",
+    "requires": [
+      "01",
+      "02",
+      "8006",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/13"
+  },
+  {
+    "ai": "15",
+    "title": "BEST BEFORE or BEST BY",
+    "description": "Best before date (YYMMDD)",
+    "regex": "^(?:\\d{2}(?:0\\d|1[0-2])(?:[0-2]\\d|3[01]))$",
+    "requires": [
+      "01",
+      "02",
+      "8006",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/15"
+  },
+  {
+    "ai": "16",
+    "title": "SELL BY",
+    "description": "Sell by date (YYMMDD)",
+    "regex": "^(?:\\d{2}(?:0\\d|1[0-2])(?:[0-2]\\d|3[01]))$",
+    "requires": [
+      "01",
+      "02",
+      "8006",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/16"
+  },
+  {
+    "ai": "17",
+    "title": "USE BY or EXPIRY",
+    "description": "Expiration date (YYMMDD)",
+    "regex": "^(?:\\d{2}(?:0\\d|1[0-2])(?:[0-2]\\d|3[01]))$",
+    "requires": [
+      "01",
+      "02",
+      "255",
+      "8006",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/17"
+  },
+  {
+    "ai": "20",
+    "title": "VARIANT",
+    "description": "Internal product variant",
+    "regex": "^(?:\\d{2})$",
+    "requires": [
+      "01",
+      "02",
+      "8006",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/20"
+  },
+  {
+    "ai": "21",
+    "title": "SERIAL",
+    "description": "Serial number",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "excludes": [
+      "235"
+    ],
+    "requires": [
+      "01",
+      "03",
+      "8006"
+    ],
+    "source": "https://ref.gs1.org/ai/21"
+  },
+  {
+    "ai": "22",
+    "title": "CPV",
+    "description": "Consumer product variant",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/22"
+  },
+  {
+    "ai": "30",
+    "title": "VAR. COUNT",
+    "description": "Variable count of items (variable measure trade item)",
+    "regex": "^(?:\\d{0,8})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/30"
+  },
+  {
+    "ai": "37",
+    "title": "COUNT",
+    "description": "Count of trade items or trade item pieces contained in a logistic unit",
+    "regex": "^(?:\\d{1,8})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "requiresOneOf": [
+      "02",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/37"
+  },
+  {
+    "ai": "90",
+    "title": "INTERNAL",
+    "description": "Information mutually agreed between trading partners",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,30})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/90"
+  },
+  {
+    "ai": "91",
+    "title": "INTERNAL",
+    "description": "Company internal information",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,90})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/91"
+  },
+  {
+    "ai": "92",
+    "title": "INTERNAL",
+    "description": "Company internal information",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,90})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/92"
+  },
+  {
+    "ai": "93",
+    "title": "INTERNAL",
+    "description": "Company internal information",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,90})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/93"
+  },
+  {
+    "ai": "94",
+    "title": "INTERNAL",
+    "description": "Company internal information",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,90})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/94"
+  },
+  {
+    "ai": "95",
+    "title": "INTERNAL",
+    "description": "Company internal information",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,90})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/95"
+  },
+  {
+    "ai": "96",
+    "title": "INTERNAL",
+    "description": "Company internal information",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,90})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/96"
+  },
+  {
+    "ai": "97",
+    "title": "INTERNAL",
+    "description": "Company internal information",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,90})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/97"
+  },
+  {
+    "ai": "98",
+    "title": "INTERNAL",
+    "description": "Company internal information",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,90})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/98"
+  },
+  {
+    "ai": "99",
+    "title": "INTERNAL",
+    "description": "Company internal information",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,90})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/99"
+  },
+  {
+    "ai": "235",
+    "title": "TPX",
+    "description": "Third Party Controlled, Serialised Extension of Global Trade Item Number (GTIN) (TPX)",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,28})$",
+    "separatorRequired": true,
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/235"
+  },
+  {
+    "ai": "240",
+    "title": "ADDITIONAL ID",
+    "description": "Additional product identification assigned by the manufacturer",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02",
+      "8006",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/240"
+  },
+  {
+    "ai": "241",
+    "title": "CUST. PART No.",
+    "description": "Customer part number",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02",
+      "8006",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/241"
+  },
+  {
+    "ai": "242",
+    "title": "MTO VARIANT",
+    "description": "Made-to-Order variation number",
+    "regex": "^(?:\\d{1,6})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02",
+      "03",
+      "8006",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/242"
+  },
+  {
+    "ai": "243",
+    "title": "PCN",
+    "description": "Packaging component number",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/243"
+  },
+  {
+    "ai": "250",
+    "title": "SECONDARY SERIAL",
+    "description": "Secondary serial number",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "21"
+    ],
+    "requiresOneOf": [
+      "01",
+      "8006"
+    ],
+    "source": "https://ref.gs1.org/ai/250"
+  },
+  {
+    "ai": "251",
+    "title": "REF. TO SOURCE",
+    "description": "Reference to source entity",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8006"
+    ],
+    "source": "https://ref.gs1.org/ai/251"
+  },
+  {
+    "ai": "253",
+    "title": "GDTI",
+    "description": "Global Document Type Identifier (GDTI)",
+    "regex": "^(?:\\d{13})([!%-?A-Z_a-z\\x22]{0,17})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/253"
+  },
+  {
+    "ai": "254",
+    "title": "GLN EXTENSION COMPONENT",
+    "description": "Global Location Number (GLN) extension component",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "414"
+    ],
+    "source": "https://ref.gs1.org/ai/254"
+  },
+  {
+    "ai": "255",
+    "title": "GCN",
+    "description": "Global Coupon Number (GCN)",
+    "regex": "^(?:\\d{13})(\\d{0,12})$",
+    "separatorRequired": true,
+    "excludes": [
+      "01",
+      "02",
+      "415",
+      "8006",
+      "8020",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/255"
+  },
+  {
+    "ai": "400",
+    "title": "ORDER NUMBER",
+    "description": "Customers purchase order number",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,30})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/400"
+  },
+  {
+    "ai": "401",
+    "title": "GINC",
+    "description": "Global Identification Number for Consignment (GINC)",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,30})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/401"
+  },
+  {
+    "ai": "402",
+    "title": "GSIN",
+    "description": "Global Shipment Identification Number (GSIN)",
+    "regex": "^(?:\\d{17})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/402"
+  },
+  {
+    "ai": "403",
+    "title": "ROUTE",
+    "description": "Routing code",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/403"
+  },
+  {
+    "ai": "410",
+    "title": "SHIP TO LOC",
+    "description": "Ship to / Deliver to Global Location Number (GLN)",
+    "regex": "^(?:\\d{13})$",
+    "source": "https://ref.gs1.org/ai/410"
+  },
+  {
+    "ai": "411",
+    "title": "BILL TO",
+    "description": "Bill to / Invoice to Global Location Number (GLN)",
+    "regex": "^(?:\\d{13})$",
+    "source": "https://ref.gs1.org/ai/411"
+  },
+  {
+    "ai": "412",
+    "title": "PURCHASE FROM",
+    "description": "Purchased from Global Location Number (GLN)",
+    "regex": "^(?:\\d{13})$",
+    "source": "https://ref.gs1.org/ai/412"
+  },
+  {
+    "ai": "413",
+    "title": "SHIP FOR LOC",
+    "description": "Ship for / Deliver for - Forward to Global Location Number (GLN)",
+    "regex": "^(?:\\d{13})$",
+    "source": "https://ref.gs1.org/ai/413"
+  },
+  {
+    "ai": "414",
+    "title": "LOC No.",
+    "description": "Identification of a physical location - Global Location Number (GLN)",
+    "regex": "^(?:\\d{13})$",
+    "source": "https://ref.gs1.org/ai/414"
+  },
+  {
+    "ai": "415",
+    "title": "PAY TO",
+    "description": "Global Location Number (GLN) of the invoicing party",
+    "regex": "^(?:\\d{13})$",
+    "requires": [
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/415"
+  },
+  {
+    "ai": "416",
+    "title": "PROD/SERV LOC",
+    "description": "Global Location Number (GLN) of the production or service location",
+    "regex": "^(?:\\d{13})$",
+    "source": "https://ref.gs1.org/ai/416"
+  },
+  {
+    "ai": "417",
+    "title": "PARTY",
+    "description": "Party Global Location Number (GLN)",
+    "regex": "^(?:\\d{13})$",
+    "source": "https://ref.gs1.org/ai/417"
+  },
+  {
+    "ai": "420",
+    "title": "SHIP TO POST",
+    "description": "Ship to / Deliver to postal code within a single postal authority",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "excludes": [
+      "421"
+    ],
+    "source": "https://ref.gs1.org/ai/420"
+  },
+  {
+    "ai": "421",
+    "title": "SHIP TO POST",
+    "description": "Ship to / Deliver to postal code with ISO country code",
+    "regex": "^(?:\\d{3})([!%-?A-Z_a-z\\x22]{1,9})$",
+    "separatorRequired": true,
+    "excludes": [
+      "4307"
+    ],
+    "source": "https://ref.gs1.org/ai/421"
+  },
+  {
+    "ai": "422",
+    "title": "ORIGIN",
+    "description": "Country of origin of a trade item",
+    "regex": "^(?:\\d{3})$",
+    "separatorRequired": true,
+    "excludes": [
+      "426"
+    ],
+    "requires": [
+      "01",
+      "02",
+      "8006",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/422"
+  },
+  {
+    "ai": "423",
+    "title": "COUNTRY - INITIAL PROCESS",
+    "description": "Country of initial processing",
+    "regex": "^(?:(?:\\d{3}){1,5})$",
+    "separatorRequired": true,
+    "excludes": [
+      "426"
+    ],
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/423"
+  },
+  {
+    "ai": "424",
+    "title": "COUNTRY - PROCESS",
+    "description": "Country of processing",
+    "regex": "^(?:\\d{3})$",
+    "separatorRequired": true,
+    "excludes": [
+      "426"
+    ],
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/424"
+  },
+  {
+    "ai": "425",
+    "title": "COUNTRY - DISASSEMBLY",
+    "description": "Country of disassembly",
+    "regex": "^(?:(?:\\d{3}){1,5})$",
+    "separatorRequired": true,
+    "excludes": [
+      "426"
+    ],
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/425"
+  },
+  {
+    "ai": "426",
+    "title": "COUNTRY - FULL PROCESS",
+    "description": "Country covering full process chain",
+    "regex": "^(?:\\d{3})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/426"
+  },
+  {
+    "ai": "427",
+    "title": "ORIGIN SUBDIVISION",
+    "description": "Country subdivision Of origin",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,3})$",
+    "separatorRequired": true,
+    "requires": [
+      "422"
+    ],
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/427"
+  },
+  {
+    "ai": "710",
+    "title": "NHRN PZN",
+    "description": "National Healthcare Reimbursement Number (NHRN) - Germany PZN",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/710"
+  },
+  {
+    "ai": "711",
+    "title": "NHRN CIP",
+    "description": "National Healthcare Reimbursement Number (NHRN) - France CIP",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/711"
+  },
+  {
+    "ai": "712",
+    "title": "NHRN CN",
+    "description": "National Healthcare Reimbursement Number (NHRN) - Spain CN",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/712"
+  },
+  {
+    "ai": "713",
+    "title": "NHRN DRN",
+    "description": "National Healthcare Reimbursement Number (NHRN) - Brasil DRN",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/713"
+  },
+  {
+    "ai": "714",
+    "title": "NHRN AIM",
+    "description": "National Healthcare Reimbursement Number (NHRN) - Portugal AIM",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/714"
+  },
+  {
+    "ai": "715",
+    "title": "NHRN NDC",
+    "description": "National Healthcare Reimbursement Number (NHRN) - United States of America NDC",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/715"
+  },
+  {
+    "ai": "716",
+    "title": "NHRN AIC",
+    "description": "National Healthcare Reimbursement Number (NHRN) - Italy AIC",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/716"
+  },
+  {
+    "ai": "3100",
+    "title": "NET WEIGHT (kg)",
+    "description": "Net weight, kilograms (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3100"
+  },
+  {
+    "ai": "3101",
+    "title": "NET WEIGHT (kg)",
+    "description": "Net weight, kilograms (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3101"
+  },
+  {
+    "ai": "3102",
+    "title": "NET WEIGHT (kg)",
+    "description": "Net weight, kilograms (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3102"
+  },
+  {
+    "ai": "3103",
+    "title": "NET WEIGHT (kg)",
+    "description": "Net weight, kilograms (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3103"
+  },
+  {
+    "ai": "3104",
+    "title": "NET WEIGHT (kg)",
+    "description": "Net weight, kilograms (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3104"
+  },
+  {
+    "ai": "3105",
+    "title": "NET WEIGHT (kg)",
+    "description": "Net weight, kilograms (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3105"
+  },
+  {
+    "ai": "3110",
+    "title": "LENGTH (m)",
+    "description": "Length or first dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3110"
+  },
+  {
+    "ai": "3111",
+    "title": "LENGTH (m)",
+    "description": "Length or first dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3111"
+  },
+  {
+    "ai": "3112",
+    "title": "LENGTH (m)",
+    "description": "Length or first dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3112"
+  },
+  {
+    "ai": "3113",
+    "title": "LENGTH (m)",
+    "description": "Length or first dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3113"
+  },
+  {
+    "ai": "3114",
+    "title": "LENGTH (m)",
+    "description": "Length or first dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3114"
+  },
+  {
+    "ai": "3115",
+    "title": "LENGTH (m)",
+    "description": "Length or first dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3115"
+  },
+  {
+    "ai": "3120",
+    "title": "WIDTH (m)",
+    "description": "Width, diameter, or second dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3120"
+  },
+  {
+    "ai": "3121",
+    "title": "WIDTH (m)",
+    "description": "Width, diameter, or second dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3121"
+  },
+  {
+    "ai": "3122",
+    "title": "WIDTH (m)",
+    "description": "Width, diameter, or second dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3122"
+  },
+  {
+    "ai": "3123",
+    "title": "WIDTH (m)",
+    "description": "Width, diameter, or second dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3123"
+  },
+  {
+    "ai": "3124",
+    "title": "WIDTH (m)",
+    "description": "Width, diameter, or second dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3124"
+  },
+  {
+    "ai": "3125",
+    "title": "WIDTH (m)",
+    "description": "Width, diameter, or second dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3125"
+  },
+  {
+    "ai": "3130",
+    "title": "HEIGHT (m)",
+    "description": "Depth, thickness, height, or third dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3130"
+  },
+  {
+    "ai": "3131",
+    "title": "HEIGHT (m)",
+    "description": "Depth, thickness, height, or third dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3131"
+  },
+  {
+    "ai": "3132",
+    "title": "HEIGHT (m)",
+    "description": "Depth, thickness, height, or third dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3132"
+  },
+  {
+    "ai": "3133",
+    "title": "HEIGHT (m)",
+    "description": "Depth, thickness, height, or third dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3133"
+  },
+  {
+    "ai": "3134",
+    "title": "HEIGHT (m)",
+    "description": "Depth, thickness, height, or third dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3134"
+  },
+  {
+    "ai": "3135",
+    "title": "HEIGHT (m)",
+    "description": "Depth, thickness, height, or third dimension, metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3135"
+  },
+  {
+    "ai": "3140",
+    "title": "AREA (m²)",
+    "description": "Area, square metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3140"
+  },
+  {
+    "ai": "3141",
+    "title": "AREA (m²)",
+    "description": "Area, square metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3141"
+  },
+  {
+    "ai": "3142",
+    "title": "AREA (m²)",
+    "description": "Area, square metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3142"
+  },
+  {
+    "ai": "3143",
+    "title": "AREA (m²)",
+    "description": "Area, square metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3143"
+  },
+  {
+    "ai": "3144",
+    "title": "AREA (m²)",
+    "description": "Area, square metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3144"
+  },
+  {
+    "ai": "3145",
+    "title": "AREA (m²)",
+    "description": "Area, square metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3145"
+  },
+  {
+    "ai": "3150",
+    "title": "NET VOLUME (l)",
+    "description": "Net volume, litres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3150"
+  },
+  {
+    "ai": "3151",
+    "title": "NET VOLUME (l)",
+    "description": "Net volume, litres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3151"
+  },
+  {
+    "ai": "3152",
+    "title": "NET VOLUME (l)",
+    "description": "Net volume, litres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3152"
+  },
+  {
+    "ai": "3153",
+    "title": "NET VOLUME (l)",
+    "description": "Net volume, litres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3153"
+  },
+  {
+    "ai": "3154",
+    "title": "NET VOLUME (l)",
+    "description": "Net volume, litres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3154"
+  },
+  {
+    "ai": "3155",
+    "title": "NET VOLUME (l)",
+    "description": "Net volume, litres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3155"
+  },
+  {
+    "ai": "3160",
+    "title": "NET VOLUME (m³)",
+    "description": "Net volume, cubic metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3160"
+  },
+  {
+    "ai": "3161",
+    "title": "NET VOLUME (m³)",
+    "description": "Net volume, cubic metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3161"
+  },
+  {
+    "ai": "3162",
+    "title": "NET VOLUME (m³)",
+    "description": "Net volume, cubic metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3162"
+  },
+  {
+    "ai": "3163",
+    "title": "NET VOLUME (m³)",
+    "description": "Net volume, cubic metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3163"
+  },
+  {
+    "ai": "3164",
+    "title": "NET VOLUME (m³)",
+    "description": "Net volume, cubic metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3164"
+  },
+  {
+    "ai": "3165",
+    "title": "NET VOLUME (m³)",
+    "description": "Net volume, cubic metres (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3165"
+  },
+  {
+    "ai": "3200",
+    "title": "NET WEIGHT (lb)",
+    "description": "Net weight, pounds (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3200"
+  },
+  {
+    "ai": "3201",
+    "title": "NET WEIGHT (lb)",
+    "description": "Net weight, pounds (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3201"
+  },
+  {
+    "ai": "3202",
+    "title": "NET WEIGHT (lb)",
+    "description": "Net weight, pounds (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3202"
+  },
+  {
+    "ai": "3203",
+    "title": "NET WEIGHT (lb)",
+    "description": "Net weight, pounds (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3203"
+  },
+  {
+    "ai": "3204",
+    "title": "NET WEIGHT (lb)",
+    "description": "Net weight, pounds (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3204"
+  },
+  {
+    "ai": "3205",
+    "title": "NET WEIGHT (lb)",
+    "description": "Net weight, pounds (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3205"
+  },
+  {
+    "ai": "3210",
+    "title": "LENGTH (in)",
+    "description": "Length or first dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3210"
+  },
+  {
+    "ai": "3211",
+    "title": "LENGTH (in)",
+    "description": "Length or first dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3211"
+  },
+  {
+    "ai": "3212",
+    "title": "LENGTH (in)",
+    "description": "Length or first dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3212"
+  },
+  {
+    "ai": "3213",
+    "title": "LENGTH (in)",
+    "description": "Length or first dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3213"
+  },
+  {
+    "ai": "3214",
+    "title": "LENGTH (in)",
+    "description": "Length or first dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3214"
+  },
+  {
+    "ai": "3215",
+    "title": "LENGTH (in)",
+    "description": "Length or first dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3215"
+  },
+  {
+    "ai": "3220",
+    "title": "LENGTH (ft)",
+    "description": "Length or first dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3220"
+  },
+  {
+    "ai": "3221",
+    "title": "LENGTH (ft)",
+    "description": "Length or first dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3221"
+  },
+  {
+    "ai": "3222",
+    "title": "LENGTH (ft)",
+    "description": "Length or first dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3222"
+  },
+  {
+    "ai": "3223",
+    "title": "LENGTH (ft)",
+    "description": "Length or first dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3223"
+  },
+  {
+    "ai": "3224",
+    "title": "LENGTH (ft)",
+    "description": "Length or first dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3224"
+  },
+  {
+    "ai": "3225",
+    "title": "LENGTH (ft)",
+    "description": "Length or first dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3225"
+  },
+  {
+    "ai": "3230",
+    "title": "LENGTH (yd)",
+    "description": "Length or first dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3230"
+  },
+  {
+    "ai": "3231",
+    "title": "LENGTH (yd)",
+    "description": "Length or first dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3231"
+  },
+  {
+    "ai": "3232",
+    "title": "LENGTH (yd)",
+    "description": "Length or first dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3232"
+  },
+  {
+    "ai": "3233",
+    "title": "LENGTH (yd)",
+    "description": "Length or first dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3233"
+  },
+  {
+    "ai": "3234",
+    "title": "LENGTH (yd)",
+    "description": "Length or first dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3234"
+  },
+  {
+    "ai": "3235",
+    "title": "LENGTH (yd)",
+    "description": "Length or first dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3235"
+  },
+  {
+    "ai": "3240",
+    "title": "WIDTH (in)",
+    "description": "Width, diameter, or second dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3240"
+  },
+  {
+    "ai": "3241",
+    "title": "WIDTH (in)",
+    "description": "Width, diameter, or second dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3241"
+  },
+  {
+    "ai": "3242",
+    "title": "WIDTH (in)",
+    "description": "Width, diameter, or second dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3242"
+  },
+  {
+    "ai": "3243",
+    "title": "WIDTH (in)",
+    "description": "Width, diameter, or second dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3243"
+  },
+  {
+    "ai": "3244",
+    "title": "WIDTH (in)",
+    "description": "Width, diameter, or second dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3244"
+  },
+  {
+    "ai": "3245",
+    "title": "WIDTH (in)",
+    "description": "Width, diameter, or second dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3245"
+  },
+  {
+    "ai": "3250",
+    "title": "WIDTH (ft)",
+    "description": "Width, diameter, or second dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3250"
+  },
+  {
+    "ai": "3251",
+    "title": "WIDTH (ft)",
+    "description": "Width, diameter, or second dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3251"
+  },
+  {
+    "ai": "3252",
+    "title": "WIDTH (ft)",
+    "description": "Width, diameter, or second dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3252"
+  },
+  {
+    "ai": "3253",
+    "title": "WIDTH (ft)",
+    "description": "Width, diameter, or second dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3253"
+  },
+  {
+    "ai": "3254",
+    "title": "WIDTH (ft)",
+    "description": "Width, diameter, or second dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3254"
+  },
+  {
+    "ai": "3255",
+    "title": "WIDTH (ft)",
+    "description": "Width, diameter, or second dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3255"
+  },
+  {
+    "ai": "3260",
+    "title": "WIDTH (yd)",
+    "description": "Width, diameter, or second dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3260"
+  },
+  {
+    "ai": "3261",
+    "title": "WIDTH (yd)",
+    "description": "Width, diameter, or second dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3261"
+  },
+  {
+    "ai": "3262",
+    "title": "WIDTH (yd)",
+    "description": "Width, diameter, or second dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3262"
+  },
+  {
+    "ai": "3263",
+    "title": "WIDTH (yd)",
+    "description": "Width, diameter, or second dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3263"
+  },
+  {
+    "ai": "3264",
+    "title": "WIDTH (yd)",
+    "description": "Width, diameter, or second dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3264"
+  },
+  {
+    "ai": "3265",
+    "title": "WIDTH (yd)",
+    "description": "Width, diameter, or second dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3265"
+  },
+  {
+    "ai": "3270",
+    "title": "HEIGHT (in)",
+    "description": "Depth, thickness, height, or third dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3270"
+  },
+  {
+    "ai": "3271",
+    "title": "HEIGHT (in)",
+    "description": "Depth, thickness, height, or third dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3271"
+  },
+  {
+    "ai": "3272",
+    "title": "HEIGHT (in)",
+    "description": "Depth, thickness, height, or third dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3272"
+  },
+  {
+    "ai": "3273",
+    "title": "HEIGHT (in)",
+    "description": "Depth, thickness, height, or third dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3273"
+  },
+  {
+    "ai": "3274",
+    "title": "HEIGHT (in)",
+    "description": "Depth, thickness, height, or third dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3274"
+  },
+  {
+    "ai": "3275",
+    "title": "HEIGHT (in)",
+    "description": "Depth, thickness, height, or third dimension, inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3275"
+  },
+  {
+    "ai": "3280",
+    "title": "HEIGHT (ft)",
+    "description": "Depth, thickness, height, or third dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3280"
+  },
+  {
+    "ai": "3281",
+    "title": "HEIGHT (ft)",
+    "description": "Depth, thickness, height, or third dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3281"
+  },
+  {
+    "ai": "3282",
+    "title": "HEIGHT (ft)",
+    "description": "Depth, thickness, height, or third dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3282"
+  },
+  {
+    "ai": "3283",
+    "title": "HEIGHT (ft)",
+    "description": "Depth, thickness, height, or third dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3283"
+  },
+  {
+    "ai": "3284",
+    "title": "HEIGHT (ft)",
+    "description": "Depth, thickness, height, or third dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3284"
+  },
+  {
+    "ai": "3285",
+    "title": "HEIGHT (ft)",
+    "description": "Depth, thickness, height, or third dimension, feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3285"
+  },
+  {
+    "ai": "3290",
+    "title": "HEIGHT (yd)",
+    "description": "Depth, thickness, height, or third dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3290"
+  },
+  {
+    "ai": "3291",
+    "title": "HEIGHT (yd)",
+    "description": "Depth, thickness, height, or third dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3291"
+  },
+  {
+    "ai": "3292",
+    "title": "HEIGHT (yd)",
+    "description": "Depth, thickness, height, or third dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3292"
+  },
+  {
+    "ai": "3293",
+    "title": "HEIGHT (yd)",
+    "description": "Depth, thickness, height, or third dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3293"
+  },
+  {
+    "ai": "3294",
+    "title": "HEIGHT (yd)",
+    "description": "Depth, thickness, height, or third dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3294"
+  },
+  {
+    "ai": "3295",
+    "title": "HEIGHT (yd)",
+    "description": "Depth, thickness, height, or third dimension, yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3295"
+  },
+  {
+    "ai": "3300",
+    "title": "GROSS WEIGHT (kg)",
+    "description": "Logistic weight, kilograms",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3300"
+  },
+  {
+    "ai": "3301",
+    "title": "GROSS WEIGHT (kg)",
+    "description": "Logistic weight, kilograms",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3301"
+  },
+  {
+    "ai": "3302",
+    "title": "GROSS WEIGHT (kg)",
+    "description": "Logistic weight, kilograms",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3302"
+  },
+  {
+    "ai": "3303",
+    "title": "GROSS WEIGHT (kg)",
+    "description": "Logistic weight, kilograms",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3303"
+  },
+  {
+    "ai": "3304",
+    "title": "GROSS WEIGHT (kg)",
+    "description": "Logistic weight, kilograms",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3304"
+  },
+  {
+    "ai": "3305",
+    "title": "GROSS WEIGHT (kg)",
+    "description": "Logistic weight, kilograms",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3305"
+  },
+  {
+    "ai": "3310",
+    "title": "LENGTH (m), log",
+    "description": "Length or first dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3310"
+  },
+  {
+    "ai": "3311",
+    "title": "LENGTH (m), log",
+    "description": "Length or first dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3311"
+  },
+  {
+    "ai": "3312",
+    "title": "LENGTH (m), log",
+    "description": "Length or first dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3312"
+  },
+  {
+    "ai": "3313",
+    "title": "LENGTH (m), log",
+    "description": "Length or first dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3313"
+  },
+  {
+    "ai": "3314",
+    "title": "LENGTH (m), log",
+    "description": "Length or first dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3314"
+  },
+  {
+    "ai": "3315",
+    "title": "LENGTH (m), log",
+    "description": "Length or first dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3315"
+  },
+  {
+    "ai": "3320",
+    "title": "WIDTH (m), log",
+    "description": "Width, diameter, or second dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3320"
+  },
+  {
+    "ai": "3321",
+    "title": "WIDTH (m), log",
+    "description": "Width, diameter, or second dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3321"
+  },
+  {
+    "ai": "3322",
+    "title": "WIDTH (m), log",
+    "description": "Width, diameter, or second dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3322"
+  },
+  {
+    "ai": "3323",
+    "title": "WIDTH (m), log",
+    "description": "Width, diameter, or second dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3323"
+  },
+  {
+    "ai": "3324",
+    "title": "WIDTH (m), log",
+    "description": "Width, diameter, or second dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3324"
+  },
+  {
+    "ai": "3325",
+    "title": "WIDTH (m), log",
+    "description": "Width, diameter, or second dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3325"
+  },
+  {
+    "ai": "3330",
+    "title": "HEIGHT (m), log",
+    "description": "Depth, thickness, height, or third dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3330"
+  },
+  {
+    "ai": "3331",
+    "title": "HEIGHT (m), log",
+    "description": "Depth, thickness, height, or third dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3331"
+  },
+  {
+    "ai": "3332",
+    "title": "HEIGHT (m), log",
+    "description": "Depth, thickness, height, or third dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3332"
+  },
+  {
+    "ai": "3333",
+    "title": "HEIGHT (m), log",
+    "description": "Depth, thickness, height, or third dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3333"
+  },
+  {
+    "ai": "3334",
+    "title": "HEIGHT (m), log",
+    "description": "Depth, thickness, height, or third dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3334"
+  },
+  {
+    "ai": "3335",
+    "title": "HEIGHT (m), log",
+    "description": "Depth, thickness, height, or third dimension, metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3335"
+  },
+  {
+    "ai": "3340",
+    "title": "AREA (m²), log",
+    "description": "Area, square metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3340"
+  },
+  {
+    "ai": "3341",
+    "title": "AREA (m²), log",
+    "description": "Area, square metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3341"
+  },
+  {
+    "ai": "3342",
+    "title": "AREA (m²), log",
+    "description": "Area, square metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3342"
+  },
+  {
+    "ai": "3343",
+    "title": "AREA (m²), log",
+    "description": "Area, square metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3343"
+  },
+  {
+    "ai": "3344",
+    "title": "AREA (m²), log",
+    "description": "Area, square metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3344"
+  },
+  {
+    "ai": "3345",
+    "title": "AREA (m²), log",
+    "description": "Area, square metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3345"
+  },
+  {
+    "ai": "3350",
+    "title": "VOLUME (l), log",
+    "description": "Logistic volume, litres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3350"
+  },
+  {
+    "ai": "3351",
+    "title": "VOLUME (l), log",
+    "description": "Logistic volume, litres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3351"
+  },
+  {
+    "ai": "3352",
+    "title": "VOLUME (l), log",
+    "description": "Logistic volume, litres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3352"
+  },
+  {
+    "ai": "3353",
+    "title": "VOLUME (l), log",
+    "description": "Logistic volume, litres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3353"
+  },
+  {
+    "ai": "3354",
+    "title": "VOLUME (l), log",
+    "description": "Logistic volume, litres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3354"
+  },
+  {
+    "ai": "3355",
+    "title": "VOLUME (l), log",
+    "description": "Logistic volume, litres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3355"
+  },
+  {
+    "ai": "3360",
+    "title": "VOLUME (m³), log",
+    "description": "Logistic volume, cubic metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3360"
+  },
+  {
+    "ai": "3361",
+    "title": "VOLUME (m³), log",
+    "description": "Logistic volume, cubic metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3361"
+  },
+  {
+    "ai": "3362",
+    "title": "VOLUME (m³), log",
+    "description": "Logistic volume, cubic metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3362"
+  },
+  {
+    "ai": "3363",
+    "title": "VOLUME (m³), log",
+    "description": "Logistic volume, cubic metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3363"
+  },
+  {
+    "ai": "3364",
+    "title": "VOLUME (m³), log",
+    "description": "Logistic volume, cubic metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3364"
+  },
+  {
+    "ai": "3365",
+    "title": "VOLUME (m³), log",
+    "description": "Logistic volume, cubic metres",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3365"
+  },
+  {
+    "ai": "3370",
+    "title": "KG PER m²",
+    "description": "Kilograms per square metre",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3370"
+  },
+  {
+    "ai": "3371",
+    "title": "KG PER m²",
+    "description": "Kilograms per square metre",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3371"
+  },
+  {
+    "ai": "3372",
+    "title": "KG PER m²",
+    "description": "Kilograms per square metre",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3372"
+  },
+  {
+    "ai": "3373",
+    "title": "KG PER m²",
+    "description": "Kilograms per square metre",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3373"
+  },
+  {
+    "ai": "3374",
+    "title": "KG PER m²",
+    "description": "Kilograms per square metre",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3374"
+  },
+  {
+    "ai": "3375",
+    "title": "KG PER m²",
+    "description": "Kilograms per square metre",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3375"
+  },
+  {
+    "ai": "3400",
+    "title": "GROSS WEIGHT (lb)",
+    "description": "Logistic weight, pounds",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3400"
+  },
+  {
+    "ai": "3401",
+    "title": "GROSS WEIGHT (lb)",
+    "description": "Logistic weight, pounds",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3401"
+  },
+  {
+    "ai": "3402",
+    "title": "GROSS WEIGHT (lb)",
+    "description": "Logistic weight, pounds",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3402"
+  },
+  {
+    "ai": "3403",
+    "title": "GROSS WEIGHT (lb)",
+    "description": "Logistic weight, pounds",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3403"
+  },
+  {
+    "ai": "3404",
+    "title": "GROSS WEIGHT (lb)",
+    "description": "Logistic weight, pounds",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3404"
+  },
+  {
+    "ai": "3405",
+    "title": "GROSS WEIGHT (lb)",
+    "description": "Logistic weight, pounds",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3405"
+  },
+  {
+    "ai": "3410",
+    "title": "LENGTH (in), log",
+    "description": "Length or first dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3410"
+  },
+  {
+    "ai": "3411",
+    "title": "LENGTH (in), log",
+    "description": "Length or first dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3411"
+  },
+  {
+    "ai": "3412",
+    "title": "LENGTH (in), log",
+    "description": "Length or first dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3412"
+  },
+  {
+    "ai": "3413",
+    "title": "LENGTH (in), log",
+    "description": "Length or first dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3413"
+  },
+  {
+    "ai": "3414",
+    "title": "LENGTH (in), log",
+    "description": "Length or first dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3414"
+  },
+  {
+    "ai": "3415",
+    "title": "LENGTH (in), log",
+    "description": "Length or first dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3415"
+  },
+  {
+    "ai": "3420",
+    "title": "LENGTH (ft), log",
+    "description": "Length or first dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3420"
+  },
+  {
+    "ai": "3421",
+    "title": "LENGTH (ft), log",
+    "description": "Length or first dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3421"
+  },
+  {
+    "ai": "3422",
+    "title": "LENGTH (ft), log",
+    "description": "Length or first dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3422"
+  },
+  {
+    "ai": "3423",
+    "title": "LENGTH (ft), log",
+    "description": "Length or first dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3423"
+  },
+  {
+    "ai": "3424",
+    "title": "LENGTH (ft), log",
+    "description": "Length or first dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3424"
+  },
+  {
+    "ai": "3425",
+    "title": "LENGTH (ft), log",
+    "description": "Length or first dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3425"
+  },
+  {
+    "ai": "3430",
+    "title": "LENGTH (yd), log",
+    "description": "Length or first dimension, yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3430"
+  },
+  {
+    "ai": "3431",
+    "title": "LENGTH (yd), log",
+    "description": "Length or first dimension, yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3431"
+  },
+  {
+    "ai": "3432",
+    "title": "LENGTH (yd), log",
+    "description": "Length or first dimension, yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3432"
+  },
+  {
+    "ai": "3433",
+    "title": "LENGTH (yd), log",
+    "description": "Length or first dimension, yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3433"
+  },
+  {
+    "ai": "3434",
+    "title": "LENGTH (yd), log",
+    "description": "Length or first dimension, yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3434"
+  },
+  {
+    "ai": "3435",
+    "title": "LENGTH (yd), log",
+    "description": "Length or first dimension, yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3435"
+  },
+  {
+    "ai": "3440",
+    "title": "WIDTH (in), log",
+    "description": "Width, diameter, or second dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3440"
+  },
+  {
+    "ai": "3441",
+    "title": "WIDTH (in), log",
+    "description": "Width, diameter, or second dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3441"
+  },
+  {
+    "ai": "3442",
+    "title": "WIDTH (in), log",
+    "description": "Width, diameter, or second dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3442"
+  },
+  {
+    "ai": "3443",
+    "title": "WIDTH (in), log",
+    "description": "Width, diameter, or second dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3443"
+  },
+  {
+    "ai": "3444",
+    "title": "WIDTH (in), log",
+    "description": "Width, diameter, or second dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3444"
+  },
+  {
+    "ai": "3445",
+    "title": "WIDTH (in), log",
+    "description": "Width, diameter, or second dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3445"
+  },
+  {
+    "ai": "3450",
+    "title": "WIDTH (ft), log",
+    "description": "Width, diameter, or second dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3450"
+  },
+  {
+    "ai": "3451",
+    "title": "WIDTH (ft), log",
+    "description": "Width, diameter, or second dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3451"
+  },
+  {
+    "ai": "3452",
+    "title": "WIDTH (ft), log",
+    "description": "Width, diameter, or second dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3452"
+  },
+  {
+    "ai": "3453",
+    "title": "WIDTH (ft), log",
+    "description": "Width, diameter, or second dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3453"
+  },
+  {
+    "ai": "3454",
+    "title": "WIDTH (ft), log",
+    "description": "Width, diameter, or second dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3454"
+  },
+  {
+    "ai": "3455",
+    "title": "WIDTH (ft), log",
+    "description": "Width, diameter, or second dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3455"
+  },
+  {
+    "ai": "3460",
+    "title": "WIDTH (yd), log",
+    "description": "Width, diameter, or second dimension, yard",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3460"
+  },
+  {
+    "ai": "3461",
+    "title": "WIDTH (yd), log",
+    "description": "Width, diameter, or second dimension, yard",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3461"
+  },
+  {
+    "ai": "3462",
+    "title": "WIDTH (yd), log",
+    "description": "Width, diameter, or second dimension, yard",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3462"
+  },
+  {
+    "ai": "3463",
+    "title": "WIDTH (yd), log",
+    "description": "Width, diameter, or second dimension, yard",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3463"
+  },
+  {
+    "ai": "3464",
+    "title": "WIDTH (yd), log",
+    "description": "Width, diameter, or second dimension, yard",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3464"
+  },
+  {
+    "ai": "3465",
+    "title": "WIDTH (yd), log",
+    "description": "Width, diameter, or second dimension, yard",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3465"
+  },
+  {
+    "ai": "3470",
+    "title": "HEIGHT (in), log",
+    "description": "Depth, thickness, height, or third dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3470"
+  },
+  {
+    "ai": "3471",
+    "title": "HEIGHT (in), log",
+    "description": "Depth, thickness, height, or third dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3471"
+  },
+  {
+    "ai": "3472",
+    "title": "HEIGHT (in), log",
+    "description": "Depth, thickness, height, or third dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3472"
+  },
+  {
+    "ai": "3473",
+    "title": "HEIGHT (in), log",
+    "description": "Depth, thickness, height, or third dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3473"
+  },
+  {
+    "ai": "3474",
+    "title": "HEIGHT (in), log",
+    "description": "Depth, thickness, height, or third dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3474"
+  },
+  {
+    "ai": "3475",
+    "title": "HEIGHT (in), log",
+    "description": "Depth, thickness, height, or third dimension, inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3475"
+  },
+  {
+    "ai": "3480",
+    "title": "HEIGHT (ft), log",
+    "description": "Depth, thickness, height, or third dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3480"
+  },
+  {
+    "ai": "3481",
+    "title": "HEIGHT (ft), log",
+    "description": "Depth, thickness, height, or third dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3481"
+  },
+  {
+    "ai": "3482",
+    "title": "HEIGHT (ft), log",
+    "description": "Depth, thickness, height, or third dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3482"
+  },
+  {
+    "ai": "3483",
+    "title": "HEIGHT (ft), log",
+    "description": "Depth, thickness, height, or third dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3483"
+  },
+  {
+    "ai": "3484",
+    "title": "HEIGHT (ft), log",
+    "description": "Depth, thickness, height, or third dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3484"
+  },
+  {
+    "ai": "3485",
+    "title": "HEIGHT (ft), log",
+    "description": "Depth, thickness, height, or third dimension, feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3485"
+  },
+  {
+    "ai": "3490",
+    "title": "HEIGHT (yd), log",
+    "description": "Depth, thickness, height, or third dimension, yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3490"
+  },
+  {
+    "ai": "3491",
+    "title": "HEIGHT (yd), log",
+    "description": "Depth, thickness, height, or third dimension, yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3491"
+  },
+  {
+    "ai": "3492",
+    "title": "HEIGHT (yd), log",
+    "description": "Depth, thickness, height, or third dimension, yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3492"
+  },
+  {
+    "ai": "3493",
+    "title": "HEIGHT (yd), log",
+    "description": "Depth, thickness, height, or third dimension, yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3493"
+  },
+  {
+    "ai": "3494",
+    "title": "HEIGHT (yd), log",
+    "description": "Depth, thickness, height, or third dimension, yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3494"
+  },
+  {
+    "ai": "3495",
+    "title": "HEIGHT (yd), log",
+    "description": "Depth, thickness, height, or third dimension, yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3495"
+  },
+  {
+    "ai": "3500",
+    "title": "AREA (in²)",
+    "description": "Area, square inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3500"
+  },
+  {
+    "ai": "3501",
+    "title": "AREA (in²)",
+    "description": "Area, square inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3501"
+  },
+  {
+    "ai": "3502",
+    "title": "AREA (in²)",
+    "description": "Area, square inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3502"
+  },
+  {
+    "ai": "3503",
+    "title": "AREA (in²)",
+    "description": "Area, square inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3503"
+  },
+  {
+    "ai": "3504",
+    "title": "AREA (in²)",
+    "description": "Area, square inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3504"
+  },
+  {
+    "ai": "3505",
+    "title": "AREA (in²)",
+    "description": "Area, square inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3505"
+  },
+  {
+    "ai": "3510",
+    "title": "AREA (ft²)",
+    "description": "Area, square feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3510"
+  },
+  {
+    "ai": "3511",
+    "title": "AREA (ft²)",
+    "description": "Area, square feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3511"
+  },
+  {
+    "ai": "3512",
+    "title": "AREA (ft²)",
+    "description": "Area, square feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3512"
+  },
+  {
+    "ai": "3513",
+    "title": "AREA (ft²)",
+    "description": "Area, square feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3513"
+  },
+  {
+    "ai": "3514",
+    "title": "AREA (ft²)",
+    "description": "Area, square feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3514"
+  },
+  {
+    "ai": "3515",
+    "title": "AREA (ft²)",
+    "description": "Area, square feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3515"
+  },
+  {
+    "ai": "3520",
+    "title": "AREA (yd²)",
+    "description": "Area, square yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3520"
+  },
+  {
+    "ai": "3521",
+    "title": "AREA (yd²)",
+    "description": "Area, square yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3521"
+  },
+  {
+    "ai": "3522",
+    "title": "AREA (yd²)",
+    "description": "Area, square yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3522"
+  },
+  {
+    "ai": "3523",
+    "title": "AREA (yd²)",
+    "description": "Area, square yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3523"
+  },
+  {
+    "ai": "3524",
+    "title": "AREA (yd²)",
+    "description": "Area, square yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3524"
+  },
+  {
+    "ai": "3525",
+    "title": "AREA (yd²)",
+    "description": "Area, square yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3525"
+  },
+  {
+    "ai": "3530",
+    "title": "AREA (in²), log",
+    "description": "Area, square inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3530"
+  },
+  {
+    "ai": "3531",
+    "title": "AREA (in²), log",
+    "description": "Area, square inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3531"
+  },
+  {
+    "ai": "3532",
+    "title": "AREA (in²), log",
+    "description": "Area, square inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3532"
+  },
+  {
+    "ai": "3533",
+    "title": "AREA (in²), log",
+    "description": "Area, square inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3533"
+  },
+  {
+    "ai": "3534",
+    "title": "AREA (in²), log",
+    "description": "Area, square inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3534"
+  },
+  {
+    "ai": "3535",
+    "title": "AREA (in²), log",
+    "description": "Area, square inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3535"
+  },
+  {
+    "ai": "3540",
+    "title": "AREA (ft²), log",
+    "description": "Area, square feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3540"
+  },
+  {
+    "ai": "3541",
+    "title": "AREA (ft²), log",
+    "description": "Area, square feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3541"
+  },
+  {
+    "ai": "3542",
+    "title": "AREA (ft²), log",
+    "description": "Area, square feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3542"
+  },
+  {
+    "ai": "3543",
+    "title": "AREA (ft²), log",
+    "description": "Area, square feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3543"
+  },
+  {
+    "ai": "3544",
+    "title": "AREA (ft²), log",
+    "description": "Area, square feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3544"
+  },
+  {
+    "ai": "3545",
+    "title": "AREA (ft²), log",
+    "description": "Area, square feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3545"
+  },
+  {
+    "ai": "3550",
+    "title": "AREA (yd²), log",
+    "description": "Area, square yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3550"
+  },
+  {
+    "ai": "3551",
+    "title": "AREA (yd²), log",
+    "description": "Area, square yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3551"
+  },
+  {
+    "ai": "3552",
+    "title": "AREA (yd²), log",
+    "description": "Area, square yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3552"
+  },
+  {
+    "ai": "3553",
+    "title": "AREA (yd²), log",
+    "description": "Area, square yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3553"
+  },
+  {
+    "ai": "3554",
+    "title": "AREA (yd²), log",
+    "description": "Area, square yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3554"
+  },
+  {
+    "ai": "3555",
+    "title": "AREA (yd²), log",
+    "description": "Area, square yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3555"
+  },
+  {
+    "ai": "3560",
+    "title": "NET WEIGHT (troy oz)",
+    "description": "Net weight, troy ounces (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3560"
+  },
+  {
+    "ai": "3561",
+    "title": "NET WEIGHT (troy oz)",
+    "description": "Net weight, troy ounces (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3561"
+  },
+  {
+    "ai": "3562",
+    "title": "NET WEIGHT (troy oz)",
+    "description": "Net weight, troy ounces (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3562"
+  },
+  {
+    "ai": "3563",
+    "title": "NET WEIGHT (troy oz)",
+    "description": "Net weight, troy ounces (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3563"
+  },
+  {
+    "ai": "3564",
+    "title": "NET WEIGHT (troy oz)",
+    "description": "Net weight, troy ounces (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3564"
+  },
+  {
+    "ai": "3565",
+    "title": "NET WEIGHT (troy oz)",
+    "description": "Net weight, troy ounces (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3565"
+  },
+  {
+    "ai": "3570",
+    "title": "NET VOLUME (oz)",
+    "description": "Net weight (or volume), ounces (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3570"
+  },
+  {
+    "ai": "3571",
+    "title": "NET VOLUME (oz)",
+    "description": "Net weight (or volume), ounces (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3571"
+  },
+  {
+    "ai": "3572",
+    "title": "NET VOLUME (oz)",
+    "description": "Net weight (or volume), ounces (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3572"
+  },
+  {
+    "ai": "3573",
+    "title": "NET VOLUME (oz)",
+    "description": "Net weight (or volume), ounces (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3573"
+  },
+  {
+    "ai": "3574",
+    "title": "NET VOLUME (oz)",
+    "description": "Net weight (or volume), ounces (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3574"
+  },
+  {
+    "ai": "3575",
+    "title": "NET VOLUME (oz)",
+    "description": "Net weight (or volume), ounces (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3575"
+  },
+  {
+    "ai": "3600",
+    "title": "NET VOLUME (qt)",
+    "description": "Net volume, quarts (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3600"
+  },
+  {
+    "ai": "3601",
+    "title": "NET VOLUME (qt)",
+    "description": "Net volume, quarts (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3601"
+  },
+  {
+    "ai": "3602",
+    "title": "NET VOLUME (qt)",
+    "description": "Net volume, quarts (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3602"
+  },
+  {
+    "ai": "3603",
+    "title": "NET VOLUME (qt)",
+    "description": "Net volume, quarts (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3603"
+  },
+  {
+    "ai": "3604",
+    "title": "NET VOLUME (qt)",
+    "description": "Net volume, quarts (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3604"
+  },
+  {
+    "ai": "3605",
+    "title": "NET VOLUME (qt)",
+    "description": "Net volume, quarts (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3605"
+  },
+  {
+    "ai": "3610",
+    "title": "NET VOLUME (gal.)",
+    "description": "Net volume, gallons U.S. (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3610"
+  },
+  {
+    "ai": "3611",
+    "title": "NET VOLUME (gal.)",
+    "description": "Net volume, gallons U.S. (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3611"
+  },
+  {
+    "ai": "3612",
+    "title": "NET VOLUME (gal.)",
+    "description": "Net volume, gallons U.S. (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3612"
+  },
+  {
+    "ai": "3613",
+    "title": "NET VOLUME (gal.)",
+    "description": "Net volume, gallons U.S. (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3613"
+  },
+  {
+    "ai": "3614",
+    "title": "NET VOLUME (gal.)",
+    "description": "Net volume, gallons U.S. (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3614"
+  },
+  {
+    "ai": "3615",
+    "title": "NET VOLUME (gal.)",
+    "description": "Net volume, gallons U.S. (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3615"
+  },
+  {
+    "ai": "3620",
+    "title": "VOLUME (qt), log",
+    "description": "Logistic volume, quarts",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3620"
+  },
+  {
+    "ai": "3621",
+    "title": "VOLUME (qt), log",
+    "description": "Logistic volume, quarts",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3621"
+  },
+  {
+    "ai": "3622",
+    "title": "VOLUME (qt), log",
+    "description": "Logistic volume, quarts",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3622"
+  },
+  {
+    "ai": "3623",
+    "title": "VOLUME (qt), log",
+    "description": "Logistic volume, quarts",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3623"
+  },
+  {
+    "ai": "3624",
+    "title": "VOLUME (qt), log",
+    "description": "Logistic volume, quarts",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3624"
+  },
+  {
+    "ai": "3625",
+    "title": "VOLUME (qt), log",
+    "description": "Logistic volume, quarts",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3625"
+  },
+  {
+    "ai": "3630",
+    "title": "VOLUME (gal.), log",
+    "description": "Logistic volume, gallons U.S.",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3630"
+  },
+  {
+    "ai": "3631",
+    "title": "VOLUME (gal.), log",
+    "description": "Logistic volume, gallons U.S.",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3631"
+  },
+  {
+    "ai": "3632",
+    "title": "VOLUME (gal.), log",
+    "description": "Logistic volume, gallons U.S.",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3632"
+  },
+  {
+    "ai": "3633",
+    "title": "VOLUME (gal.), log",
+    "description": "Logistic volume, gallons U.S.",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3633"
+  },
+  {
+    "ai": "3634",
+    "title": "VOLUME (gal.), log",
+    "description": "Logistic volume, gallons U.S.",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3634"
+  },
+  {
+    "ai": "3635",
+    "title": "VOLUME (gal.), log",
+    "description": "Logistic volume, gallons U.S.",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3635"
+  },
+  {
+    "ai": "3640",
+    "title": "VOLUME (in³)",
+    "description": "Net volume, cubic inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3640"
+  },
+  {
+    "ai": "3641",
+    "title": "VOLUME (in³)",
+    "description": "Net volume, cubic inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3641"
+  },
+  {
+    "ai": "3642",
+    "title": "VOLUME (in³)",
+    "description": "Net volume, cubic inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3642"
+  },
+  {
+    "ai": "3643",
+    "title": "VOLUME (in³)",
+    "description": "Net volume, cubic inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3643"
+  },
+  {
+    "ai": "3644",
+    "title": "VOLUME (in³)",
+    "description": "Net volume, cubic inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3644"
+  },
+  {
+    "ai": "3645",
+    "title": "VOLUME (in³)",
+    "description": "Net volume, cubic inches (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3645"
+  },
+  {
+    "ai": "3650",
+    "title": "VOLUME (ft³)",
+    "description": "Net volume, cubic feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3650"
+  },
+  {
+    "ai": "3651",
+    "title": "VOLUME (ft³)",
+    "description": "Net volume, cubic feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3651"
+  },
+  {
+    "ai": "3652",
+    "title": "VOLUME (ft³)",
+    "description": "Net volume, cubic feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3652"
+  },
+  {
+    "ai": "3653",
+    "title": "VOLUME (ft³)",
+    "description": "Net volume, cubic feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3653"
+  },
+  {
+    "ai": "3654",
+    "title": "VOLUME (ft³)",
+    "description": "Net volume, cubic feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3654"
+  },
+  {
+    "ai": "3655",
+    "title": "VOLUME (ft³)",
+    "description": "Net volume, cubic feet (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3655"
+  },
+  {
+    "ai": "3660",
+    "title": "VOLUME (yd³)",
+    "description": "Net volume, cubic yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3660"
+  },
+  {
+    "ai": "3661",
+    "title": "VOLUME (yd³)",
+    "description": "Net volume, cubic yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3661"
+  },
+  {
+    "ai": "3662",
+    "title": "VOLUME (yd³)",
+    "description": "Net volume, cubic yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3662"
+  },
+  {
+    "ai": "3663",
+    "title": "VOLUME (yd³)",
+    "description": "Net volume, cubic yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3663"
+  },
+  {
+    "ai": "3664",
+    "title": "VOLUME (yd³)",
+    "description": "Net volume, cubic yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3664"
+  },
+  {
+    "ai": "3665",
+    "title": "VOLUME (yd³)",
+    "description": "Net volume, cubic yards (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/3665"
+  },
+  {
+    "ai": "3670",
+    "title": "VOLUME (in³), log",
+    "description": "Logistic volume, cubic inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3670"
+  },
+  {
+    "ai": "3671",
+    "title": "VOLUME (in³), log",
+    "description": "Logistic volume, cubic inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3671"
+  },
+  {
+    "ai": "3672",
+    "title": "VOLUME (in³), log",
+    "description": "Logistic volume, cubic inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3672"
+  },
+  {
+    "ai": "3673",
+    "title": "VOLUME (in³), log",
+    "description": "Logistic volume, cubic inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3673"
+  },
+  {
+    "ai": "3674",
+    "title": "VOLUME (in³), log",
+    "description": "Logistic volume, cubic inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3674"
+  },
+  {
+    "ai": "3675",
+    "title": "VOLUME (in³), log",
+    "description": "Logistic volume, cubic inches",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3675"
+  },
+  {
+    "ai": "3680",
+    "title": "VOLUME (ft³), log",
+    "description": "Logistic volume, cubic feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3680"
+  },
+  {
+    "ai": "3681",
+    "title": "VOLUME (ft³), log",
+    "description": "Logistic volume, cubic feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3681"
+  },
+  {
+    "ai": "3682",
+    "title": "VOLUME (ft³), log",
+    "description": "Logistic volume, cubic feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3682"
+  },
+  {
+    "ai": "3683",
+    "title": "VOLUME (ft³), log",
+    "description": "Logistic volume, cubic feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3683"
+  },
+  {
+    "ai": "3684",
+    "title": "VOLUME (ft³), log",
+    "description": "Logistic volume, cubic feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3684"
+  },
+  {
+    "ai": "3685",
+    "title": "VOLUME (ft³), log",
+    "description": "Logistic volume, cubic feet",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3685"
+  },
+  {
+    "ai": "3690",
+    "title": "VOLUME (yd³), log",
+    "description": "Logistic volume, cubic yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3690"
+  },
+  {
+    "ai": "3691",
+    "title": "VOLUME (yd³), log",
+    "description": "Logistic volume, cubic yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3691"
+  },
+  {
+    "ai": "3692",
+    "title": "VOLUME (yd³), log",
+    "description": "Logistic volume, cubic yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3692"
+  },
+  {
+    "ai": "3693",
+    "title": "VOLUME (yd³), log",
+    "description": "Logistic volume, cubic yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3693"
+  },
+  {
+    "ai": "3694",
+    "title": "VOLUME (yd³), log",
+    "description": "Logistic volume, cubic yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3694"
+  },
+  {
+    "ai": "3695",
+    "title": "VOLUME (yd³), log",
+    "description": "Logistic volume, cubic yards",
+    "regex": "^(?:\\d{6})$",
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/3695"
+  },
+  {
+    "ai": "3900",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable or Coupon value, local currency",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255",
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3900"
+  },
+  {
+    "ai": "3901",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable or Coupon value, local currency",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255",
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3901"
+  },
+  {
+    "ai": "3902",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable or Coupon value, local currency",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255",
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3902"
+  },
+  {
+    "ai": "3903",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable or Coupon value, local currency",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255",
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3903"
+  },
+  {
+    "ai": "3904",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable or Coupon value, local currency",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255",
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3904"
+  },
+  {
+    "ai": "3905",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable or Coupon value, local currency",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255",
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3905"
+  },
+  {
+    "ai": "3906",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable or Coupon value, local currency",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255",
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3906"
+  },
+  {
+    "ai": "3907",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable or Coupon value, local currency",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255",
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3907"
+  },
+  {
+    "ai": "3908",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable or Coupon value, local currency",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255",
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3908"
+  },
+  {
+    "ai": "3909",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable or Coupon value, local currency",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255",
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3909"
+  },
+  {
+    "ai": "3910",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable with ISO currency code",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3910"
+  },
+  {
+    "ai": "3911",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable with ISO currency code",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3911"
+  },
+  {
+    "ai": "3912",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable with ISO currency code",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3912"
+  },
+  {
+    "ai": "3913",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable with ISO currency code",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3913"
+  },
+  {
+    "ai": "3914",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable with ISO currency code",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3914"
+  },
+  {
+    "ai": "3915",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable with ISO currency code",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3915"
+  },
+  {
+    "ai": "3916",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable with ISO currency code",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3916"
+  },
+  {
+    "ai": "3917",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable with ISO currency code",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3917"
+  },
+  {
+    "ai": "3918",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable with ISO currency code",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3918"
+  },
+  {
+    "ai": "3919",
+    "title": "AMOUNT",
+    "description": "Applicable amount payable with ISO currency code",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/3919"
+  },
+  {
+    "ai": "3920",
+    "title": "PRICE",
+    "description": "Applicable amount payable, single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3920"
+  },
+  {
+    "ai": "3921",
+    "title": "PRICE",
+    "description": "Applicable amount payable, single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3921"
+  },
+  {
+    "ai": "3922",
+    "title": "PRICE",
+    "description": "Applicable amount payable, single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3922"
+  },
+  {
+    "ai": "3923",
+    "title": "PRICE",
+    "description": "Applicable amount payable, single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3923"
+  },
+  {
+    "ai": "3924",
+    "title": "PRICE",
+    "description": "Applicable amount payable, single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3924"
+  },
+  {
+    "ai": "3925",
+    "title": "PRICE",
+    "description": "Applicable amount payable, single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3925"
+  },
+  {
+    "ai": "3926",
+    "title": "PRICE",
+    "description": "Applicable amount payable, single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3926"
+  },
+  {
+    "ai": "3927",
+    "title": "PRICE",
+    "description": "Applicable amount payable, single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3927"
+  },
+  {
+    "ai": "3928",
+    "title": "PRICE",
+    "description": "Applicable amount payable, single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3928"
+  },
+  {
+    "ai": "3929",
+    "title": "PRICE",
+    "description": "Applicable amount payable, single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3929"
+  },
+  {
+    "ai": "3930",
+    "title": "PRICE",
+    "description": "Applicable amount payable with ISO currency code (variable measure trade item)",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3930"
+  },
+  {
+    "ai": "3931",
+    "title": "PRICE",
+    "description": "Applicable amount payable with ISO currency code (variable measure trade item)",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3931"
+  },
+  {
+    "ai": "3932",
+    "title": "PRICE",
+    "description": "Applicable amount payable with ISO currency code (variable measure trade item)",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3932"
+  },
+  {
+    "ai": "3933",
+    "title": "PRICE",
+    "description": "Applicable amount payable with ISO currency code (variable measure trade item)",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3933"
+  },
+  {
+    "ai": "3934",
+    "title": "PRICE",
+    "description": "Applicable amount payable with ISO currency code (variable measure trade item)",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3934"
+  },
+  {
+    "ai": "3935",
+    "title": "PRICE",
+    "description": "Applicable amount payable with ISO currency code (variable measure trade item)",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3935"
+  },
+  {
+    "ai": "3936",
+    "title": "PRICE",
+    "description": "Applicable amount payable with ISO currency code (variable measure trade item)",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3936"
+  },
+  {
+    "ai": "3937",
+    "title": "PRICE",
+    "description": "Applicable amount payable with ISO currency code (variable measure trade item)",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3937"
+  },
+  {
+    "ai": "3938",
+    "title": "PRICE",
+    "description": "Applicable amount payable with ISO currency code (variable measure trade item)",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3938"
+  },
+  {
+    "ai": "3939",
+    "title": "PRICE",
+    "description": "Applicable amount payable with ISO currency code (variable measure trade item)",
+    "regex": "^(?:\\d{3})(\\d{1,15})$",
+    "separatorRequired": true,
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3939"
+  },
+  {
+    "ai": "3940",
+    "title": "PRCNT OFF",
+    "description": "Percentage discount of a coupon",
+    "regex": "^(?:\\d{4})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255"
+    ],
+    "source": "https://ref.gs1.org/ai/3940"
+  },
+  {
+    "ai": "3941",
+    "title": "PRCNT OFF",
+    "description": "Percentage discount of a coupon",
+    "regex": "^(?:\\d{4})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255"
+    ],
+    "source": "https://ref.gs1.org/ai/3941"
+  },
+  {
+    "ai": "3942",
+    "title": "PRCNT OFF",
+    "description": "Percentage discount of a coupon",
+    "regex": "^(?:\\d{4})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255"
+    ],
+    "source": "https://ref.gs1.org/ai/3942"
+  },
+  {
+    "ai": "3943",
+    "title": "PRCNT OFF",
+    "description": "Percentage discount of a coupon",
+    "regex": "^(?:\\d{4})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8111"
+    ],
+    "requires": [
+      "255"
+    ],
+    "source": "https://ref.gs1.org/ai/3943"
+  },
+  {
+    "ai": "3950",
+    "title": "PRICE/UoM",
+    "description": "Amount Payable per unit of measure single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8005"
+    ],
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3950"
+  },
+  {
+    "ai": "3951",
+    "title": "PRICE/UoM",
+    "description": "Amount Payable per unit of measure single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8005"
+    ],
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3951"
+  },
+  {
+    "ai": "3952",
+    "title": "PRICE/UoM",
+    "description": "Amount Payable per unit of measure single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8005"
+    ],
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3952"
+  },
+  {
+    "ai": "3953",
+    "title": "PRICE/UoM",
+    "description": "Amount Payable per unit of measure single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8005"
+    ],
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3953"
+  },
+  {
+    "ai": "3954",
+    "title": "PRICE/UoM",
+    "description": "Amount Payable per unit of measure single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8005"
+    ],
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3954"
+  },
+  {
+    "ai": "3955",
+    "title": "PRICE/UoM",
+    "description": "Amount Payable per unit of measure single monetary area (variable measure trade item)",
+    "regex": "^(?:\\d{6})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8005"
+    ],
+    "requires": [
+      "30"
+    ],
+    "source": "https://ref.gs1.org/ai/3955"
+  },
+  {
+    "ai": "4300",
+    "title": "SHIP TO COMP",
+    "description": "Ship-to / Deliver-to company name",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,35})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4300"
+  },
+  {
+    "ai": "4301",
+    "title": "SHIP TO NAME",
+    "description": "Ship-to / Deliver-to contact",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,35})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4301"
+  },
+  {
+    "ai": "4302",
+    "title": "SHIP TO ADD1",
+    "description": "Ship-to / Deliver-to address line 1",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,70})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4302"
+  },
+  {
+    "ai": "4303",
+    "title": "SHIP TO ADD2",
+    "description": "Ship-to / Deliver-to address line 2",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,70})$",
+    "separatorRequired": true,
+    "requires": [
+      "00",
+      "4302"
+    ],
+    "source": "https://ref.gs1.org/ai/4303"
+  },
+  {
+    "ai": "4304",
+    "title": "SHIP TO SUB",
+    "description": "Ship-to / Deliver-to suburb",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,70})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4304"
+  },
+  {
+    "ai": "4305",
+    "title": "SHIP TO LOC",
+    "description": "Ship-to / Deliver-to locality",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,70})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4305"
+  },
+  {
+    "ai": "4306",
+    "title": "SHIP TO REG",
+    "description": "Ship-to / Deliver-to region",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,70})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4306"
+  },
+  {
+    "ai": "4307",
+    "title": "SHIP TO COUNTRY",
+    "description": "Ship-to / Deliver-to country code",
+    "regex": "^(?:[A-Z0-9]{2})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4307"
+  },
+  {
+    "ai": "4308",
+    "title": "SHIP TO PHONE",
+    "description": "Ship-to / Deliver-to telephone number",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4308"
+  },
+  {
+    "ai": "4309",
+    "title": "SHIP TO GEO",
+    "description": "Ship-to / Deliver-to GEO location",
+    "regex": "^(?:\\d{20})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4309"
+  },
+  {
+    "ai": "4310",
+    "title": "RTN TO COMP",
+    "description": "Return-to company name",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,35})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4310"
+  },
+  {
+    "ai": "4311",
+    "title": "RTN TO NAME",
+    "description": "Return-to contact",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,35})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4311"
+  },
+  {
+    "ai": "4312",
+    "title": "RTN TO ADD1",
+    "description": "Return-to address line 1",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,70})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4312"
+  },
+  {
+    "ai": "4313",
+    "title": "RTN TO ADD2",
+    "description": "Return-to address line 2",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,70})$",
+    "separatorRequired": true,
+    "requires": [
+      "00",
+      "4312"
+    ],
+    "source": "https://ref.gs1.org/ai/4313"
+  },
+  {
+    "ai": "4314",
+    "title": "RTN TO SUB",
+    "description": "Return-to suburb",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,70})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4314"
+  },
+  {
+    "ai": "4315",
+    "title": "RTN TO LOC",
+    "description": "Return-to locality",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,70})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4315"
+  },
+  {
+    "ai": "4316",
+    "title": "RTN TO REG",
+    "description": "Return-to region",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,70})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4316"
+  },
+  {
+    "ai": "4317",
+    "title": "RTN TO COUNTRY",
+    "description": "Return-to country code",
+    "regex": "^(?:[A-Z0-9]{2})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4317"
+  },
+  {
+    "ai": "4318",
+    "title": "RTN TO POST",
+    "description": "Return-to postal code",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4318"
+  },
+  {
+    "ai": "4319",
+    "title": "RTN TO PHONE",
+    "description": "Return-to telephone number",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4319"
+  },
+  {
+    "ai": "4320",
+    "title": "SRV DESCRIPTION",
+    "description": "Service code description",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,35})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4320"
+  },
+  {
+    "ai": "4321",
+    "title": "DANGEROUS GOODS",
+    "description": "Dangerous goods flag",
+    "regex": "^(?:[01])$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4321"
+  },
+  {
+    "ai": "4322",
+    "title": "AUTH LEAVE",
+    "description": "Authority to leave",
+    "regex": "^(?:[01])$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4322"
+  },
+  {
+    "ai": "4323",
+    "title": "SIG REQUIRED",
+    "description": "Signature required flag",
+    "regex": "^(?:[01])$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4323"
+  },
+  {
+    "ai": "4324",
+    "title": "NBEF DEL DT",
+    "description": "Not before delivery date time (YYMMDDhhmm)",
+    "regex": "^(?:\\d{10})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4324"
+  },
+  {
+    "ai": "4325",
+    "title": "NAFT DEL DT",
+    "description": "Not after delivery date time (YYMMDDhhmm)",
+    "regex": "^(?:\\d{10})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4325"
+  },
+  {
+    "ai": "4326",
+    "title": "REL DATE",
+    "description": "Release date (YYMMDD)",
+    "regex": "^(?:\\d{6})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4326"
+  },
+  {
+    "ai": "4330",
+    "title": "MAX TEMP F",
+    "description": "Maximum temperature in Fahrenheit (expressed in hundredths of degrees)",
+    "regex": "^(?:\\d{6}[-]?)$",
+    "separatorRequired": true,
+    "excludes": [
+      "4331"
+    ],
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4330"
+  },
+  {
+    "ai": "4331",
+    "title": "MAX TEMP C",
+    "description": "Maximum temperature in Celsius (expressed in hundredths of degrees)",
+    "regex": "^(?:\\d{6}[-]?)$",
+    "separatorRequired": true,
+    "excludes": [
+      "4330"
+    ],
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4331"
+  },
+  {
+    "ai": "4332",
+    "title": "MIN TEMP F",
+    "description": "Minimum temperature in Fahrenheit (expressed in hundredths of degrees)",
+    "regex": "^(?:\\d{6}[-]?)$",
+    "separatorRequired": true,
+    "excludes": [
+      "4333"
+    ],
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4332"
+  },
+  {
+    "ai": "4333",
+    "title": "MIN TEMP C",
+    "description": "Minimum temperature in Celsius (expressed in hundredths of degrees)",
+    "regex": "^(?:\\d{6}[-]?)$",
+    "separatorRequired": true,
+    "excludes": [
+      "4332"
+    ],
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/4333"
+  },
+  {
+    "ai": "7001",
+    "title": "NSN",
+    "description": "NATO Stock Number (NSN)",
+    "regex": "^(?:\\d{13})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02",
+      "8006",
+      "8026"
+    ],
+    "source": "https://ref.gs1.org/ai/7001"
+  },
+  {
+    "ai": "7002",
+    "title": "MEAT CUT",
+    "description": "UN/ECE meat carcasses and cuts classification",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7002"
+  },
+  {
+    "ai": "7003",
+    "title": "EXPIRY TIME",
+    "description": "Expiration date and time (YYMMDDhhmm)",
+    "regex": "^(?:\\d{10})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7003"
+  },
+  {
+    "ai": "7004",
+    "title": "ACTIVE POTENCY",
+    "description": "Active potency",
+    "regex": "^(?:\\d{0,4})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "10"
+    ],
+    "source": "https://ref.gs1.org/ai/7004"
+  },
+  {
+    "ai": "7005",
+    "title": "CATCH AREA",
+    "description": "Catch area",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,12})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7005"
+  },
+  {
+    "ai": "7006",
+    "title": "FIRST FREEZE DATE",
+    "description": "First freeze date (YYMMDD)",
+    "regex": "^(?:\\d{6})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7006"
+  },
+  {
+    "ai": "7007",
+    "title": "HARVEST DATE",
+    "description": "Harvest date (YYMMDD[YYMMDD])",
+    "regex": "^(?:(\\d{6})(\\d{6})?)$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7007"
+  },
+  {
+    "ai": "7008",
+    "title": "AQUATIC SPECIES",
+    "description": "Species for fishery purposes",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,3})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7008"
+  },
+  {
+    "ai": "7009",
+    "title": "FISHING GEAR TYPE",
+    "description": "Fishing gear type",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,10})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7009"
+  },
+  {
+    "ai": "7010",
+    "title": "PROD METHOD",
+    "description": "Production method",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,2})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7010"
+  },
+  {
+    "ai": "7011",
+    "title": "TEST BY DATE",
+    "description": "Test by date (YYMMDD[hhmm])",
+    "regex": "^(?:(\\d{6})(\\d{4})?)$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7011"
+  },
+  {
+    "ai": "7020",
+    "title": "REFURB LOT",
+    "description": "Refurbishment lot ID",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "416"
+    ],
+    "requiresOneOf": [
+      "01",
+      "8006"
+    ],
+    "source": "https://ref.gs1.org/ai/7020"
+  },
+  {
+    "ai": "7021",
+    "title": "FUNC STAT",
+    "description": "Functional status",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8006"
+    ],
+    "source": "https://ref.gs1.org/ai/7021"
+  },
+  {
+    "ai": "7022",
+    "title": "REV STAT",
+    "description": "Revision status",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "7021"
+    ],
+    "requiresOneOf": [
+      "01",
+      "8006"
+    ],
+    "source": "https://ref.gs1.org/ai/7022"
+  },
+  {
+    "ai": "7023",
+    "title": "GIAI - ASSEMBLY",
+    "description": "Global Individual Asset Identifier (GIAI) of an assembly",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,30})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/7023"
+  },
+  {
+    "ai": "7030",
+    "title": "PROCESSOR # 0",
+    "description": "Number of processor with three-digit ISO country code",
+    "regex": "^(?:\\d{3})([!%-?A-Z_a-z\\x22]{1,27})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7030"
+  },
+  {
+    "ai": "7031",
+    "title": "PROCESSOR # 1",
+    "description": "Number of processor with three-digit ISO country code",
+    "regex": "^(?:\\d{3})([!%-?A-Z_a-z\\x22]{1,27})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7031"
+  },
+  {
+    "ai": "7032",
+    "title": "PROCESSOR # 2",
+    "description": "Number of processor with three-digit ISO country code",
+    "regex": "^(?:\\d{3})([!%-?A-Z_a-z\\x22]{1,27})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7032"
+  },
+  {
+    "ai": "7033",
+    "title": "PROCESSOR # 3",
+    "description": "Number of processor with three-digit ISO country code",
+    "regex": "^(?:\\d{3})([!%-?A-Z_a-z\\x22]{1,27})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7033"
+  },
+  {
+    "ai": "7034",
+    "title": "PROCESSOR # 4",
+    "description": "Number of processor with three-digit ISO country code",
+    "regex": "^(?:\\d{3})([!%-?A-Z_a-z\\x22]{1,27})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7034"
+  },
+  {
+    "ai": "7035",
+    "title": "PROCESSOR # 5",
+    "description": "Number of processor with three-digit ISO country code",
+    "regex": "^(?:\\d{3})([!%-?A-Z_a-z\\x22]{1,27})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7035"
+  },
+  {
+    "ai": "7036",
+    "title": "PROCESSOR # 6",
+    "description": "Number of processor with three-digit ISO country code",
+    "regex": "^(?:\\d{3})([!%-?A-Z_a-z\\x22]{1,27})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7036"
+  },
+  {
+    "ai": "7037",
+    "title": "PROCESSOR # 7",
+    "description": "Number of processor with three-digit ISO country code",
+    "regex": "^(?:\\d{3})([!%-?A-Z_a-z\\x22]{1,27})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7037"
+  },
+  {
+    "ai": "7038",
+    "title": "PROCESSOR # 8",
+    "description": "Number of processor with three-digit ISO country code",
+    "regex": "^(?:\\d{3})([!%-?A-Z_a-z\\x22]{1,27})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7038"
+  },
+  {
+    "ai": "7039",
+    "title": "PROCESSOR # 9",
+    "description": "Number of processor with three-digit ISO country code",
+    "regex": "^(?:\\d{3})([!%-?A-Z_a-z\\x22]{1,27})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/7039"
+  },
+  {
+    "ai": "7040",
+    "title": "UIC+EXT",
+    "description": "GS1 UIC with Extension 1 and Importer index",
+    "regex": "^(?:\\d)([!%-?A-Z_a-z\\x22])([!%-?A-Z_a-z\\x22])([!%-?A-Z_a-z\\x22])$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/7040"
+  },
+  {
+    "ai": "7041",
+    "title": "UFRGT UNIT TYPE",
+    "description": "UN/CEFACT freight unit type",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,4})$",
+    "separatorRequired": true,
+    "requires": [
+      "00"
+    ],
+    "source": "https://ref.gs1.org/ai/7041"
+  },
+  {
+    "ai": "7230",
+    "title": "CERT # 0",
+    "description": "Certification Reference",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{3,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8004"
+    ],
+    "source": "https://ref.gs1.org/ai/7230"
+  },
+  {
+    "ai": "7231",
+    "title": "CERT # 1",
+    "description": "Certification Reference",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{3,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8004"
+    ],
+    "source": "https://ref.gs1.org/ai/7231"
+  },
+  {
+    "ai": "7232",
+    "title": "CERT # 2",
+    "description": "Certification Reference",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{3,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8004"
+    ],
+    "source": "https://ref.gs1.org/ai/7232"
+  },
+  {
+    "ai": "7233",
+    "title": "CERT # 3",
+    "description": "Certification Reference",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{3,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8004"
+    ],
+    "source": "https://ref.gs1.org/ai/7233"
+  },
+  {
+    "ai": "7234",
+    "title": "CERT # 4",
+    "description": "Certification Reference",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{3,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8004"
+    ],
+    "source": "https://ref.gs1.org/ai/7234"
+  },
+  {
+    "ai": "7235",
+    "title": "CERT # 5",
+    "description": "Certification Reference",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{3,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8004"
+    ],
+    "source": "https://ref.gs1.org/ai/7235"
+  },
+  {
+    "ai": "7236",
+    "title": "CERT # 6",
+    "description": "Certification Reference",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{3,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8004"
+    ],
+    "source": "https://ref.gs1.org/ai/7236"
+  },
+  {
+    "ai": "7237",
+    "title": "CERT # 7",
+    "description": "Certification Reference",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{3,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8004"
+    ],
+    "source": "https://ref.gs1.org/ai/7237"
+  },
+  {
+    "ai": "7238",
+    "title": "CERT # 8",
+    "description": "Certification Reference",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{3,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8004"
+    ],
+    "source": "https://ref.gs1.org/ai/7238"
+  },
+  {
+    "ai": "7239",
+    "title": "CERT # 9",
+    "description": "Certification Reference",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{3,30})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8004"
+    ],
+    "source": "https://ref.gs1.org/ai/7239"
+  },
+  {
+    "ai": "7240",
+    "title": "PROTOCOL",
+    "description": "Protocol ID",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8006"
+    ],
+    "source": "https://ref.gs1.org/ai/7240"
+  },
+  {
+    "ai": "7241",
+    "title": "AIDC MEDIA TYPE",
+    "description": "AIDC media type",
+    "regex": "^(?:\\d{2})$",
+    "separatorRequired": true,
+    "requires": [
+      "8017",
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/7241"
+  },
+  {
+    "ai": "7242",
+    "title": "VCN",
+    "description": "Version Control Number (VCN)",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,25})$",
+    "separatorRequired": true,
+    "requires": [
+      "8017",
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/7242"
+  },
+  {
+    "ai": "7250",
+    "title": "DOB",
+    "description": "Date of birth (YYYYMMDD)",
+    "regex": "^(?:\\d{4}(?:0\\d|1[0-2])(?:[0-2]\\d|3[01]))$",
+    "separatorRequired": true,
+    "excludes": [
+      "7251"
+    ],
+    "requires": [
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/7250"
+  },
+  {
+    "ai": "7251",
+    "title": "DOB TIME",
+    "description": "Date and time of birth (YYYYMMDDhhmm)",
+    "regex": "^(?:\\d{4}(?:0\\d|1[0-2])(?:[0-2]\\d|3[01])(?:[01]\\d|2[0-3])(?:[0-5]\\d))$",
+    "separatorRequired": true,
+    "excludes": [
+      "7250"
+    ],
+    "requires": [
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/7251"
+  },
+  {
+    "ai": "7252",
+    "title": "BIO SEX",
+    "description": "Biological sex",
+    "regex": "^(?:\\d{1})$",
+    "separatorRequired": true,
+    "requires": [
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/7252"
+  },
+  {
+    "ai": "7253",
+    "title": "FAMILY NAME",
+    "description": "Family name of person",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,40})$",
+    "separatorRequired": true,
+    "excludes": [
+      "7256",
+      "7259"
+    ],
+    "requires": [
+      "8017",
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/7253"
+  },
+  {
+    "ai": "7254",
+    "title": "GIVEN NAME",
+    "description": "Given name of person",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,40})$",
+    "separatorRequired": true,
+    "excludes": [
+      "7256",
+      "7259"
+    ],
+    "requires": [
+      "8017",
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/7254"
+  },
+  {
+    "ai": "7255",
+    "title": "SUFFIX",
+    "description": "Name suffix of person",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,10})$",
+    "separatorRequired": true,
+    "excludes": [
+      "7256",
+      "7259"
+    ],
+    "requires": [
+      "8017",
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/7255"
+  },
+  {
+    "ai": "7256",
+    "title": "FULL NAME",
+    "description": "Full name of person",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,90})$",
+    "separatorRequired": true,
+    "excludes": [
+      "7253",
+      "7254",
+      "7255",
+      "7259"
+    ],
+    "requires": [
+      "8017",
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/7256"
+  },
+  {
+    "ai": "7257",
+    "title": "PERSON ADDR",
+    "description": "Address of person",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,70})$",
+    "separatorRequired": true,
+    "requires": [
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/7257"
+  },
+  {
+    "ai": "7258",
+    "title": "BIRTH SEQUENCE",
+    "description": "Baby birth sequence",
+    "regex": "^(?:\\d[/]\\d)$",
+    "separatorRequired": true,
+    "requires": [
+      "7259",
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/7258"
+  },
+  {
+    "ai": "7259",
+    "title": "BABY",
+    "description": "Baby of family name",
+    "regex": "^(?:(?:[!%-?A-Z_a-z\\x22]|%[0-9A-Fa-f][0-9A-Fa-f]%[0-9A-Fa-f][0-9A-Fa-f]){1,40})$",
+    "separatorRequired": true,
+    "excludes": [
+      "7253",
+      "7254",
+      "7255",
+      "7256"
+    ],
+    "requires": [
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/7259"
+  },
+  {
+    "ai": "8001",
+    "title": "DIMENSIONS",
+    "description": "Roll products (width, length, core diameter, direction, splices)",
+    "regex": "^(?:\\d{4})(\\d{5})(\\d{3})(\\d{1})(\\d{1})$",
+    "separatorRequired": true,
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/8001"
+  },
+  {
+    "ai": "8002",
+    "title": "CMT No.",
+    "description": "Cellular mobile telephone identifier",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/8002"
+  },
+  {
+    "ai": "8003",
+    "title": "GRAI",
+    "description": "Global Returnable Asset Identifier (GRAI)",
+    "regex": "^(?:0)(\\d{13})([!%-?A-Z_a-z\\x22]{0,16})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/8003"
+  },
+  {
+    "ai": "8004",
+    "title": "GIAI",
+    "description": "Global Individual Asset Identifier (GIAI)",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,30})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/8004"
+  },
+  {
+    "ai": "8005",
+    "title": "PRICE PER UNIT",
+    "description": "Price per unit of measure",
+    "regex": "^(?:\\d{6})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/8005"
+  },
+  {
+    "ai": "8006",
+    "title": "ITIP",
+    "description": "Identification of an individual trade item piece (ITIP)",
+    "regex": "^(?:\\d{14})(\\d{4})$",
+    "separatorRequired": true,
+    "excludes": [
+      "01",
+      "37"
+    ],
+    "source": "https://ref.gs1.org/ai/8006"
+  },
+  {
+    "ai": "8007",
+    "title": "IBAN",
+    "description": "International Bank Account Number (IBAN)",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,34})$",
+    "separatorRequired": true,
+    "requires": [
+      "415",
+      "8020"
+    ],
+    "source": "https://ref.gs1.org/ai/8007"
+  },
+  {
+    "ai": "8008",
+    "title": "PROD TIME",
+    "description": "Date and time of production (YYMMDDhh[mm[ss]])",
+    "regex": "^(?:(\\d{2}(?:0\\d|1[0-2])(?:[0-2]\\d|3[01])(?:[01]\\d|2[0-3]))((?:[0-5]\\d)(?:[0-5]\\d)?)?)$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "02"
+    ],
+    "source": "https://ref.gs1.org/ai/8008"
+  },
+  {
+    "ai": "8009",
+    "title": "OPTSEN",
+    "description": "Optically Readable Sensor Indicator",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,50})$",
+    "separatorRequired": true,
+    "requires": [
+      "00",
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/8009"
+  },
+  {
+    "ai": "8010",
+    "title": "CPID",
+    "description": "Component/Part Identifier (CPID)",
+    "regex": "^(?:[A-Z0-9/#-]{5,30})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/8010"
+  },
+  {
+    "ai": "8011",
+    "title": "CPID SERIAL",
+    "description": "Component/Part Identifier serial number (CPID SERIAL)",
+    "regex": "^(?:\\d{1,12})$",
+    "separatorRequired": true,
+    "requires": [
+      "8010"
+    ],
+    "source": "https://ref.gs1.org/ai/8011"
+  },
+  {
+    "ai": "8012",
+    "title": "VERSION",
+    "description": "Software version",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,20})$",
+    "separatorRequired": true,
+    "requires": [
+      "01",
+      "8006"
+    ],
+    "source": "https://ref.gs1.org/ai/8012"
+  },
+  {
+    "ai": "8013",
+    "title": "GMN",
+    "description": "Global Model Number (GMN)",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,25})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/8013"
+  },
+  {
+    "ai": "8014",
+    "title": "MUDI",
+    "description": "Highly Individualised Device Registration Identifier (HIDRI)",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,25})$",
+    "separatorRequired": true,
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/8014"
+  },
+  {
+    "ai": "8017",
+    "title": "GSRN - PROVIDER",
+    "description": "Global Service Relation Number (GSRN) to identify the relationship between an organisation offering services and the provider of services",
+    "regex": "^(?:\\d{18})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/8017"
+  },
+  {
+    "ai": "8018",
+    "title": "GSRN - RECIPIENT",
+    "description": "Global Service Relation Number (GSRN) to identify the relationship between an organisation offering services and the recipient of services",
+    "regex": "^(?:\\d{18})$",
+    "separatorRequired": true,
+    "excludes": [
+      "8017"
+    ],
+    "source": "https://ref.gs1.org/ai/8018"
+  },
+  {
+    "ai": "8019",
+    "title": "SRIN",
+    "description": "Service Relation Instance Number (SRIN)",
+    "regex": "^(?:\\d{1,10})$",
+    "separatorRequired": true,
+    "requires": [
+      "8017",
+      "8018"
+    ],
+    "source": "https://ref.gs1.org/ai/8019"
+  },
+  {
+    "ai": "8020",
+    "title": "REF No.",
+    "description": "Payment slip reference number",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,25})$",
+    "separatorRequired": true,
+    "requires": [
+      "415"
+    ],
+    "source": "https://ref.gs1.org/ai/8020"
+  },
+  {
+    "ai": "8026",
+    "title": "ITIP CONTENT",
+    "description": "Identification of pieces of a trade item (ITIP) contained in a logistic unit",
+    "regex": "^(?:\\d{14})(\\d{4})$",
+    "separatorRequired": true,
+    "excludes": [
+      "02",
+      "8006"
+    ],
+    "requires": [
+      "00",
+      "37"
+    ],
+    "source": "https://ref.gs1.org/ai/8026"
+  },
+  {
+    "ai": "8030",
+    "title": "DIGSIG",
+    "description": "Digital Signature (DigSig)",
+    "regex": "^(?:[0-9A-Za-z_-]{1,90})$",
+    "separatorRequired": true,
+    "requires": [
+      "00",
+      "253",
+      "255",
+      "8003",
+      "8004",
+      "8017",
+      "8018"
+    ],
+    "requiresOneOf": [
+      "01",
+      "21",
+      "8006",
+      "8010",
+      "8011"
+    ],
+    "source": "https://ref.gs1.org/ai/8030"
+  },
+  {
+    "ai": "8110",
+    "description": "Coupon code identification for use in North America",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,70})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/8110"
+  },
+  {
+    "ai": "8111",
+    "title": "POINTS",
+    "description": "Loyalty points of a coupon",
+    "regex": "^(?:\\d{4})$",
+    "separatorRequired": true,
+    "requires": [
+      "255"
+    ],
+    "source": "https://ref.gs1.org/ai/8111"
+  },
+  {
+    "ai": "8112",
+    "description": "Positive offer file coupon code identification for use in North America",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,70})$",
+    "separatorRequired": true,
+    "source": "https://ref.gs1.org/ai/8112"
+  },
+  {
+    "ai": "8200",
+    "title": "PRODUCT URL",
+    "description": "Extended Packaging URL",
+    "regex": "^(?:[!%-?A-Z_a-z\\x22]{1,70})$",
+    "separatorRequired": true,
+    "requires": [
+      "01"
+    ],
+    "source": "https://ref.gs1.org/ai/8200"
+  }
+]

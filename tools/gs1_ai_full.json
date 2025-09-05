@@ -1,0 +1,1925 @@
+[
+  {
+    "ai": "00",
+    "title": "SSCC",
+    "regex": "^\\d{18}$",
+    "maxOccurs": 1
+  },
+  {
+    "ai": "01",
+    "title": "GTIN",
+    "regex": "^\\d{14}$",
+    "excludes": [
+      "02",
+      "03",
+      "37",
+      "8006"
+    ],
+    "maxOccurs": 1
+  },
+  {
+    "ai": "02",
+    "title": "Content GTIN of logistic unit",
+    "regex": "^\\d{14}$",
+    "requires": [
+      "00",
+      "37"
+    ],
+    "excludes": [
+      "01",
+      "03"
+    ],
+    "maxOccurs": 1
+  },
+  {
+    "ai": "03",
+    "title": "MTO GTIN (made-to-order)",
+    "regex": "^\\d{14}$",
+    "excludes": [
+      "01",
+      "02",
+      "37"
+    ],
+    "maxOccurs": 1
+  },
+  {
+    "ai": "10",
+    "title": "Batch/Lot",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,20}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "11",
+    "title": "Production date (YYMMDD)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "12",
+    "title": "Payment due date (YYMMDD)",
+    "regex": "^\\d{6}$",
+    "requires": [
+      "8020",
+      "415"
+    ]
+  },
+  {
+    "ai": "13",
+    "title": "Packaging date (YYMMDD)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "15",
+    "title": "Best before date (YYMMDD)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "16",
+    "title": "Sell by date (YYMMDD)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "17",
+    "title": "Expiration date (YYMMDD)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "20",
+    "title": "Internal product variant",
+    "regex": "^\\d{2}$",
+    "requiresOneOf": [
+      "01",
+      "02",
+      "8006"
+    ],
+    "hint": "Use with exactly one of the keys (01|02|8006)."
+  },
+  {
+    "ai": "21",
+    "title": "Serial number",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,20}$",
+    "requiresOneOf": [
+      "01",
+      "03",
+      "8006"
+    ],
+    "excludes": [
+      "235"
+    ]
+  },
+  {
+    "ai": "22",
+    "title": "Consumer product variant (CPV)",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,20}$",
+    "requires": [
+      "01"
+    ]
+  },
+  {
+    "ai": "30",
+    "title": "Variable count",
+    "regex": "^\\d{1,8}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "37",
+    "title": "Count of trade items/pieces in a logistic unit",
+    "regex": "^\\d{1,8}$",
+    "requires": [
+      "00"
+    ],
+    "requiresOneOf": [
+      "02",
+      "8026"
+    ],
+    "excludes": []
+  },
+  {
+    "ai": "90",
+    "title": "Company internal information",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,30}$"
+  },
+  {
+    "ai": "91-99",
+    "title": "Company internal information (extended)",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,90}$",
+    "hint": "Ranges (91–99) are company-internal; lengths vary."
+  },
+  {
+    "ai": "240",
+    "title": "Additional item identification",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,30}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "241",
+    "title": "Customer part number",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,30}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "242",
+    "title": "Made-to-Order variation number",
+    "regex": "^\\d{1,6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "hint": "If paired with (01), the GTIN must have indicator digit 9 (custom industrial supply)."
+  },
+  {
+    "ai": "243",
+    "title": "Packaging component number",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,20}$",
+    "requires": [
+      "01"
+    ]
+  },
+  {
+    "ai": "250",
+    "title": "Secondary serial number",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,30}$",
+    "requires": [
+      "01",
+      "21"
+    ]
+  },
+  {
+    "ai": "251",
+    "title": "Reference to source entity",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,30}$",
+    "requires": [
+      "01"
+    ]
+  },
+  {
+    "ai": "253",
+    "title": "GDTI (Global Document Type Identifier)",
+    "regex": "^\\d{13}[!%-?A-Za-z_\\x22]{0,17}$"
+  },
+  {
+    "ai": "255",
+    "title": "Global Coupon Number (GCN)",
+    "regex": "^\\d{13}$"
+  },
+  {
+    "ai": "255",
+    "title": "Global Coupon Number (GCN)",
+    "regex": "^\\d{13}$"
+  },
+  {
+    "ai": "400",
+    "title": "Order number",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,30}$"
+  },
+  {
+    "ai": "401",
+    "title": "GINC (Global Identification Number for Consignment)",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,30}$"
+  },
+  {
+    "ai": "401",
+    "title": "GINC (Global Identification Number for Consignment)",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,30}$"
+  },
+  {
+    "ai": "402",
+    "title": "GSIN (Global Shipment Identification Number)",
+    "regex": "^\\d{17}$"
+  },
+  {
+    "ai": "402",
+    "title": "GSIN (Global Shipment Identification Number)",
+    "regex": "^\\d{17}$"
+  },
+  {
+    "ai": "403",
+    "title": "Routing code",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,30}$",
+    "requires": [
+      "00"
+    ]
+  },
+  {
+    "ai": "410",
+    "title": "Ship-to GLN",
+    "regex": "^\\d{13}$"
+  },
+  {
+    "ai": "411",
+    "title": "Bill-to GLN",
+    "regex": "^\\d{13}$"
+  },
+  {
+    "ai": "412",
+    "title": "Purchase-from GLN",
+    "regex": "^\\d{13}$"
+  },
+  {
+    "ai": "413",
+    "title": "Ship-for/Deliver-to GLN",
+    "regex": "^\\d{13}$"
+  },
+  {
+    "ai": "414",
+    "title": "GLN of physical location",
+    "regex": "^\\d{13}$"
+  },
+  {
+    "ai": "415",
+    "title": "GLN of invoicing party",
+    "regex": "^\\d{13}$"
+  },
+  {
+    "ai": "416",
+    "title": "GLN of production/service location",
+    "regex": "^\\d{13}$"
+  },
+  {
+    "ai": "417",
+    "title": "GLN of party to receive goods",
+    "regex": "^\\d{13}$"
+  },
+  {
+    "ai": "420",
+    "title": "Ship-to postal code (single authority)",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,20}$",
+    "excludes": [
+      "421"
+    ]
+  },
+  {
+    "ai": "421",
+    "title": "Ship-to postal code with ISO country code",
+    "regex": "^[0-9A-Z]{3}[!%-?A-Za-z_\\x22]{1,9}$",
+    "excludes": [
+      "420"
+    ]
+  },
+  {
+    "ai": "422",
+    "title": "Country of origin (ISO 3166-1 numeric-3)",
+    "regex": "^\\d{3}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "423",
+    "title": "Country of initial processing (ISO 3166-1 numeric-3)",
+    "regex": "^\\d{3}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "424",
+    "title": "Country of processing (ISO 3166-1 numeric-3)",
+    "regex": "^\\d{3}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "425",
+    "title": "Country of disassembly (ISO 3166-1 numeric-3)",
+    "regex": "^\\d{3}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "426",
+    "title": "Country of full processing (ISO 3166-1 numeric-3)",
+    "regex": "^\\d{3}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "427",
+    "title": "Country subdivision of origin code",
+    "regex": "^[0-9A-Z]{3}[0-9A-Z]{1,3}$",
+    "requires": [
+      "422"
+    ],
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "3100",
+    "title": "Net weight, kilograms (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3101",
+      "3102",
+      "3103",
+      "3104",
+      "3105"
+    ]
+  },
+  {
+    "ai": "3101",
+    "title": "Net weight, kilograms (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3100",
+      "3102",
+      "3103",
+      "3104",
+      "3105"
+    ]
+  },
+  {
+    "ai": "3102",
+    "title": "Net weight, kilograms (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3100",
+      "3101",
+      "3103",
+      "3104",
+      "3105"
+    ]
+  },
+  {
+    "ai": "3103",
+    "title": "Net weight, kilograms (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3100",
+      "3101",
+      "3102",
+      "3104",
+      "3105"
+    ]
+  },
+  {
+    "ai": "3104",
+    "title": "Net weight, kilograms (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3100",
+      "3101",
+      "3102",
+      "3103",
+      "3105"
+    ]
+  },
+  {
+    "ai": "3105",
+    "title": "Net weight, kilograms (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3100",
+      "3101",
+      "3102",
+      "3103",
+      "3104"
+    ]
+  },
+  {
+    "ai": "3110",
+    "title": "Length or first dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3111",
+      "3112",
+      "3113",
+      "3114",
+      "3115"
+    ]
+  },
+  {
+    "ai": "3111",
+    "title": "Length or first dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3110",
+      "3112",
+      "3113",
+      "3114",
+      "3115"
+    ]
+  },
+  {
+    "ai": "3112",
+    "title": "Length or first dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3110",
+      "3111",
+      "3113",
+      "3114",
+      "3115"
+    ]
+  },
+  {
+    "ai": "3113",
+    "title": "Length or first dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3110",
+      "3111",
+      "3112",
+      "3114",
+      "3115"
+    ]
+  },
+  {
+    "ai": "3114",
+    "title": "Length or first dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3110",
+      "3111",
+      "3112",
+      "3113",
+      "3115"
+    ]
+  },
+  {
+    "ai": "3115",
+    "title": "Length or first dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3110",
+      "3111",
+      "3112",
+      "3113",
+      "3114"
+    ]
+  },
+  {
+    "ai": "3120",
+    "title": "Width/diameter or second dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3121",
+      "3122",
+      "3123",
+      "3124",
+      "3125"
+    ]
+  },
+  {
+    "ai": "3121",
+    "title": "Width/diameter or second dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3120",
+      "3122",
+      "3123",
+      "3124",
+      "3125"
+    ]
+  },
+  {
+    "ai": "3122",
+    "title": "Width/diameter or second dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3120",
+      "3121",
+      "3123",
+      "3124",
+      "3125"
+    ]
+  },
+  {
+    "ai": "3123",
+    "title": "Width/diameter or second dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3120",
+      "3121",
+      "3122",
+      "3124",
+      "3125"
+    ]
+  },
+  {
+    "ai": "3124",
+    "title": "Width/diameter or second dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3120",
+      "3121",
+      "3122",
+      "3123",
+      "3125"
+    ]
+  },
+  {
+    "ai": "3125",
+    "title": "Width/diameter or second dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3120",
+      "3121",
+      "3122",
+      "3123",
+      "3124"
+    ]
+  },
+  {
+    "ai": "3130",
+    "title": "Depth/thickness/height or third dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3131",
+      "3132",
+      "3133",
+      "3134",
+      "3135"
+    ]
+  },
+  {
+    "ai": "3131",
+    "title": "Depth/thickness/height or third dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3130",
+      "3132",
+      "3133",
+      "3134",
+      "3135"
+    ]
+  },
+  {
+    "ai": "3132",
+    "title": "Depth/thickness/height or third dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3130",
+      "3131",
+      "3133",
+      "3134",
+      "3135"
+    ]
+  },
+  {
+    "ai": "3133",
+    "title": "Depth/thickness/height or third dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3130",
+      "3131",
+      "3132",
+      "3134",
+      "3135"
+    ]
+  },
+  {
+    "ai": "3134",
+    "title": "Depth/thickness/height or third dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3130",
+      "3131",
+      "3132",
+      "3133",
+      "3135"
+    ]
+  },
+  {
+    "ai": "3135",
+    "title": "Depth/thickness/height or third dimension, metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3130",
+      "3131",
+      "3132",
+      "3133",
+      "3134"
+    ]
+  },
+  {
+    "ai": "3140",
+    "title": "Area, square metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3141",
+      "3142",
+      "3143",
+      "3144",
+      "3145"
+    ]
+  },
+  {
+    "ai": "3141",
+    "title": "Area, square metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3140",
+      "3142",
+      "3143",
+      "3144",
+      "3145"
+    ]
+  },
+  {
+    "ai": "3142",
+    "title": "Area, square metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3140",
+      "3141",
+      "3143",
+      "3144",
+      "3145"
+    ]
+  },
+  {
+    "ai": "3143",
+    "title": "Area, square metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3140",
+      "3141",
+      "3142",
+      "3144",
+      "3145"
+    ]
+  },
+  {
+    "ai": "3144",
+    "title": "Area, square metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3140",
+      "3141",
+      "3142",
+      "3143",
+      "3145"
+    ]
+  },
+  {
+    "ai": "3145",
+    "title": "Area, square metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3140",
+      "3141",
+      "3142",
+      "3143",
+      "3144"
+    ]
+  },
+  {
+    "ai": "3150",
+    "title": "Net volume, litres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3151",
+      "3152",
+      "3153",
+      "3154",
+      "3155"
+    ]
+  },
+  {
+    "ai": "3151",
+    "title": "Net volume, litres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3150",
+      "3152",
+      "3153",
+      "3154",
+      "3155"
+    ]
+  },
+  {
+    "ai": "3152",
+    "title": "Net volume, litres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3150",
+      "3151",
+      "3153",
+      "3154",
+      "3155"
+    ]
+  },
+  {
+    "ai": "3153",
+    "title": "Net volume, litres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3150",
+      "3151",
+      "3152",
+      "3154",
+      "3155"
+    ]
+  },
+  {
+    "ai": "3154",
+    "title": "Net volume, litres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3150",
+      "3151",
+      "3152",
+      "3153",
+      "3155"
+    ]
+  },
+  {
+    "ai": "3155",
+    "title": "Net volume, litres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3150",
+      "3151",
+      "3152",
+      "3153",
+      "3154"
+    ]
+  },
+  {
+    "ai": "3160",
+    "title": "Net volume, cubic metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3161",
+      "3162",
+      "3163",
+      "3164",
+      "3165"
+    ]
+  },
+  {
+    "ai": "3161",
+    "title": "Net volume, cubic metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3160",
+      "3162",
+      "3163",
+      "3164",
+      "3165"
+    ]
+  },
+  {
+    "ai": "3162",
+    "title": "Net volume, cubic metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3160",
+      "3161",
+      "3163",
+      "3164",
+      "3165"
+    ]
+  },
+  {
+    "ai": "3163",
+    "title": "Net volume, cubic metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3160",
+      "3161",
+      "3162",
+      "3164",
+      "3165"
+    ]
+  },
+  {
+    "ai": "3164",
+    "title": "Net volume, cubic metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3160",
+      "3161",
+      "3162",
+      "3163",
+      "3165"
+    ]
+  },
+  {
+    "ai": "3165",
+    "title": "Net volume, cubic metres (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3160",
+      "3161",
+      "3162",
+      "3163",
+      "3164"
+    ]
+  },
+  {
+    "ai": "3200",
+    "title": "Net weight, pounds (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3201",
+      "3202",
+      "3203",
+      "3204",
+      "3205"
+    ]
+  },
+  {
+    "ai": "3201",
+    "title": "Net weight, pounds (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3200",
+      "3202",
+      "3203",
+      "3204",
+      "3205"
+    ]
+  },
+  {
+    "ai": "3202",
+    "title": "Net weight, pounds (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3200",
+      "3201",
+      "3203",
+      "3204",
+      "3205"
+    ]
+  },
+  {
+    "ai": "3203",
+    "title": "Net weight, pounds (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3200",
+      "3201",
+      "3202",
+      "3204",
+      "3205"
+    ]
+  },
+  {
+    "ai": "3204",
+    "title": "Net weight, pounds (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3200",
+      "3201",
+      "3202",
+      "3203",
+      "3205"
+    ]
+  },
+  {
+    "ai": "3205",
+    "title": "Net weight, pounds (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3200",
+      "3201",
+      "3202",
+      "3203",
+      "3204"
+    ]
+  },
+  {
+    "ai": "3210",
+    "title": "Length or first dimension, inches (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3211",
+      "3212",
+      "3213",
+      "3214",
+      "3215"
+    ]
+  },
+  {
+    "ai": "3211",
+    "title": "Length or first dimension, inches (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3210",
+      "3212",
+      "3213",
+      "3214",
+      "3215"
+    ]
+  },
+  {
+    "ai": "3212",
+    "title": "Length or first dimension, inches (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3210",
+      "3211",
+      "3213",
+      "3214",
+      "3215"
+    ]
+  },
+  {
+    "ai": "3213",
+    "title": "Length or first dimension, inches (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3210",
+      "3211",
+      "3212",
+      "3214",
+      "3215"
+    ]
+  },
+  {
+    "ai": "3214",
+    "title": "Length or first dimension, inches (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3210",
+      "3211",
+      "3212",
+      "3213",
+      "3215"
+    ]
+  },
+  {
+    "ai": "3215",
+    "title": "Length or first dimension, inches (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3210",
+      "3211",
+      "3212",
+      "3213",
+      "3214"
+    ]
+  },
+  {
+    "ai": "3220",
+    "title": "Length or first dimension, feet (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3221",
+      "3222",
+      "3223",
+      "3224",
+      "3225"
+    ]
+  },
+  {
+    "ai": "3221",
+    "title": "Length or first dimension, feet (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3220",
+      "3222",
+      "3223",
+      "3224",
+      "3225"
+    ]
+  },
+  {
+    "ai": "3222",
+    "title": "Length or first dimension, feet (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3220",
+      "3221",
+      "3223",
+      "3224",
+      "3225"
+    ]
+  },
+  {
+    "ai": "3223",
+    "title": "Length or first dimension, feet (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3220",
+      "3221",
+      "3222",
+      "3224",
+      "3225"
+    ]
+  },
+  {
+    "ai": "3224",
+    "title": "Length or first dimension, feet (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3220",
+      "3221",
+      "3222",
+      "3223",
+      "3225"
+    ]
+  },
+  {
+    "ai": "3225",
+    "title": "Length or first dimension, feet (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3220",
+      "3221",
+      "3222",
+      "3223",
+      "3224"
+    ]
+  },
+  {
+    "ai": "3230",
+    "title": "Length or first dimension, yards (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3231",
+      "3232",
+      "3233",
+      "3234",
+      "3235"
+    ]
+  },
+  {
+    "ai": "3231",
+    "title": "Length or first dimension, yards (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3230",
+      "3232",
+      "3233",
+      "3234",
+      "3235"
+    ]
+  },
+  {
+    "ai": "3232",
+    "title": "Length or first dimension, yards (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3230",
+      "3231",
+      "3233",
+      "3234",
+      "3235"
+    ]
+  },
+  {
+    "ai": "3233",
+    "title": "Length or first dimension, yards (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3230",
+      "3231",
+      "3232",
+      "3234",
+      "3235"
+    ]
+  },
+  {
+    "ai": "3234",
+    "title": "Length or first dimension, yards (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3230",
+      "3231",
+      "3232",
+      "3233",
+      "3235"
+    ]
+  },
+  {
+    "ai": "3235",
+    "title": "Length or first dimension, yards (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3230",
+      "3231",
+      "3232",
+      "3233",
+      "3234"
+    ]
+  },
+  {
+    "ai": "3240",
+    "title": "Width/diameter or second dimension, inches (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3241",
+      "3242",
+      "3243",
+      "3244",
+      "3245"
+    ]
+  },
+  {
+    "ai": "3241",
+    "title": "Width/diameter or second dimension, inches (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3240",
+      "3242",
+      "3243",
+      "3244",
+      "3245"
+    ]
+  },
+  {
+    "ai": "3242",
+    "title": "Width/diameter or second dimension, inches (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3240",
+      "3241",
+      "3243",
+      "3244",
+      "3245"
+    ]
+  },
+  {
+    "ai": "3243",
+    "title": "Width/diameter or second dimension, inches (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3240",
+      "3241",
+      "3242",
+      "3244",
+      "3245"
+    ]
+  },
+  {
+    "ai": "3244",
+    "title": "Width/diameter or second dimension, inches (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3240",
+      "3241",
+      "3242",
+      "3243",
+      "3245"
+    ]
+  },
+  {
+    "ai": "3245",
+    "title": "Width/diameter or second dimension, inches (variable measure trade item)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ],
+    "excludes": [
+      "3240",
+      "3241",
+      "3242",
+      "3243",
+      "3244"
+    ]
+  },
+  {
+    "ai": "3370",
+    "title": "Kilograms per square metre (decimal 0)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "3371",
+    "title": "Kilograms per square metre (decimal 1)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "3372",
+    "title": "Kilograms per square metre (decimal 2)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "3373",
+    "title": "Kilograms per square metre (decimal 3)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "3374",
+    "title": "Kilograms per square metre (decimal 4)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "3375",
+    "title": "Kilograms per square metre (decimal 5)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "3900",
+    "title": "Amount payable / coupon value (single currency)",
+    "regex": "^\\d{1,15}$",
+    "hint": "n=0 → implied 0 decimal place(s).",
+    "requires": [
+      "415",
+      "8020"
+    ]
+  },
+  {
+    "ai": "3901",
+    "title": "Amount payable / coupon value (single currency)",
+    "regex": "^\\d{1,15}$",
+    "hint": "n=1 → implied 1 decimal place(s).",
+    "requires": [
+      "415",
+      "8020"
+    ]
+  },
+  {
+    "ai": "3902",
+    "title": "Amount payable / coupon value (single currency)",
+    "regex": "^\\d{1,15}$",
+    "hint": "n=2 → implied 2 decimal place(s).",
+    "requires": [
+      "415",
+      "8020"
+    ]
+  },
+  {
+    "ai": "3903",
+    "title": "Amount payable / coupon value (single currency)",
+    "regex": "^\\d{1,15}$",
+    "hint": "n=3 → implied 3 decimal place(s).",
+    "requires": [
+      "415",
+      "8020"
+    ]
+  },
+  {
+    "ai": "3904",
+    "title": "Amount payable / coupon value (single currency)",
+    "regex": "^\\d{1,15}$",
+    "hint": "n=4 → implied 4 decimal place(s).",
+    "requires": [
+      "415",
+      "8020"
+    ]
+  },
+  {
+    "ai": "3905",
+    "title": "Amount payable / coupon value (single currency)",
+    "regex": "^\\d{1,15}$",
+    "hint": "n=5 → implied 5 decimal place(s).",
+    "requires": [
+      "415",
+      "8020"
+    ]
+  },
+  {
+    "ai": "3910",
+    "title": "Amount payable with ISO 4217 numeric currency",
+    "regex": "^\\d{3}\\d{1,15}$",
+    "hint": "n=0 → implied 0 decimal place(s)."
+  },
+  {
+    "ai": "3911",
+    "title": "Amount payable with ISO 4217 numeric currency",
+    "regex": "^\\d{3}\\d{1,15}$",
+    "hint": "n=1 → implied 1 decimal place(s)."
+  },
+  {
+    "ai": "3912",
+    "title": "Amount payable with ISO 4217 numeric currency",
+    "regex": "^\\d{3}\\d{1,15}$",
+    "hint": "n=2 → implied 2 decimal place(s)."
+  },
+  {
+    "ai": "3913",
+    "title": "Amount payable with ISO 4217 numeric currency",
+    "regex": "^\\d{3}\\d{1,15}$",
+    "hint": "n=3 → implied 3 decimal place(s)."
+  },
+  {
+    "ai": "3914",
+    "title": "Amount payable with ISO 4217 numeric currency",
+    "regex": "^\\d{3}\\d{1,15}$",
+    "hint": "n=4 → implied 4 decimal place(s)."
+  },
+  {
+    "ai": "3915",
+    "title": "Amount payable with ISO 4217 numeric currency",
+    "regex": "^\\d{3}\\d{1,15}$",
+    "hint": "n=5 → implied 5 decimal place(s)."
+  },
+  {
+    "ai": "3920",
+    "title": "Price – single currency (POS)",
+    "regex": "^\\d{1,15}$",
+    "hint": "n=0 → implied 0 decimal place(s)."
+  },
+  {
+    "ai": "3921",
+    "title": "Price – single currency (POS)",
+    "regex": "^\\d{1,15}$",
+    "hint": "n=1 → implied 1 decimal place(s)."
+  },
+  {
+    "ai": "3922",
+    "title": "Price – single currency (POS)",
+    "regex": "^\\d{1,15}$",
+    "hint": "n=2 → implied 2 decimal place(s)."
+  },
+  {
+    "ai": "3923",
+    "title": "Price – single currency (POS)",
+    "regex": "^\\d{1,15}$",
+    "hint": "n=3 → implied 3 decimal place(s)."
+  },
+  {
+    "ai": "3924",
+    "title": "Price – single currency (POS)",
+    "regex": "^\\d{1,15}$",
+    "hint": "n=4 → implied 4 decimal place(s)."
+  },
+  {
+    "ai": "3925",
+    "title": "Price – single currency (POS)",
+    "regex": "^\\d{1,15}$",
+    "hint": "n=5 → implied 5 decimal place(s)."
+  },
+  {
+    "ai": "3930",
+    "title": "Price – with ISO 4217 numeric currency (POS)",
+    "regex": "^\\d{3}\\d{1,15}$",
+    "hint": "n=0 → implied 0 decimal place(s)."
+  },
+  {
+    "ai": "3931",
+    "title": "Price – with ISO 4217 numeric currency (POS)",
+    "regex": "^\\d{3}\\d{1,15}$",
+    "hint": "n=1 → implied 1 decimal place(s)."
+  },
+  {
+    "ai": "3932",
+    "title": "Price – with ISO 4217 numeric currency (POS)",
+    "regex": "^\\d{3}\\d{1,15}$",
+    "hint": "n=2 → implied 2 decimal place(s)."
+  },
+  {
+    "ai": "3933",
+    "title": "Price – with ISO 4217 numeric currency (POS)",
+    "regex": "^\\d{3}\\d{1,15}$",
+    "hint": "n=3 → implied 3 decimal place(s)."
+  },
+  {
+    "ai": "3934",
+    "title": "Price – with ISO 4217 numeric currency (POS)",
+    "regex": "^\\d{3}\\d{1,15}$",
+    "hint": "n=4 → implied 4 decimal place(s)."
+  },
+  {
+    "ai": "3935",
+    "title": "Price – with ISO 4217 numeric currency (POS)",
+    "regex": "^\\d{3}\\d{1,15}$",
+    "hint": "n=5 → implied 5 decimal place(s)."
+  },
+  {
+    "ai": "7003",
+    "title": "Expiration date and time (YYMMDDhhmm)",
+    "regex": "^\\d{10}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "7006",
+    "title": "First freeze date (YYMMDD)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "7007",
+    "title": "Harvest date (YYMMDD)",
+    "regex": "^\\d{6}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "8001",
+    "title": "Roll products – width/length/diameter",
+    "regex": "^\\d{14}$"
+  },
+  {
+    "ai": "8002",
+    "title": "Serial number for returnable assets",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,20}$"
+  },
+  {
+    "ai": "8003",
+    "title": "GRAI (Global Returnable Asset Identifier)",
+    "regex": "^\\d{14}[!%-?A-Za-z_\\x22]{0,16}$"
+  },
+  {
+    "ai": "8004",
+    "title": "GIAI (Global Individual Asset Identifier)",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,30}$"
+  },
+  {
+    "ai": "8006",
+    "title": "ITIP (Identification of an individual trade item piece)",
+    "regex": "^\\d{14}\\d{2}\\d{2}$",
+    "excludes": [
+      "01",
+      "37"
+    ],
+    "maxOccurs": 1
+  },
+  {
+    "ai": "8008",
+    "title": "Production date & time (YYMMDD + up to 4-digit time)",
+    "regex": "^\\d{8}\\d{1,4}$",
+    "requiresOneOf": [
+      "01",
+      "02"
+    ]
+  },
+  {
+    "ai": "8010",
+    "title": "CPID (Components & Parts Identifier)",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,30}$"
+  },
+  {
+    "ai": "8011",
+    "title": "CPID serial number",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,30}$",
+    "requires": [
+      "8010"
+    ]
+  },
+  {
+    "ai": "8013",
+    "title": "Global Model Number (GMN)",
+    "regex": "^[0-9A-Z]{0,30}$"
+  },
+  {
+    "ai": "8017",
+    "title": "GSRN - Service Relation",
+    "regex": "^\\d{18}$"
+  },
+  {
+    "ai": "8018",
+    "title": "GSRN - Recipient",
+    "regex": "^\\d{18}$"
+  },
+  {
+    "ai": "8020",
+    "title": "Payment slip reference number",
+    "regex": "^[0-9A-Z]{1,25}$"
+  },
+  {
+    "ai": "8021",
+    "title": "Payee",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,25}$"
+  },
+  {
+    "ai": "8026",
+    "title": "ITIP CONTENT (GTIN piece + total)",
+    "regex": "^\\d{14}\\d{4}$",
+    "requires": [
+      "00",
+      "37"
+    ],
+    "excludes": [
+      "02",
+      "8006"
+    ]
+  },
+  {
+    "ai": "8030",
+    "title": "Digital Signature",
+    "regex": "^[0-9A-Za-z+/=]{1,2048}$"
+  },
+  {
+    "ai": "8110",
+    "title": "Coupon code (North America)",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,70}$",
+    "hint": "Variable length; FNC1 if not last."
+  },
+  {
+    "ai": "8112",
+    "title": "Paperless coupon code (North America)",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,70}$",
+    "hint": "Variable length; FNC1 if not last."
+  },
+  {
+    "ai": "8200",
+    "title": "Extended Packaging URL / Product URL",
+    "regex": "^[!%-?A-Za-z_\\x22]{1,70}$",
+    "hint": "Typically used with (01) GTIN; encoded as separate element string."
+  },
+  {
+    "ai": "390n",
+    "title": "Amount payable (single currency)",
+    "regex": "^\\d{1,15}$",
+    "hint": "Where applicable, used with (8020) and (415) or with (255)."
+  },
+  {
+    "ai": "391n",
+    "title": "Amount payable with ISO currency code",
+    "regex": "^[0-9A-Z]{3}\\d{1,15}$",
+    "hint": "Where applicable, used with (8020) and (415)."
+  },
+  {
+    "ai": "392n",
+    "title": "Amount payable at POS (single currency)",
+    "regex": "^\\d{1,15}$",
+    "hint": "When scanned at POS with GTIN-12/13 (01)."
+  },
+  {
+    "ai": "393n",
+    "title": "Amount payable at POS with ISO currency code",
+    "regex": "^[0-9A-Z]{3}\\d{1,15}$",
+    "hint": "When scanned at POS with GTIN-12/13 (01)."
+  }
+]

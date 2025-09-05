@@ -1,4 +1,4 @@
-import { AI_DB } from './gs1-aidb';
+import { getAiSpec, validateAiByRegex, validateCombination } from './gs1-ai-registry';
 
 export function isNumericString(s: string): boolean {
   return /^[0-9]+$/.test(s);
@@ -68,42 +68,15 @@ export function normalizeSscc(value: string): string {
 }
 
 export function validateAndNormalizeGs1Item(ai: string, value: string): string {
-  const spec = AI_DB[ai];
+  const spec = getAiSpec(ai);
   if (!spec) throw new Error(`AI ${ai} not supported`);
 
   // Special cases with check digits
   if (ai === '01') return normalizeGtin(value);
   if (ai === '00') return normalizeSscc(value);
 
-  if (spec.dateYYMMDD) {
-    if (!validateYYMMDD(value)) throw new Error(`AI ${ai} Datum YYMMDD ungültig`);
-    return value;
-  }
-
-  if (spec.numeric) {
-    if (!isNumericString(value)) throw new Error(`AI ${ai} nur numerisch erlaubt`);
-    if (spec.fixed && value.length !== spec.fixed) throw new Error(`AI ${ai} Länge muss ${spec.fixed} sein`);
-    if (!spec.fixed) {
-      if (spec.min && value.length < spec.min) throw new Error(`AI ${ai} Mindestlänge ${spec.min}`);
-      if (spec.max && value.length > spec.max) throw new Error(`AI ${ai} Maximallänge ${spec.max}`);
-    }
-    return value;
-  }
-
-  if (spec.printableAscii) {
-    if (!isPrintableAscii(value)) throw new Error(`AI ${ai} nur druckbare ASCII-Zeichen erlaubt`);
-    if (spec.min && value.length < spec.min) throw new Error(`AI ${ai} Mindestlänge ${spec.min}`);
-    if (spec.max && value.length > spec.max) throw new Error(`AI ${ai} Maximallänge ${spec.max}`);
-    return value;
-  }
-
-  // Generic fixed length if defined
-  if (spec.fixed) {
-    if (value.length !== spec.fixed) throw new Error(`AI ${ai} Länge muss ${spec.fixed} sein`);
-  } else {
-    if (spec.min && value.length < spec.min) throw new Error(`AI ${ai} Mindestlänge ${spec.min}`);
-    if (spec.max && value.length > spec.max) throw new Error(`AI ${ai} Maximallänge ${spec.max}`);
-  }
+  // Otherwise validate via regex spec registry (covers dates, numeric, ASCII etc.)
+  validateAiByRegex(ai, value);
   return value;
 }
 
@@ -116,6 +89,7 @@ export function buildGs1Text(items: Array<{ ai: string; value: string }>): strin
     const norm = validateAndNormalizeGs1Item(ai, val);
     parts.push(`(${ai})${norm}`);
   }
+  // Combination validation after individual normalization
+  validateCombination(items.map(x => ({ ai: String(x.ai), value: String(x.value) })));
   return parts.join('');
 }
-
