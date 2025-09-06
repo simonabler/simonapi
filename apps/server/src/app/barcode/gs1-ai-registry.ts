@@ -568,6 +568,35 @@ export function getAiSpec(ai: string): AiRegexSpec | undefined {
   return AI_REGEX_DB[ai];
 }
 
+// JSON-serializable view used by the frontend
+export type AiSerializedSpec = {
+  ai: string;
+  label: string;
+  pattern: { source: string; flags?: string };
+  maxOccurrences?: number;
+  requiresOneOf?: string[];
+  requiresGroups?: string[][];
+  notTogetherWith?: string[];
+  hint?: string;
+};
+
+export function getSerializedAiRegistry(): Record<string, AiSerializedSpec> {
+  const out: Record<string, AiSerializedSpec> = {};
+  for (const [k, v] of Object.entries(AI_REGEX_DB)) {
+    out[k] = {
+      ai: v.ai,
+      label: v.label,
+      pattern: { source: v.pattern.source, flags: (v.pattern as any).flags || undefined },
+      maxOccurrences: v.maxOccurrences,
+      requiresOneOf: v.requiresOneOf,
+      requiresGroups: v.requiresGroups,
+      notTogetherWith: v.notTogetherWith,
+      hint: v.hint,
+    };
+  }
+  return out;
+}
+
 export function validateAiByRegex(ai: string, value: string): void {
   const spec = getAiSpec(ai);
   if (!spec) throw new Error(`AI ${ai} not supported`);

@@ -10,6 +10,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { getSerializedAiRegistry } from './gs1-ai-registry';
 import { BarcodesService } from './barcodes.service';
 import { GenerateBarcodeDto } from './dto/generate-barcode.dto';
 import { GenerateGs1QueryDto } from './dto/generate-gs1.dto';
@@ -66,5 +67,12 @@ export class BarcodesController {
     }
     return this.svc.gs1ToSvg({ symbology, items, includetext, scale, height });
   }
-}
 
+  @Get('gs1/registry')
+  @ApiOperation({ summary: 'Get GS1 AI registry (JSON for frontend)' })
+  @ApiOkResponse({ description: 'Serialized GS1 AI registry' })
+  @HttpCode(HttpStatus.OK)
+  async gs1Registry(): Promise<any> {
+    return getSerializedAiRegistry();
+  }
+}

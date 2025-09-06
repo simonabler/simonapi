@@ -39,14 +39,14 @@
           @for(ctrl of items.controls; track $index){
             <div class="ai-row">
               <select [formControl]="ctrl.controls.ai">
-                <option *ngFor="let k of aiKeys" [value]="k">{{k}} — {{AI_DB[k].label}}</option>
+                <option *ngFor="let k of aiKeys" [value]="k">{{k}} — {{aiDb[k].label}}</option>
               </select>
               <div>
                 <input type="text" [formControl]="ctrl.controls.value" />
                 @if(errors[$index]; as err){
                   <div class="hint">{{err}}</div>
                 }
-                <div class="hint" *ngIf="!errors[$index] && AI_DB[ctrl.value.ai]?.hint">{{AI_DB[ctrl.value.ai].hint}}</div>
+                <div class="hint" *ngIf="!errors[$index] && aiDb[ctrl.value.ai]?.hint">{{aiDb[ctrl.value.ai].hint}}</div>
               </div>
               <button type="button" class="btn btn-outline-danger" (click)="removeItem($index)">Entfernen</button>
             </div>
@@ -68,6 +68,10 @@
         </div>
       </fieldset>
 
+      @if(globalError){
+        <div class="hint">{{globalError}}</div>
+      }
+
       <div class="actions">
         <button type="button" class="btn btn-secondary" (click)="download('png')">Als PNG herunterladen</button>
         <button type="button" class="btn btn-secondary" (click)="download('svg')">Als SVG herunterladen</button>
@@ -81,4 +85,3 @@
     </div>
   </div>
 </div>
-

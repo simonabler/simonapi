@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom, Observable } from 'rxjs';
 import { environment } from '../../../environments/environments';
-import { BarcodeRequest, Gs1Request } from './models';
+import { BarcodeRequest, Gs1Request, AiSpecJson } from './models';
 
 const API = (environment.API_BASE_URL || window.origin) + '/api';
 
@@ -50,6 +50,10 @@ export class BarcodeService {
   previewGs1$(req: Gs1Request): Observable<Blob> {
     const body = { ...req};
     return this.http.post(`${API}/barcode/gs1/png`, body, { responseType: 'blob' });
+  }
+
+  getGs1Registry$(): Observable<Record<string, AiSpecJson>> {
+    return this.http.get<Record<string, AiSpecJson>>(`${API}/barcode/gs1/registry`);
   }
 
   async downloadGs1(req: Gs1Request, format: 'png' | 'svg'): Promise<void> {

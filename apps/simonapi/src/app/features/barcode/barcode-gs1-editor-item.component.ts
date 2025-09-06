@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LucideAngularModule, BarcodeIcon, Trash2Icon } from 'lucide-angular';
 import { BarcodeService } from './barcode.service';
-import { AI_DB, Gs1Request, Gs1Symbology, validateAiValue } from './models';
+import { AiSpec, compileAiDb, Gs1Request, Gs1Symbology, validateAiValue, validateCombination } from './models';
 import { EMPTY, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
@@ -25,12 +25,13 @@ export class BarcodeGs1EditorItemComponent implements OnInit, OnDestroy {
 
   readonly BarcodeIcon = BarcodeIcon;
   readonly Trash2Icon = Trash2Icon;
-  readonly AI_DB = AI_DB;
-  readonly aiKeys = Object.keys(AI_DB);
+  aiDb: Record<string, AiSpec> = {};
+  get aiKeys() { return Object.keys(this.aiDb); }
 
   previewUrl: string | null = null;
   loading = false;
   errors: (string | null)[] = [];
+  globalError: string | null = null;
   private destroy$ = new Subject<void>();
 
   form = this.fb.group({
@@ -44,12 +45,18 @@ export class BarcodeGs1EditorItemComponent implements OnInit, OnDestroy {
   get items() { return this.form.controls.items; }
 
   ngOnInit(): void {
-    // Seed some common AIs
-    if (this.items.length === 0) {
-      this.items.push(this.makeAi('01', '0950600013437'));
-      this.items.push(this.makeAi('10', 'BATCH42'));
-      this.items.push(this.makeAi('17', '251231'));
-    }
+    // Load AI registry from backend, then seed defaults
+    this.api.getGs1Registry$().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(json => {
+      this.aiDb = compileAiDb(json);
+      if (this.items.length === 0) {
+        this.items.push(this.makeAi('01', '0950600013437'));
+        this.items.push(this.makeAi('10', 'BATCH42'));
+        this.items.push(this.makeAi('17', '251231'));
+      }
+      this.runValidation();
+    });
 
     this.form.valueChanges.pipe(
       startWith(this.form.getRawValue()),
@@ -58,7 +65,7 @@ export class BarcodeGs1EditorItemComponent implements OnInit, OnDestroy {
       debounceTime(300),
       switchMap(req => {
         this.runValidation();
-        if (!this.form.valid || this.errors.some(Boolean) || req.items.length === 0) {
+        if (!this.form.valid || this.errors.some(Boolean) || !!this.globalError || req.items.length === 0) {
           this.revokePreview();
           return EMPTY;
         }
@@ -101,8 +108,10 @@ export class BarcodeGs1EditorItemComponent implements OnInit, OnDestroy {
   }
 
   private runValidation() {
-    const list = this.items.controls.map((ctrl) => validateAiValue(ctrl.value.ai, ctrl.value.value));
+    const list = this.items.controls.map((ctrl) => validateAiValue(this.aiDb, ctrl.value.ai, ctrl.value.value));
     this.errors = list;
+    const items = this.items.controls.map(ctrl => ({ ai: String(ctrl.value.ai), value: String(ctrl.value.value) }));
+    this.globalError = this.aiDb && Object.keys(this.aiDb).length ? validateCombination(this.aiDb, items) : null;
   }
 
   private revokePreview() {
@@ -114,4 +123,3 @@ export class BarcodeGs1EditorItemComponent implements OnInit, OnDestroy {
     await this.api.downloadGs1(req, format);
   }
 }
-
