@@ -1,0 +1,36 @@
+<div class="card rounded-card h-100">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="d-flex align-items-center gap-2">
+        <div class="d-inline-grid place-items-center bg-body-secondary rounded-3" style="width:36px;height:36px; position:relative">
+          <lucide-icon class="lucide-center" [img]="FingerprintIcon" [size]="20"></lucide-icon>
+        </div>
+        <div>
+          <div class="fw-semibold">UUID / ULID</div>
+          <div class="text-body-secondary small">Generator</div>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge text-bg-dark">utility</span>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 mb-2">
+      <select class="form-select form-select-sm" [(ngModel)]="idType">
+        <option value="ulid">ULID</option>
+        <option value="uuid">UUID</option>
+      </select>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-secondary" (click)="runId()" [disabled]="idLoading">{{idLoading ? '...' : 'GET /api/utils/id'}}</button>
+    </div>
+
+    <div class="mt-2" *ngIf="idResult as id">
+      <div class="input-group input-group-sm">
+        <input class="form-control" [value]="(id.ids || id) | json" readonly>
+        <button class="btn btn-outline-secondary" (click)="copy((id.id || id).toString())">Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
