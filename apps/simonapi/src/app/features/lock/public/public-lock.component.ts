@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LockApiService } from '../services/lock.api';
@@ -27,6 +27,12 @@ export class PublicLockComponent implements OnInit, OnDestroy {
   remaining = signal<number>(0); // seconds
   private timer: any;
 
+  // swipe state per lock (0..100)
+  slideProgress = signal<Record<string, number>>({});
+  private swipeActive = false;
+  private swipeLockId: string | null = null;
+  private swipeRect: DOMRect | null = null;
+
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
     const token = this.route.snapshot.queryParamMap.get('t');
@@ -48,6 +54,10 @@ export class PublicLockComponent implements OnInit, OnDestroy {
     this.api.getPublicLocks$(this.slug()!, this.token()!).subscribe({
       next: (res) => {
         this.locks.set(res.locks);
+        // reset progress map
+        const map: Record<string, number> = {};
+        for (const l of res.locks) map[l.id] = 0;
+        this.slideProgress.set(map);
         const validTo = res.validTo ? new Date(res.validTo) : null;
         this.validTo.set(validTo);
         if (this.timer) clearInterval(this.timer);
@@ -101,5 +111,44 @@ export class PublicLockComponent implements OnInit, OnDestroy {
       },
     });
   }
-}
 
+  // Swipe handlers
+  onSwipeStart(evt: PointerEvent, lockId: string) {
+    if (this.busy()) return;
+    const el = evt.currentTarget as HTMLElement;
+    this.swipeRect = el.getBoundingClientRect();
+    this.swipeActive = true;
+    this.swipeLockId = lockId;
+    (evt.target as Element).setPointerCapture?.(evt.pointerId);
+    this.onSwipeMove(evt);
+  }
+
+  onSwipeMove(evt: PointerEvent) {
+    if (!this.swipeActive || !this.swipeRect || !this.swipeLockId) return;
+    const x = evt.clientX;
+    const pct = Math.max(0, Math.min(100, ((x - this.swipeRect.left) / this.swipeRect.width) * 100));
+    const map = { ...this.slideProgress() };
+    map[this.swipeLockId] = pct;
+    this.slideProgress.set(map);
+    if (pct >= 95) {
+      const lid = this.swipeLockId;
+      this.resetSwipe();
+      const lock = (this.locks() || []).find(l => l.id === lid);
+      if (lock) this.open(lock);
+    }
+  }
+
+  onSwipeEnd(_evt: PointerEvent) {
+    if (!this.swipeActive || !this.swipeLockId) return;
+    const map = { ...this.slideProgress() };
+    map[this.swipeLockId] = 0;
+    this.slideProgress.set(map);
+    this.resetSwipe();
+  }
+
+  private resetSwipe() {
+    this.swipeActive = false;
+    this.swipeLockId = null;
+    this.swipeRect = null;
+  }
+}

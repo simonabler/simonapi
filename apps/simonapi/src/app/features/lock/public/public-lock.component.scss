@@ -1,2 +1,45 @@
 .card { transition: box-shadow .15s ease-in-out; }
 .card:hover { box-shadow: 0 .25rem .5rem rgba(0,0,0,.075); }
+
+.swipe-track {
+  position: relative;
+  height: 56px;
+  border-radius: 40px;
+  background: #f1f3f5;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+}
+.swipe-track.disabled { opacity: 0.6; pointer-events: none; }
+
+.swipe-fill {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: var(--pct, 0%);
+  background: linear-gradient(90deg, #0d6efd, #20c997);
+  border-radius: inherit;
+  transition: width .08s ease;
+}
+
+.swipe-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  color: #495057;
+  pointer-events: none;
+}
+
+.swipe-handle {
+  position: absolute;
+  top: 4px;
+  left: calc(var(--pct, 0%) - 24px);
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  display: flex; align-items: center; justify-content: center;
+  transition: left .08s ease;
+}

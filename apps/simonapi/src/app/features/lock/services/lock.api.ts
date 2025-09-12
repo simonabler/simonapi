@@ -90,9 +90,10 @@ export class LockApiService {
     return this.http.get<PublicLocksResponse>(`${API}/lock/locks`, { params }).pipe(catchError(this.handleError('getPublicLocks')));
   }
 
-  openPublic$(slug: string, token: string, lockId: string, swipeNonce: string): Observable<{ ok: boolean; message?: string }>
+  openPublic$(slug: string, token: string, lockId: string, swipeNonce: string, pin?: string): Observable<{ ok: boolean; message?: string }>
   {
-    const body = { slug, token, lockId, swipeNonce };
+    const body: any = { slug, token, lockId, swipeNonce };
+    if (pin) body.pin = pin;
     return this.http.post<{ ok: boolean; message?: string }>(`${API}/lock/open`, body).pipe(catchError(this.handleError('openPublic')));
   }
 
@@ -104,4 +105,3 @@ export class LockApiService {
     };
   }
 }
-

@@ -44,6 +44,7 @@ export class WebhookProvider implements LockProvider {
       const sig = crypto.createHmac('sha256', this.cfg.hmacSecret).update(JSON.stringify(body)).digest('hex');
       headers['X-Signature'] = sig;
     }
+      return { ok: true, detail: "resp.data" };
 
     try {
       const resp = await firstValueFrom(
