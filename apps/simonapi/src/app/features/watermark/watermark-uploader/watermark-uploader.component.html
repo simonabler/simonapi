@@ -1,0 +1,199 @@
+<div class="container-fluid py-3">
+  <div class="row g-3">
+    <div class="col-12 col-lg-3">
+      <div class="card h-100">
+        <div class="card-header">Upload</div>
+        <div class="card-body d-flex flex-column gap-3">
+          <!-- Hauptbild Dropzone -->
+          <div class="dropzone text-center p-3" appDnd (fileDropped)="onMainDropped($event)">
+            <div class="mb-2 fw-semibold">Hauptbild</div>
+            <div class="small text-muted">Bild hierher ziehen oder klicken</div>
+            <input type="file" accept="image/*" class="d-none" id="mainFileInput" (change)="onMainSelected($event)" />
+            <label class="stretched-link" for="mainFileInput" aria-label="Hauptbild auswählen"></label>
+          </div>
+          <div class="text-muted small" *ngIf="mainFile">Gewählt: {{ mainFile.name }}</div>
+
+          <!-- Logo Dropzone -->
+          <div class="dropzone text-center p-3" appDnd (fileDropped)="onLogoDropped($event)">
+            <div class="mb-2 fw-semibold">Logo (optional)</div>
+            <div class="small text-muted">Logo hierher ziehen oder klicken</div>
+            <input type="file" accept="image/*" class="d-none" id="logoFileInput" (change)="onLogoSelected($event)" />
+            <label class="stretched-link" for="logoFileInput" aria-label="Logo auswählen"></label>
+          </div>
+          <div class="text-muted small" *ngIf="logoFile">Gewählt: {{ logoFile.name }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-9">
+      <div class="card mb-3">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <span>Einstellungen</span>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="autoPreviewSwitch" [formControl]="$any(form.controls['autoPreview'])" />
+            <label class="form-check-label" for="autoPreviewSwitch">Auto-Preview</label>
+          </div>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="form" class="row g-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label">Modus</label>
+              <div class="d-flex gap-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" id="modeText" formControlName="mode" value="text" />
+                  <label class="form-check-label" for="modeText">Text</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" id="modeLogo" formControlName="mode" value="logo" [disabled]="!logoFile" />
+                  <label class="form-check-label" for="modeLogo">Logo</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label">Positionierung</label>
+              <div class="d-flex gap-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" id="posAbs" formControlName="positionMode" value="absolute" />
+                  <label class="form-check-label" for="posAbs">Absolut (x,y)</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" id="posAnchor" formControlName="positionMode" value="anchor" />
+                  <label class="form-check-label" for="posAnchor">Anchor</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+              <label class="form-label">Pos X</label>
+              <input type="number" min="0" class="form-control" formControlName="positionX" [disabled]="form.value.positionMode==='anchor'" />
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">Pos Y</label>
+              <input type="number" min="0" class="form-control" formControlName="positionY" [disabled]="form.value.positionMode==='anchor'" />
+            </div>
+
+            <div class="col-12 col-md-4" *ngIf="form.value.positionMode==='anchor'">
+              <label class="form-label">Anchor</label>
+              <select class="form-select" formControlName="anchor">
+                <option *ngFor="let a of anchors" [value]="a">{{ a }}</option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label">Deckkraft ({{ form.value.opacity }})</label>
+              <input type="range" class="form-range" min="0" max="1" step="0.05" formControlName="opacity" />
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Skalierung ({{ form.value.scale }})</label>
+              <input type="range" class="form-range" min="0.1" max="5" step="0.1" formControlName="scale" />
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label">Drehung (°)</label>
+              <input type="range" class="form-range" min="-180" max="180" step="1" formControlName="rotate" />
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label">Rand (px)</label>
+              <input type="number" min="0" class="form-control" formControlName="margin" />
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label">Gap (px)</label>
+              <input type="number" min="0" class="form-control" formControlName="gap" />
+            </div>
+
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="tileCheck" formControlName="tile" />
+                <label class="form-check-label" for="tileCheck">Kacheln (Tile)</label>
+              </div>
+            </div>
+
+            <div class="col-12" *ngIf="form.value.mode === 'text'">
+              <label class="form-label">Text</label>
+              <input type="text" class="form-control" formControlName="text" placeholder="Wasserzeichen-Text" />
+            </div>
+
+            <div class="col-6 col-md-3">
+              <label class="form-label">Schriftgröße</label>
+              <input type="number" class="form-control" formControlName="fontSize" />
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">Schriftart</label>
+              <select class="form-select" formControlName="fontFamily">
+                <option *ngFor="let f of fonts" [value]="f">{{ f }}</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">Farbe</label>
+              <input type="color" class="form-control form-control-color" formControlName="color" />
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">Konturfarbe</label>
+              <input type="color" class="form-control form-control-color" formControlName="strokeColor" />
+            </div>
+            <div class="col-12 col-md-3">
+              <label class="form-label">Konturbreite</label>
+              <input type="number" min="0" class="form-control" formControlName="strokeWidth" />
+            </div>
+
+            <div class="col-12 d-flex gap-2 align-items-center">
+              <button type="button" class="btn btn-primary" (click)="updatePreview()" [disabled]="!mainFile || loading">Vorschau aktualisieren</button>
+              <button type="button" class="btn btn-success" (click)="download()" [disabled]="!mainFile || loading">Download</button>
+              <div class="ms-auto" *ngIf="loading">
+                <span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>
+              </div>
+            </div>
+          </form>
+
+          <div *ngIf="errorMsg" class="alert alert-danger mt-3">{{ errorMsg }}</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Preview</div>
+        <div class="card-body">
+          <div class="preview-wrapper">
+            <div #previewCanvas class="preview-canvas" (pointermove)="onPointerMove($event)" (pointerup)="endDrag($event)">
+              <img *ngIf="(previewUrl || mainFileUrl) as imgSrc" [src]="imgSrc" class="img-preview img-fluid" alt="Preview" />
+
+              <!-- Draggable overlay: shows text or logo to position with mouse -->
+              <ng-container *ngIf="mainFile && form.value.positionMode==='absolute'">
+                <div
+                  class="overlay-draggable"
+                  [style.left.px]="form.value.positionX"
+                  [style.top.px]="form.value.positionY"
+                  (pointerdown)="startDrag($event)"
+                  [style.opacity]="form.value.opacity"
+                  [style.transform]="'translate(-50%, -50%) rotate(' + form.value.rotate + 'deg) scale(' + form.value.scale + ')'
+                    "
+                >
+                  <ng-container *ngIf="form.value.mode === 'text'; else logoOverlay">
+                    <div
+                      class="overlay-text"
+                      [style.fontFamily]="form.value.fontFamily"
+                      [style.fontSize.px]="form.value.fontSize"
+                      [style.color]="form.value.color"
+                      [style.webkitTextStrokeColor]="form.value.strokeColor"
+                      [style.webkitTextStrokeWidth.px]="form.value.strokeWidth"
+                    >
+                      {{ form.value.text || 'Text' }}
+                    </div>
+                  </ng-container>
+                  <ng-template #logoOverlay>
+                    <img *ngIf="logoFileUrl" [src]="logoFileUrl" class="overlay-logo" alt="Logo" />
+                    <div *ngIf="!logoFileUrl" class="badge text-bg-secondary">Logo</div>
+                  </ng-template>
+                </div>
+              </ng-container>
+
+              <div *ngIf="loading" class="loading-overlay d-flex align-items-center justify-content-center">
+                <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

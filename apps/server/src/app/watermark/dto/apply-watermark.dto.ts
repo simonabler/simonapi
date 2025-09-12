@@ -1,10 +1,10 @@
 import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
 enum Mode { LOGO = 'logo', TEXT = 'text' }
 
-enum Position {
+enum Anchor {
   CENTER = 'center',
   TOP_LEFT = 'top-left',
   TOP_RIGHT = 'top-right',
@@ -21,13 +21,21 @@ export class ApplyWatermarkDto {
   @IsEnum(Mode)
   mode: Mode;
 
-  @ApiPropertyOptional({ enum: Position, default: Position.BOTTOM_RIGHT })
+  // New absolute position (x,y) in px; when provided, overrides margin-based offset
+  @ApiPropertyOptional({ description: 'Absolute Position "x,y" in px; überschreibt margin-basiertes Offset.' })
   @IsOptional()
-  @IsEnum(Position)
-  position?: Position = Position.BOTTOM_RIGHT;
+  @IsString()
+  position?: string;
+
+  // Renamed from "position" → "anchor" for anchor enum
+  @ApiPropertyOptional({ enum: Anchor, default: Anchor.BOTTOM_RIGHT })
+  @IsOptional()
+  @IsEnum(Anchor)
+  anchor?: Anchor = Anchor.BOTTOM_RIGHT;
 
   @ApiPropertyOptional({ default: 0.5, minimum: 0, maximum: 1 })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   @Max(1)
@@ -35,6 +43,7 @@ export class ApplyWatermarkDto {
 
   @ApiPropertyOptional({ description: 'Logo-Breite relativ zur Bildbreite (0..1)', default: 0.2 })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(0.01)
   @Max(1)
@@ -48,16 +57,26 @@ export class ApplyWatermarkDto {
 
   @ApiPropertyOptional({ default: 0 })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   rotate?: number = 0;
 
   @ApiPropertyOptional({ default: false })
   @IsOptional()
-  @IsBoolean()
+  @Transform(({ value }) => {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'string') {
+      const v = value.toLowerCase();
+      if (v === 'true' || v === '1') return true;
+      if (v === 'false' || v === '0') return false;
+    }
+    return undefined;
+  })  @IsBoolean()
   tile?: boolean = false;
 
   @ApiPropertyOptional({ default: 128 })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   gap?: number = 128;
 
@@ -69,6 +88,7 @@ export class ApplyWatermarkDto {
 
   @ApiPropertyOptional({ default: 48 })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   fontSize?: number = 48;
 
@@ -89,14 +109,22 @@ export class ApplyWatermarkDto {
 
   @ApiPropertyOptional({ default: 0 })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   strokeWidth?: number = 0;
 
   @ApiPropertyOptional({ default: false })
   @IsOptional()
-  @IsBoolean()
+  @Transform(({ value }) => {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'string') {
+      const v = value.toLowerCase();
+      if (v === 'true' || v === '1') return true;
+      if (v === 'false' || v === '0') return false;
+    }
+    return undefined;
+  })  @IsBoolean()
   download?: boolean = false;
 }
 
-export { Mode as WatermarkMode, Position as WatermarkPosition };
-
+export { Mode as WatermarkMode, Anchor as WatermarkAnchor };

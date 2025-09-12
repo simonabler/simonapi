@@ -1,0 +1,65 @@
+// Dropzone styles
+.dropzone {
+  position: relative;
+  border: 2px dashed #ced4da;
+  border-radius: 0.5rem;
+  height: 140px;
+  color: #6c757d;
+  background-color: #f8f9fa;
+  transition: background-color 0.2s ease;
+}
+
+.dropzone.dnd-over {
+  background-color: #eef5ff;
+}
+
+.dropzone .stretched-link {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}
+
+// Preview area
+.preview-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.preview-canvas {
+  position: relative;
+  display: inline-block; // shrink to image size
+  max-width: 100%;
+}
+
+.img-preview {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  max-height: 70vh;
+}
+
+.overlay-draggable {
+  position: absolute;
+  transform-origin: center center;
+  cursor: move;
+  user-select: none;
+}
+
+.overlay-text {
+  white-space: nowrap;
+  font-weight: 600;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.overlay-logo {
+  max-width: 240px;
+  max-height: 180px;
+  display: block;
+}
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+

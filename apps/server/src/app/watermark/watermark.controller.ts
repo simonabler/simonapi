@@ -30,7 +30,7 @@ export class WatermarkController {
         file: { type: 'string', format: 'binary' },
         logo: { type: 'string', format: 'binary' },
         mode: { type: 'string', enum: ['logo', 'text'] },
-        position: {
+        anchor: {
           type: 'string',
           enum: [
             'center', 'top-left', 'top-right', 'bottom-left', 'bottom-right',
@@ -38,6 +38,7 @@ export class WatermarkController {
           ],
           default: 'bottom-right',
         },
+        position: { type: 'string', description: 'Absolute Position "x,y" in px; überschreibt margin-basiertes Offset' },
         opacity: { type: 'number', default: 0.5, minimum: 0, maximum: 1 },
         scale: { type: 'number', default: 0.2, description: 'Logo-Breite relativ zur Bildbreite (0..1)' },
         margin: { type: 'number', default: 24 },
@@ -72,6 +73,8 @@ export class WatermarkController {
     @Body() body: ApplyWatermarkDto,
     @Res() res: Response,
   ) {
+
+    console.log(body)
     const file = files?.file?.[0];
     if (!file) throw new BadRequestException('Feld "file" fehlt.');
 
@@ -97,4 +100,3 @@ export class WatermarkController {
     return res.send(output);
   }
 }
-

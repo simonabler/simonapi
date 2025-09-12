@@ -1,0 +1,300 @@
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { debounceTime, filter, Subscription } from 'rxjs';
+import { WatermarkAnchor, WatermarkOptions, WatermarkService } from '../watermark.service';
+import { DndDirective } from './dnd.directive';
+
+@Component({
+  selector: 'app-watermark-uploader',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, DndDirective],
+  templateUrl: './watermark-uploader.component.html',
+  styleUrls: ['./watermark-uploader.component.scss'],
+})
+export class WatermarkUploaderComponent implements OnInit, OnDestroy {
+  private fb = inject(FormBuilder);
+
+  private svc = inject(WatermarkService);
+
+  form!: FormGroup;
+
+  mainFile: File | null = null;
+  logoFile: File | null = null;
+  mainFileUrl: string | null = null;
+  logoFileUrl: string | null = null;
+  previewUrl: string | null = null;
+
+  loading = false;
+  errorMsg: string | null = null;
+
+  dragging = false;
+  dragOffsetX = 0;
+  dragOffsetY = 0;
+
+  @ViewChild('previewCanvas', { static: false })
+  previewCanvas?: ElementRef<HTMLDivElement>;
+
+  private subs = new Subscription();
+
+  fonts = [
+    'Arial',
+    'Roboto',
+    'Times New Roman',
+    'Courier New',
+    'Georgia',
+    'Impact',
+    'Verdana',
+  ];
+  anchors: WatermarkAnchor[] = [
+    'bottom-right',
+    'bottom-center',
+    'bottom-left',
+    'center-right',
+    'center',
+    'center-left',
+    'top-right',
+    'top-center',
+    'top-left',
+  ];
+
+
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      mode: ['text', Validators.required],
+      positionMode: ['absolute' as 'absolute' | 'anchor'],
+      anchor: ['bottom-right'],
+      // position stored as separate controls; combined on submit as "x,y"
+      positionX: [20, [Validators.required, Validators.min(0)]],
+      positionY: [20, [Validators.required, Validators.min(0)]],
+      opacity: [
+        0.5,
+        [Validators.required, Validators.min(0), Validators.max(1)],
+      ],
+      scale: [
+        1,
+        [Validators.required, Validators.min(0.1), Validators.max(10)],
+      ],
+      margin: [0, [Validators.required, Validators.min(0)]],
+      rotate: [
+        0,
+        [Validators.required, Validators.min(-360), Validators.max(360)],
+      ],
+      tile: [false],
+      gap: [0, [Validators.required, Validators.min(0)]],
+
+      text: ['Sample Watermark'],
+      fontSize: [36, [Validators.min(6), Validators.max(300)]],
+      fontFamily: ['Arial'],
+      color: ['#000000'],
+      strokeColor: ['#ffffff'],
+      strokeWidth: [0, [Validators.min(0), Validators.max(50)]],
+
+      autoPreview: [true],
+    });
+
+    // Auto-preview on form changes with debounce if enabled
+    this.subs.add(
+      this.form.valueChanges
+        .pipe(
+          debounceTime(500),
+          filter(() => !!this.form.get('autoPreview')?.value && !!this.mainFile)
+        )
+        .subscribe(() => this.updatePreview())
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.cleanupObjectUrl('previewUrl');
+    this.cleanupObjectUrl('mainFileUrl');
+    this.cleanupObjectUrl('logoFileUrl');
+    this.subs.unsubscribe();
+  }
+
+  // Helpers to manage object URLs
+  private cleanupObjectUrl(key: 'previewUrl' | 'mainFileUrl' | 'logoFileUrl') {
+    const url = this[key];
+    if (url) {
+      URL.revokeObjectURL(url);
+      this[key] = null;
+    }
+  }
+
+  // Drop/Select Handlers
+  onMainDropped(files: FileList | File[]): void {
+    const file = this.pickImageFile(files);
+    if (file) this.setMainFile(file);
+  }
+  onLogoDropped(files: FileList | File[]): void {
+    const file = this.pickImageFile(files);
+    if (file) this.setLogoFile(file);
+  }
+  onMainSelected(evt: Event): void {
+    const input = evt.target as HTMLInputElement;
+    const file = input.files && input.files[0];
+    if (file) this.setMainFile(file);
+    input.value = '';
+  }
+  onLogoSelected(evt: Event): void {
+    const input = evt.target as HTMLInputElement;
+    const file = input.files && input.files[0];
+    if (file) this.setLogoFile(file);
+    input.value = '';
+  }
+
+  private pickImageFile(files: FileList | File[]): File | null {
+    const list: File[] = files instanceof FileList ? Array.from(files) : files;
+    const img = list.find((f) => f.type.startsWith('image/')) ?? null;
+    return img ?? null;
+  }
+
+  private setMainFile(file: File) {
+    this.mainFile = file;
+    this.cleanupObjectUrl('mainFileUrl');
+    this.mainFileUrl = URL.createObjectURL(file);
+    // Reset preview when base image changes
+    this.cleanupObjectUrl('previewUrl');
+    if (this.form.get('autoPreview')?.value) {
+      this.updatePreview();
+    }
+  }
+
+  private setLogoFile(file: File) {
+    this.logoFile = file;
+    this.cleanupObjectUrl('logoFileUrl');
+    this.logoFileUrl = URL.createObjectURL(file);
+    // Switch mode to logo automatically
+    this.form.patchValue({ mode: 'logo' });
+    if (this.form.get('autoPreview')?.value && this.mainFile) {
+      this.updatePreview();
+    }
+  }
+
+  // Dragging overlay inside preview
+  startDrag(event: PointerEvent) {
+    if (!this.previewCanvas) return;
+    const canvas = this.previewCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+    const x = this.form.value.positionX ?? 0;
+    const y = this.form.value.positionY ?? 0;
+    // Switch to absolute positioning when user drags
+    if (this.form.value.positionMode !== 'absolute') {
+      this.form.patchValue({ positionMode: 'absolute' });
+    }
+    this.dragging = true;
+    this.dragOffsetX = event.clientX - rect.left - x;
+    this.dragOffsetY = event.clientY - rect.top - y;
+  }
+
+  onPointerMove(event: PointerEvent) {
+    if (!this.dragging || !this.previewCanvas) return;
+    const canvas = this.previewCanvas.nativeElement;
+    const rect = canvas.getBoundingClientRect();
+
+    let newX = event.clientX - rect.left - this.dragOffsetX;
+    let newY = event.clientY - rect.top - this.dragOffsetY;
+    // Constrain within canvas bounds
+    newX = Math.max(0, Math.min(newX, rect.width));
+    newY = Math.max(0, Math.min(newY, rect.height));
+    this.form.patchValue(
+      { positionX: Math.round(newX), positionY: Math.round(newY) },
+      { emitEvent: true }
+    );
+  }
+
+  endDrag(event: PointerEvent) {
+    if (!this.dragging) return;
+    this.dragging = false;
+  }
+
+  // Build options from form for API
+  private buildOptions(forDownload = false): WatermarkOptions {
+    const v = this.form.value;
+    const opts: WatermarkOptions = {
+      mode: v.mode,
+      opacity: Number(v.opacity ?? 1),
+      scale: Number(v.scale ?? 1),
+      margin: Number(v.margin ?? 0),
+      rotate: Number(v.rotate ?? 0),
+      tile: !!v.tile,
+      gap: Number(v.gap ?? 0),
+      text: v.text,
+      fontSize: v.fontSize,
+      fontFamily: v.fontFamily,
+      color: v.color,
+      strokeColor: v.strokeColor,
+      strokeWidth: v.strokeWidth,
+      download: forDownload,
+    };
+    if (v.positionMode === 'absolute') {
+      opts.position = `${v.positionX ?? 0},${v.positionY ?? 0}`;
+    } else {
+      opts.anchor = (v.anchor as WatermarkAnchor) ?? 'bottom-right';
+    }
+    return opts;
+  }
+
+  updatePreview(): void {
+    if (!this.mainFile) {
+      this.errorMsg = 'Bitte zunächst ein Hauptbild hochladen.';
+      return;
+    }
+    this.errorMsg = null;
+    this.loading = true;
+    this.cleanupObjectUrl('previewUrl');
+
+    const opts = this.buildOptions(false);
+    const logo =
+      this.form.value.mode === 'logo' ? this.logoFile ?? undefined : undefined;
+    this.svc.apply(this.mainFile, opts, logo).subscribe({
+      next: (blob) => {
+        this.previewUrl = URL.createObjectURL(blob);
+        this.loading = false;
+      },
+      error: (err) => {
+        this.errorMsg = err?.message || 'Fehler bei der Vorschau-Erzeugung.';
+        this.loading = false;
+      },
+    });
+  }
+
+  download(): void {
+    if (!this.mainFile) return;
+    this.errorMsg = null;
+    const opts = this.buildOptions(true);
+    const logo =
+      this.form.value.mode === 'logo' ? this.logoFile ?? undefined : undefined;
+    this.loading = true;
+    this.svc.apply(this.mainFile, opts, logo).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const name = `watermarked-${this.mainFile?.name || 'image'}`;
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        this.loading = false;
+      },
+      error: (err) => {
+        this.errorMsg = err?.message || 'Fehler beim Download.';
+        this.loading = false;
+      },
+    });
+  }
+}

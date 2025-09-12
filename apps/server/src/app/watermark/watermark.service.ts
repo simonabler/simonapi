@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import * as Sharp from 'sharp';
 import * as path from 'path';
 import * as fs from 'fs';
-import { ApplyWatermarkDto, WatermarkMode, WatermarkPosition } from './dto/apply-watermark.dto';
+import { ApplyWatermarkDto, WatermarkMode, WatermarkAnchor } from './dto/apply-watermark.dto';
 
 export type ApplyArgs = {
   inputBuffer: Buffer;
@@ -36,7 +36,14 @@ export class WatermarkService {
         overlays.push({ input: Buffer.from(svg), top: 0, left: 0 });
       } else {
         const scaled = await this.scaleLogoToWidth(logo, Math.max(1, Math.round(width * (dto.scale ?? 0.2))));
-        const { top, left } = this.resolvePosition(width, height, scaled.info.width!, scaled.info.height!, dto.position!, dto.margin!);
+        const coord = this.resolveAbsolutePosition(dto.position);
+        let top: number, left: number;
+        if (coord) {
+          ({ top, left } = coord);
+        } else {
+          const anchor = (dto.anchor ?? 'bottom-right') as WatermarkAnchor;
+          ({ top, left } = this.resolveAnchorPosition(width, height, scaled.info.width!, scaled.info.height!, anchor, dto.margin!));
+        }
         overlays.push({ input: scaled.buffer, top, left });
       }
     } else if (dto.mode === WatermarkMode.TEXT) {
@@ -100,15 +107,15 @@ export class WatermarkService {
     return { buffer: resized, info: resizedInfo };
   }
 
-  private resolvePosition(
+  private resolveAnchorPosition(
     imageW: number,
     imageH: number,
     wmW: number,
     wmH: number,
-    position: WatermarkPosition,
+    anchor: WatermarkAnchor,
     margin: number,
   ) {
-    const positions: Record<WatermarkPosition, { top: number; left: number }> = {
+    const positions: Record<WatermarkAnchor, { top: number; left: number }> = {
       'top-left': { top: margin, left: margin },
       'top-right': { top: margin, left: imageW - wmW - margin },
       'bottom-left': { top: imageH - wmH - margin, left: margin },
@@ -119,7 +126,7 @@ export class WatermarkService {
       'center-left': { top: Math.round((imageH - wmH) / 2), left: margin },
       'center-right': { top: Math.round((imageH - wmH) / 2), left: imageW - wmW - margin },
     } as const;
-    return positions[position] ?? positions['bottom-right'];
+    return positions[anchor] ?? positions['bottom-right'];
   }
 
   private colorToRgba(color: string, opacity: number): string {
@@ -157,36 +164,39 @@ export class WatermarkService {
     const stroke = dto.strokeWidth && dto.strokeWidth > 0 ? ` stroke="${dto.strokeColor ?? '#000'}" stroke-width="${dto.strokeWidth}"` : '';
 
     // compute x/y by position (anchor baseline at bottom-left of text)
-    const margin = dto.margin ?? 24;
-    let x = margin;
-    let y = imageH - margin; // bottom-left default baseline
-
-    const position = dto.position ?? WatermarkPosition.BOTTOM_RIGHT;
-
-    // For simplicity, we place the text using SVG text-anchor & dominant-baseline
-    let textAnchor = 'start';
-    let baseline = 'alphabetic';
-
-    switch (position) {
-      case 'top-left':
-        x = margin; y = margin; baseline = 'hanging'; textAnchor = 'start'; break;
-      case 'top-center':
-        x = imageW / 2; y = margin; baseline = 'hanging'; textAnchor = 'middle'; break;
-      case 'top-right':
-        x = imageW - margin; y = margin; baseline = 'hanging'; textAnchor = 'end'; break;
-      case 'center-left':
-        x = margin; y = imageH / 2; baseline = 'middle'; textAnchor = 'start'; break;
-      case 'center':
-        x = imageW / 2; y = imageH / 2; baseline = 'middle'; textAnchor = 'middle'; break;
-      case 'center-right':
-        x = imageW - margin; y = imageH / 2; baseline = 'middle'; textAnchor = 'end'; break;
-      case 'bottom-left':
-        x = margin; y = imageH - margin; baseline = 'alphabetic'; textAnchor = 'start'; break;
-      case 'bottom-center':
-        x = imageW / 2; y = imageH - margin; baseline = 'alphabetic'; textAnchor = 'middle'; break;
-      case 'bottom-right':
-      default:
-        x = imageW - margin; y = imageH - margin; baseline = 'alphabetic'; textAnchor = 'end'; break;
+    // Absolute position (x,y) overrides anchor/margin
+    const abs = this.resolveAbsolutePosition(dto.position);
+    let x: number; let y: number; let textAnchor = 'start'; let baseline = 'alphabetic';
+    if (abs) {
+      // Treat provided coordinates as top-left reference for text
+      x = abs.left; y = abs.top;
+      // better readability when not using baseline as bottom-left
+      baseline = 'hanging';
+      textAnchor = 'start';
+    } else {
+      const margin = dto.margin ?? 24;
+      const anchor = (dto.anchor ?? 'bottom-right') as WatermarkAnchor;
+      switch (anchor) {
+        case 'top-left':
+          x = margin; y = margin; baseline = 'hanging'; textAnchor = 'start'; break;
+        case 'top-center':
+          x = imageW / 2; y = margin; baseline = 'hanging'; textAnchor = 'middle'; break;
+        case 'top-right':
+          x = imageW - margin; y = margin; baseline = 'hanging'; textAnchor = 'end'; break;
+        case 'center-left':
+          x = margin; y = imageH / 2; baseline = 'middle'; textAnchor = 'start'; break;
+        case 'center':
+          x = imageW / 2; y = imageH / 2; baseline = 'middle'; textAnchor = 'middle'; break;
+        case 'center-right':
+          x = imageW - margin; y = imageH / 2; baseline = 'middle'; textAnchor = 'end'; break;
+        case 'bottom-left':
+          x = margin; y = imageH - margin; baseline = 'alphabetic'; textAnchor = 'start'; break;
+        case 'bottom-center':
+          x = imageW / 2; y = imageH - margin; baseline = 'alphabetic'; textAnchor = 'middle'; break;
+        case 'bottom-right':
+        default:
+          x = imageW - margin; y = imageH - margin; baseline = 'alphabetic'; textAnchor = 'end'; break;
+      }
     }
 
     const rotate = dto.rotate ?? 0;
@@ -244,5 +254,14 @@ export class WatermarkService {
   <rect width="100%" height="100%" fill="url(#wm)" />
 </svg>`;
   }
-}
 
+  private resolveAbsolutePosition(position?: string): { top: number; left: number } | null {
+    if (!position) return null;
+    const m = String(position).trim().match(/^(\d+)\s*,\s*(\d+)$/);
+    if (!m) return null;
+    const x = Number(m[1]);
+    const y = Number(m[2]);
+    if (Number.isNaN(x) || Number.isNaN(y)) return null;
+    return { left: x, top: y };
+  }
+}

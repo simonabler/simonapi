@@ -24,4 +24,8 @@ export const appRoutes: Route[] = [
     component: DevUtilsComponent,
     title: 'Dev Utilities'
   },
+  {
+    path: 'tools/watermark',
+    loadComponent: () => import('./features/watermark/watermark-uploader/watermark-uploader.component').then(c => c.WatermarkUploaderComponent),
+  },
 ];
