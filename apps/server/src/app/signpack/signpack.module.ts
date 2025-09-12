@@ -7,9 +7,6 @@ import { Signpack } from './entities/signpack.entity';
 import { SignpackService } from './signpack.service';
 import { SignpackController } from './signpack.controller';
 import signpackConfig from './config/app.config';
-import databaseConfig from './config/database.config';
-import throttlerConfig from './config/throttler.config';
-
 
 
 @Injectable()
@@ -26,8 +23,6 @@ export class PurgeService {
 @Module({
   imports: [
     ConfigModule.forFeature(signpackConfig),
-    ConfigModule.forFeature(databaseConfig),
-    ConfigModule.forFeature(throttlerConfig),
     ScheduleModule.forRoot(),
     HttpModule,
     TypeOrmModule.forFeature([Signpack]),

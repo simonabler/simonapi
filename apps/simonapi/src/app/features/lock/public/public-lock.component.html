@@ -1,0 +1,50 @@
+<div class="container py-4 min-vh-100  align-items-center justify-content-center">
+  <h2 class="h5 mb-3">Lock Access</h2>
+
+  <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
+
+  <div *ngIf="!error()">
+    <div class="mb-3" *ngIf="validTo()">
+      <span class="badge text-bg-secondary">Restzeit: {{ getRemainingLabel() }}</span>
+    </div>
+
+    <div *ngIf="!locks(); else listTpl" class="text-muted">Lade …</div>
+    <ng-template #listTpl>
+      <div class="row g-4 justify-content-center w-100" style="max-width: 960px;">
+        <div class="col-12 col-md-8" *ngFor="let l of locks()!">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="fw-semibold">{{ l.name }}</div>
+                <span *ngIf="l.state" class="badge" [class.text-bg-success]="l.state==='OPEN'" [class.text-bg-secondary]="l.state==='CLOSED'" [class.text-bg-warning]="l.state==='UNKNOWN'">{{ l.state }}</span>
+              </div>
+
+              <!-- Swipe to open -->
+              <div class="swipe-track"
+                   [class.disabled]="busy()"
+                   [style.--pct]="(slideProgress()[l.id] || 0) + '%'"
+                   (pointerdown)="onSwipeStart($event, l.id)"
+                   (pointermove)="onSwipeMove($event)"
+                   (pointerup)="onSwipeEnd($event)"
+                   (pointerleave)="onSwipeEnd($event)"
+                   tabindex="0"
+                   (keydown.enter)="open(l)"
+                   (keydown.space)="open(l)"
+                   aria-label="Nach rechts wischen zum Öffnen">
+                <div class="swipe-fill"></div>
+                <div class="swipe-label">Zum Öffnen nach rechts wischen</div>
+                <div class="swipe-handle">
+                  <span class="bi bi-chevron-double-right"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="mt-3">
+    <a href="/" class="text-decoration-none">Zurück</a>
+  </div>
+</div>

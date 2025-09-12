@@ -9,11 +9,14 @@ import { WatermarkModule } from './watermark/watermark.module';
 import { BarcodesModule } from './barcode/barcodes.module';
 import { SignpackModule } from './signpack/signpack.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './config/app.config';
 //dummyload for NX project.json
 import {} from 'sqlite3'
 import { APP_GUARD } from '@nestjs/core';
+import { LockModule } from './lock/lock.module';
+import databaseConfig from './config/database.config';
+import throttlerConfig from './config/throttler.config';
 
 @Module({
   imports: [
@@ -28,22 +31,46 @@ import { APP_GUARD } from '@nestjs/core';
       ],
       load: [appConfig],
     }),
+    ConfigModule.forFeature(databaseConfig),
+    ConfigModule.forFeature(throttlerConfig),
+    
     TypeOrmModule.forRootAsync({
-      useFactory: () => {
-        const url = process.env.TYPEORM_URL;
-        if (url) {
-          return {
+      inject: [ConfigService],
+      useFactory: (cfg: ConfigService) => {
+        const db = cfg.get<any>('database');
+        if (db?.url) {
+          const options: any = {
             type: 'postgres' as const,
-            url,
+            url: db.url,
             autoLoadEntities: true,
-            synchronize: true,
+            synchronize: db.synchronize !== false,
           };
+          if (db.ssl) {
+            options.ssl = { rejectUnauthorized: db.sslRejectUnauthorized !== false };
+          }
+          return options;
+        }
+        if (db?.host) {
+          const options: any = {
+            type: 'postgres' as const,
+            host: db.host,
+            port: db.port ?? 5432,
+            username: db.username ?? undefined,
+            password: db.password ?? undefined,
+            database: db.database ?? undefined,
+            autoLoadEntities: true,
+            synchronize: db.synchronize !== false,
+          };
+          if (db.ssl) {
+            options.ssl = { rejectUnauthorized: db.sslRejectUnauthorized !== false };
+          }
+          return options;
         }
         return {
           type: 'sqlite' as const,
-          database: process.env.TYPEORM_DB ?? './signpacks.sqlite',
+          database: db?.sqlitePath ?? process.env.TYPEORM_DB ?? './signpacks.sqlite',
           autoLoadEntities: true,
-          synchronize: true,
+          synchronize: db?.synchronize !== false,
         };
       },
     }),
@@ -60,6 +87,7 @@ import { APP_GUARD } from '@nestjs/core';
     SignpackModule,
     WatermarkModule,
     UtilityModule,
+    LockModule,
   ],
   controllers: [AppController, ReportsController],
   providers: [AppService,
