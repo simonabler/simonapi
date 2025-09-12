@@ -17,7 +17,7 @@ type ServiceCard = {
 @Component({
   standalone: true,
   selector: 'app-home',
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, RouterLink],
   templateUrl: './home.component.html',
   styles: [`
   .hero { background: linear-gradient(135deg, var(--brand-2), var(--brand)); }
@@ -28,6 +28,8 @@ type ServiceCard = {
   .profile .avatar { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, #22d3ee, #818cf8); color: #0b1020; }
   .profile { backdrop-filter: saturate(1.2); }
   .service-card .icon { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: color-mix(in oklab, var(--brand), white 85%); }
+  .service-desc { color: var(--bs-body-color); }
+  .service-card .card-body { color: var(--bs-body-color); }
   `],
 })
 export class HomeComponent {
@@ -38,13 +40,14 @@ export class HomeComponent {
 
 
   profile = {
-    name: 'Dein Name',
-    role: 'Software Engineer',
-    location: 'Your City',
-    bio: 'Ich baue APIs, Frontends und Dev-Tools mit Fokus auf Developer Experience.',
+    name: 'Simon Abler',
+    role: 'Senior Full‑Stack Engineer (Cybersecurity / CISO mindset)',
+    location: 'Tyrol, AT',
+    bio: 'Senior full‑stack engineer with a security‑first, CISO. I design and operate secure API platforms, developer tools and web UIs end‑to‑end. Focus on cybersecurity (OWASP, threat modeling, IAM), API governance, automation and measurable DX. Strong with NestJS, Angular, TypeORM, PostgreSQL and containers — shipping clean architecture from home‑lab to cloud.',
     links: [
-      { label: 'GitHub', href: 'https://github.com/' },
-      { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
+      { label: 'Website', href: 'https://hub.abler.tirol' },
+      { label: 'GitHub', href: 'https://github.com/simonabler' },
+      { label: 'LinkedIn', href: 'https://www.linkedin.com/in/simonabler' },
     ],
   };
   get avatarInitials() {
@@ -56,67 +59,59 @@ export class HomeComponent {
   services: ServiceCard[] = [
     {
       key: 'qr',
-      title: 'QR Code Service',
-      description: 'Erzeuge QR Codes aus URL, Text, E-Mail, Telefon, SMS, vCard oder WLAN. Export als PNG/SVG – ideal für Sharing & Druck.',
+      title: 'QR Codes',
+      description: 'Erzeuge QR aus URL, Text, E‑Mail, Telefon, SMS, vCard oder WLAN. Export als PNG/SVG.',
       route: '/qr',
       apiTitle: 'POST /api/qr',
-      curl: `curl -X POST http://localhost:3000/api/qr -H "Content-Type: application/json" -d '{"type":"url","payload":{"url":"https://example.com"},"format":"svg","size":512,"margin":2,"ecc":"M"}'`,
+      curl: `curl -X POST http://localhost:3000/api/qr -H "Content-Type: application/json" -d '{"type":"url","payload":{"url":"https://example.com"},"format":"svg"}'`,
       activeTab: 'info',
       icon: '🔳',
     },
-    // Dev/Utility – Einzelkarten
     {
-      key: 'echo',
-      title: 'Echo/IP-API',
-      description: 'Gibt Client-IP, Headers und User-Agent zurück – ideal zum Debuggen von Proxies und Requests.',
+      key: 'barcode',
+      title: 'Barcodes & GS1',
+      description: 'Standardbarcodes (PNG/SVG) und GS1-128/DataMatrix (Render per JSON).',
+      route: '/barcode',
+      apiTitle: 'GET /api/barcode/png | svg, POST /api/barcode/gs1/render',
+      curl: `curl -X POST http://localhost:3000/api/barcode/gs1/render -H "Content-Type: application/json" -d '{"symbology":"gs1-128","format":"png","items":[{"ai":"01","value":"09506000134352"}]}'`,
+      activeTab: 'info',
+      icon: '🏷️',
+    },
+    {
+      key: 'watermark',
+      title: 'Watermark',
+      description: 'Bilder mit Logo/Text versehen. Live‑Preview und Download.',
+      route: '/tools/watermark',
+      apiTitle: 'POST /api/watermark/apply',
+      curl: `curl -X POST http://localhost:3000/api/watermark/apply -F "mode=text" -F "file=@image.jpg" -F "text=Demo" -o out.jpg`,
+      activeTab: 'info',
+      icon: '🖼️',
+    },
+    {
+      key: 'locks',
+      title: 'Locks',
+      description: 'Access‑Links verwalten (Admin) und per Swipe‑to‑Open öffnen.',
+      route: '/admin/lock',
+      apiTitle: 'GET /api/lock/locks, POST /api/lock/open',
+      curl: `curl "http://localhost:3000/api/lock/locks?slug=...&t=..."`,
+      activeTab: 'info',
+      icon: '🔒',
+    },
+    {
+      key: 'utils',
+      title: 'Utilities',
+      description: 'Echo, IDs, Slugify, Hashing, Markdown → HTML für den Alltag.',
       route: '/dev-utils',
-      apiTitle: 'GET /api/utils/echo',
+      apiTitle: 'GET /api/utils/echo | id, POST /api/utils/slugify | hash | md2html',
       curl: `curl http://localhost:3000/api/utils/echo`,
       activeTab: 'info',
-      icon: '🔁',
+      icon: '🧰',
     },
-    {
-      key: 'id',
-      title: 'UUID/ULID-Generator',
-      description: 'Generiert IDs (ULID oder UUID) für Tests, Seeds und Korrelationen.',
-      route: '/dev-utils',
-      apiTitle: 'GET /api/utils/id?type=ulid',
-      curl: `curl "http://localhost:3000/api/utils/id?type=ulid"`,
-      activeTab: 'info',
-      icon: '🆔',
-    },
-    {
-      key: 'slugify',
-      title: 'Slugify/Transliteration',
-      description: 'Wandelt Texte in URL-Slugs um (transliteriert, kleinschreibung, Trennzeichen „-”).',
-      route: '/dev-utils',
-      apiTitle: 'POST /api/utils/slugify',
-      curl: `curl -X POST http://localhost:3000/api/utils/slugify -H "Content-Type: application/json" -d '{"text":"Äpfel & Öl – groß!"}'`,
-      activeTab: 'info',
-      icon: '📝',
-    },
-    {
-      key: 'hash',
-      title: 'Hashing-Service',
-      description: 'Erzeugt Hashes (md5/sha256/bcrypt) für Prüfungen, Integrität und Passwort-Workflows.',
-      route: '/dev-utils',
-      apiTitle: 'POST /api/utils/hash?algo=sha256',
-      curl: `curl -X POST "http://localhost:3000/api/utils/hash?algo=sha256" -H "Content-Type: application/json" -d '{"text":"hello"}'`,
-      activeTab: 'info',
-      icon: '🔐',
-    },
-    {
-      key: 'md2html',
-      title: 'Markdown → HTML (sanitized)',
-      description: 'Sichere Umwandlung von Markdown in HTML für Previews und Editor-Features.',
-      route: '/dev-utils',
-      apiTitle: 'POST /api/utils/md2html',
-      curl: `curl -X POST http://localhost:3000/api/utils/md2html -H "Content-Type: application/json" -d '{"markdown":"# Hello\\n\\n- item"}'`,
-      activeTab: 'info',
-      icon: '📄',
-    },
-
   ];
+
+  setTab(key: string, tab: 'info' | 'api') {
+    this.services = this.services.map(s => s.key === key ? { ...s, activeTab: tab } : s);
+  }
 
   async copy(text: string) {
     try {
