@@ -65,7 +65,7 @@ export class HomeComponent {
     links: [
       { label: 'Website', href: 'https://hub.abler.tirol' },
       { label: 'GitHub', href: 'https://github.com/simonabler' },
-      { label: 'LinkedIn', href: 'https://www.linkedin.com/in/simonabler' },
+      { label: 'LinkedIn', href: 'https://www.linkedin.com/in/simon-abler-b88a60157' },
     ],
     gravatarHash: 'fd97500da3d31da41dbfc114c04d2e455c32401de85c35ed6ceca18a09cc1957',
   };
@@ -84,7 +84,7 @@ export class HomeComponent {
     {
       key: 'qr',
       title: 'QR Codes',
-      description: 'Generate QR from URL, text, email, phone, SMS, vCard or Wi‑Fi. Export as PNG/SVG.',
+      description: 'Generate QR from URL, text, email, phone, SMS, vCard or Wi-Fi. Export as PNG/SVG.',
       route: '/qr',
       apiTitle: 'POST /api/qr',
       curl: `curl -X POST http://localhost:3000/api/qr -H "Content-Type: application/json" -d '{"type":"url","payload":{"url":"https://example.com"},"format":"svg"}'`,
@@ -94,7 +94,7 @@ export class HomeComponent {
     {
       key: 'barcode',
       title: 'Barcodes & GS1',
-      description: 'Standard barcodes (PNG/SVG) and GS1‑128/DataMatrix (JSON render).',
+      description: 'Standard barcodes (PNG/SVG) and GS1-128/DataMatrix (JSON render).',
       route: '/barcode',
       apiTitle: 'GET /api/barcode/png | svg, POST /api/barcode/gs1/render',
       curl: `curl -X POST http://localhost:3000/api/barcode/gs1/render -H "Content-Type: application/json" -d '{"symbology":"gs1-128","format":"png","items":[{"ai":"01","value":"09506000134352"}]}'`,
@@ -114,7 +114,7 @@ export class HomeComponent {
     {
       key: 'locks',
       title: 'Locks',
-      description: 'Manage access links (admin) and open via swipe‑to‑open.',
+      description: 'Manage access links (admin) and open via swipe-to-open.',
       route: '/admin/lock',
       apiTitle: 'GET /api/lock/locks, POST /api/lock/open',
       curl: `curl "http://localhost:3000/api/lock/locks?slug=...&t=..."`,
