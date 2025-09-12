@@ -65,4 +65,4 @@ signpacks.sqlite
 
 # Misc
 .cursor
-postgres
+/postgres
