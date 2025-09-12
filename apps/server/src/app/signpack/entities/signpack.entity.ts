@@ -34,19 +34,19 @@ export class Signpack {
   @Column({ type: 'integer', nullable: true })
   signedSize?: number;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   expiresAt?: Date | null;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   destroyedAt?: Date | null;
 
   @Column({ type: 'text' })
   status!: SignpackStatus;
 
-  @CreateDateColumn({ type: 'datetime' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: 'datetime' })
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt!: Date;
 }
 

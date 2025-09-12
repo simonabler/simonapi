@@ -1,0 +1,222 @@
+<div class="container-fluid py-3">
+  <h2 class="h5">Locks – Admin</h2>
+
+  <div *ngIf="error()" class="alert alert-danger">{{ error() }}</div>
+  <div *ngIf="success()" class="alert alert-success">{{ success() }}</div>
+
+  <div class="row g-3">
+    <div class="col-12 col-xl-6">
+      <div class="card h-100">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <span>Locks</span>
+          <button class="btn btn-sm btn-outline-primary" (click)="editLock()">Neu</button>
+        </div>
+        <div class="card-body">
+          <div *ngIf="!locks(); else locksTpl" class="text-muted small">Lade …</div>
+          <ng-template #locksTpl>
+            <div class="table-responsive">
+              <table class="table table-sm align-middle">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Provider</th>
+                    <th>Aktiv</th>
+                    <th>Aktion</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let l of locks()!">
+                    <td>{{ l.name }}</td>
+                    <td>{{ l.providerType }}</td>
+                    <td>
+                      <div class="form-check form-switch m-0">
+                        <input class="form-check-input" type="checkbox" [checked]="l.active" (change)="toggleActive(l)" />
+                      </div>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-outline-secondary" (click)="editLock(l)">Bearbeiten</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card h-100">
+        <div class="card-header">Lock bearbeiten / anlegen</div>
+        <div class="card-body">
+          <form [formGroup]="lockForm" class="row g-2">
+            <div class="col-12">
+              <label class="form-label">Name</label>
+              <input class="form-control" formControlName="name" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Provider</label>
+              <select class="form-select" formControlName="providerType">
+                <option *ngFor="let p of providerTypes" [value]="p">{{ p }}</option>
+              </select>
+            </div>
+            <div class="col-6 d-flex align-items-end">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="activeSw" formControlName="active" />
+                <label class="form-check-label" for="activeSw">Aktiv</label>
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Provider Config (JSON)</label>
+              <textarea class="form-control" formControlName="providerConfig" rows="6"></textarea>
+            </div>
+            <div class="col-12">
+              <button class="btn btn-primary" type="button" (click)="saveLock()" [disabled]="busy()">Speichern</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card h-100">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <span>Gruppen</span>
+          <button class="btn btn-sm btn-outline-primary" (click)="editGroup()">Neu</button>
+        </div>
+        <div class="card-body">
+          <div *ngIf="!groups(); else groupsTpl" class="text-muted small">Lade …</div>
+          <ng-template #groupsTpl>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let g of groups()!">
+                <div>
+                  <div class="fw-semibold">{{ g.name }}</div>
+                  <div class="text-muted small">{{ g.description }}</div>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary" (click)="editGroup(g)">Bearbeiten</button>
+              </li>
+            </ul>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card h-100">
+        <div class="card-header">Gruppe bearbeiten / anlegen</div>
+        <div class="card-body">
+          <form [formGroup]="groupForm" class="row g-2">
+            <div class="col-12">
+              <label class="form-label">Name</label>
+              <input class="form-control" formControlName="name" />
+            </div>
+            <div class="col-12">
+              <label class="form-label">Beschreibung</label>
+              <input class="form-control" formControlName="description" />
+            </div>
+            <div class="col-12">
+              <label class="form-label">Mitglieder (Locks)</label>
+              <select class="form-select" formControlName="memberIds" multiple size="6">
+                <option *ngFor="let l of locks() ?? []" [value]="l.id">{{ l.name }}</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <button class="btn btn-primary" type="button" (click)="saveGroup()" [disabled]="busy()">Speichern</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card h-100">
+        <div class="card-header">Access-Link erstellen</div>
+        <div class="card-body">
+          <form [formGroup]="linkForm" class="row g-2">
+            <div class="col-12">
+              <label class="form-label">Notiz</label>
+              <input class="form-control" formControlName="note" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Gültig von</label>
+              <input class="form-control" type="datetime-local" formControlName="validFrom" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Gültig bis</label>
+              <input class="form-control" type="datetime-local" formControlName="validTo" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Locks</label>
+              <select class="form-select" formControlName="allowedLockIds" multiple size="6">
+                <option *ngFor="let l of locks() ?? []" [value]="l.id">{{ l.name }}</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Gruppen</label>
+              <select class="form-select" formControlName="allowedGroupIds" multiple size="6">
+                <option *ngFor="let g of groups() ?? []" [value]="g.id">{{ g.name }}</option>
+              </select>
+            </div>
+            <div class="col-4">
+              <label class="form-label">Max. Verwendungen</label>
+              <input class="form-control" type="number" formControlName="maxUses" />
+            </div>
+            <div class="col-8 d-flex align-items-end">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="pinReq" formControlName="requirePin" />
+                <label class="form-check-label" for="pinReq">PIN erforderlich</label>
+              </div>
+            </div>
+            <div class="col-12">
+              <button class="btn btn-success" type="button" (click)="createAccessLink()" [disabled]="busy()">Erstellen</button>
+            </div>
+          </form>
+
+          <div *ngIf="createdShareUrl()" class="alert alert-info mt-3">
+            <div><strong>Share URL:</strong> <a [href]="createdShareUrl()!" target="_blank">{{ createdShareUrl() }}</a></div>
+            <div *ngIf="createdPin()"><strong>PIN:</strong> {{ createdPin() }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card h-100">
+        <div class="card-header">Access-Links</div>
+        <div class="card-body">
+          <div *ngIf="!links(); else linksTpl" class="text-muted small">Lade …</div>
+          <ng-template #linksTpl>
+            <div class="table-responsive">
+              <table class="table table-sm align-middle">
+                <thead>
+                  <tr>
+                    <th>Slug</th>
+                    <th>Zeitraum</th>
+                    <th>Status</th>
+                    <th>Uses</th>
+                    <th>Aktion</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let a of links()!">
+                    <td><code>{{ a.slug }}</code></td>
+                    <td>{{ a.validFrom | date:'short' }} – {{ a.validTo | date:'short' }}</td>
+                    <td>
+                      <span class="badge" [class.text-bg-success]="!a.revoked" [class.text-bg-secondary]="a.revoked">{{ a.revoked ? 'revoked' : 'active' }}</span>
+                    </td>
+                    <td>{{ a.usedCount }}<span *ngIf="a.maxUses">/{{ a.maxUses }}</span></td>
+                    <td>
+                      <button class="btn btn-sm btn-outline-warning me-2" (click)="patchAccessLink(a, { revoked: !a.revoked })">{{ a.revoked ? 'Reaktivieren' : 'Revoke' }}</button>
+                      <button class="btn btn-sm btn-outline-secondary" (click)="patchAccessLink(a, { maxUses: (a.maxUses ?? 0) + 1 })">+1 max</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

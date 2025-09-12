@@ -28,4 +28,12 @@ export const appRoutes: Route[] = [
     path: 'tools/watermark',
     loadComponent: () => import('./features/watermark/watermark-uploader/watermark-uploader.component').then(c => c.WatermarkUploaderComponent),
   },
+  {
+    path: 'admin/lock',
+    loadChildren: () => import('./features/lock/lock.routes').then(m => m.LOCK_ADMIN_ROUTES),
+  },
+  {
+    path: 'lock',
+    loadChildren: () => import('./features/lock/lock.routes').then(m => m.LOCK_PUBLIC_ROUTES),
+  },
 ];

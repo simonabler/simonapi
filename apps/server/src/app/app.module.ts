@@ -32,10 +32,16 @@ import { LockModule } from './lock/lock.module';
     TypeOrmModule.forRootAsync({
       useFactory: () => {
         const url = process.env.TYPEORM_URL;
+        console.log(url)
         if (url) {
           return {
             type: 'postgres' as const,
-            url,
+            host:url,
+            port:443,
+            ssl:true,
+            username:'ematric',
+            password:'ematricLA01',
+            database:'nesttest',
             autoLoadEntities: true,
             synchronize: true,
           };
