@@ -17,6 +17,8 @@ services:
     image: simonapi-backend:latest
     container_name: simonapi-backend
     restart: unless-stopped
+    volumes:
+      - ./.env:/app/.env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.simonapi-backend.tls=true"
@@ -29,6 +31,8 @@ services:
       - "traefik.http.routers.simonapi-backend.priority=100"
       # Interner Container-Port des Backends (ggf. anpassen)
       - "traefik.http.services.simonapi-backend.loadbalancer.server.port=3000"
+    depends_on:
+      - postgres
     networks:
       - postgresql
 
