@@ -29,3 +29,24 @@ services:
       - "traefik.http.routers.simonapi-backend.priority=100"
       # Interner Container-Port des Backends (ggf. anpassen)
       - "traefik.http.services.simonapi-backend.loadbalancer.server.port=3000"
+    networks:
+      - postgresql
+
+  postgres:
+    image: postgres:17.5-alpine
+    env_file:
+      - ./conf/postgres/.env
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U user -d simonapi']
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - postgresql
+
+networks:
+  postgresql:
+    name: NET_POSTGRESQL

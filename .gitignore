@@ -47,4 +47,5 @@ Thumbs.db
 
 *.sqlite
 .vscode
+!conf/postgres/.env.template
 .env*
