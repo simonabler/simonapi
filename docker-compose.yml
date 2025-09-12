@@ -41,7 +41,7 @@ services:
     env_file:
       - ./conf/postgres/.env
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - ../postgres:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U user -d simonapi']
       interval: 10s
