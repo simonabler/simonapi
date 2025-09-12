@@ -359,13 +359,19 @@ nx serve simonapi  # Frontend (http://localhost:4200)</code></pre>
 <!-- Profile -->
 <section id="profile" class="container py-5">
   <div class="mb-3">
-    <h2 class="h4 m-0">Entwicklerprofil</h2>
-    <div class="text-body-secondary">Wer steckt hinter den APIs?</div>
+    <h2 class="h4 m-0">Developer</h2>
+    <div class="text-body-secondary">Who is behind the APIs?</div>
   </div>
   <div class="card rounded-card profile">
     <div class="card-body">
       <div class="d-flex align-items-center gap-3">
-        <div class="avatar">{{ avatarInitials }}</div>
+        <div class="avatar">
+          @if (profile.gravatarHash) {
+            <img class="avatar-img" [src]="gravatarUrl" alt="{{ profile.name }} avatar" loading="lazy">
+          } @else {
+            {{ avatarInitials }}
+          }
+        </div>
         <div>
           <div class="fw-semibold">{{ profile.name }}</div>
           <div class="text-body-secondary small">

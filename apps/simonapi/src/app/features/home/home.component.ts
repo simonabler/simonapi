@@ -25,7 +25,25 @@ type ServiceCard = {
   .service-card .nav-pills .nav-link.active { background: linear-gradient(135deg, var(--brand-2), var(--brand)); }
   .code { background: #0f172a; color: #e2e8f0; border-radius: .5rem; padding: .75rem; overflow: auto; }
   .code code { white-space: pre-wrap; word-break: break-word; }
-  .profile .avatar { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, #22d3ee, #818cf8); color: #0b1020; }
+  .profile .avatar {
+    /* Keep a perfect circle and prevent shrinking on small screens */
+    width: clamp(64px, 10vw, 96px);
+    height: clamp(64px, 10vw, 96px);
+    min-width: 64px;
+    min-height: 64px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, #22d3ee, #818cf8);
+    color: #0b1020;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .profile .avatar-img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+    border-radius: 50%; display: block;
+  }
   .profile { backdrop-filter: saturate(1.2); }
   .service-card .icon { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: color-mix(in oklab, var(--brand), white 85%); }
   .service-desc { color: var(--bs-body-color); }
@@ -41,15 +59,21 @@ export class HomeComponent {
 
   profile = {
     name: 'Simon Abler',
-    role: 'Senior Full‑Stack Engineer (Cybersecurity / CISO)',
+    role: 'Senior Full-Stack Engineer (Cybersecurity / CISO mindset)',
     location: 'Tyrol, AT',
-    bio: 'Senior full‑stack engineer with a security‑first, CISO. I design and operate secure API platforms, developer tools and web UIs end‑to‑end. Focus on cybersecurity (OWASP, threat modeling, IAM), API governance, automation and measurable DX. Strong with NestJS, Angular, TypeORM, PostgreSQL and containers — shipping clean architecture from home‑lab to cloud.',
+    bio: 'Senior full-stack engineer with a security-first, CISO mindset. I design and operate secure API platforms, developer tools and web UIs end-to-end. Focus on cybersecurity (OWASP, threat modeling, IAM), API governance, automation and measurable DX. Strong with NestJS, Angular, TypeORM, PostgreSQL and containers — shipping clean architecture from home-lab to cloud.',
     links: [
       { label: 'Website', href: 'https://hub.abler.tirol' },
       { label: 'GitHub', href: 'https://github.com/simonabler' },
       { label: 'LinkedIn', href: 'https://www.linkedin.com/in/simonabler' },
     ],
+    gravatarHash: 'fd97500da3d31da41dbfc114c04d2e455c32401de85c35ed6ceca18a09cc1957',
   };
+  get gravatarUrl() {
+    const hash = this.profile.gravatarHash?.trim();
+    if (!hash) return `https://www.gravatar.com/avatar/?s=128&d=identicon`;
+    return `https://www.gravatar.com/avatar/${hash}?s=128&d=identicon`;
+  }
   get avatarInitials() {
     const n = this.profile.name?.trim() || '';
     const parts = n.split(/\s+/).filter(Boolean);
