@@ -13,6 +13,7 @@ export const appRoutes: Route[] = [
   {
     path: 'qr',
     component: QrEditorComponent,
+    title: 'QR Code Generator — Free PNG/SVG',
   },
   {
     path: 'barcode',

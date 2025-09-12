@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, PlusIcon } from 'lucide-angular';
 import { QrEditorItemComponent } from './qr-editor-item.component';
+import { Title, Meta } from '@angular/platform-browser';
 
 type Item = { id: number };
 
@@ -12,10 +13,13 @@ type Item = { id: number };
   templateUrl: './qr-editor.component.html',
   styleUrls: ['./qr-editor.component.scss']
 })
-export class QrEditorComponent {
+export class QrEditorComponent implements OnInit {
   readonly PlusIcon = PlusIcon;
 
   items: Item[] = [{ id: Date.now() }];
+
+  private title = inject(Title);
+  private meta = inject(Meta);
 
   add() {
     const id = Date.now() + Math.floor(Math.random() * 1000);
@@ -28,4 +32,39 @@ export class QrEditorComponent {
   }
 
   trackById(_i: number, it: Item) { return it.id; }
+
+  ngOnInit(): void {
+    const pageTitle = 'QR Code Generator — Free PNG/SVG';
+    const desc = 'Create free QR codes online: URL, text, email, phone, SMS, vCard, Wi‑Fi and more. Export as PNG or SVG. No login required.';
+    this.title.setTitle(pageTitle);
+    this.meta.updateTag({ name: 'description', content: desc });
+    this.meta.updateTag({ name: 'robots', content: 'index,follow' });
+    this.meta.updateTag({ property: 'og:title', content: pageTitle });
+    this.meta.updateTag({ property: 'og:description', content: desc });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+    this.meta.updateTag({ property: 'og:url', content: `${window.location.origin}/qr` });
+
+    // Set canonical
+    const link: HTMLLinkElement = document.querySelector("link[rel='canonical']") || document.createElement('link');
+    link.setAttribute('rel', 'canonical');
+    link.setAttribute('href', `${window.location.origin}/qr`);
+    if (!link.parentNode) document.head.appendChild(link);
+
+    // JSON-LD structured data for WebApplication
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: 'QR Code Generator',
+      applicationCategory: 'UtilitiesApplication',
+      operatingSystem: 'Web',
+      url: `${window.location.origin}/qr`,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR', category: 'Free' },
+      description: desc,
+      creator: { '@type': 'Person', name: 'Simon Abler' }
+    } as const;
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(schema);
+    document.head.appendChild(script);
+  }
 }

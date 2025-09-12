@@ -1,11 +1,12 @@
 <div class="qr-editor">
 <div class="page-header d-flex justify-content-between align-items-center mb-3">
-  <h2 class="m-0">QR Code Generator</h2>
+  <h1 class="m-0">QR Code Generator</h1>
   <button class="btn btn-primary d-inline-flex align-items-center gap-1" (click)="add()">
     <lucide-icon [img]="PlusIcon" [size]="18"></lucide-icon>
     <span>Hinzufügen</span>
   </button>
 </div>
+<p class="text-body-secondary small">Create free QR codes (PNG/SVG) for URLs, text, Wi‑Fi and more.</p>
 
 <div class="row">
   <ng-container *ngFor="let it of items; trackBy: trackById">
