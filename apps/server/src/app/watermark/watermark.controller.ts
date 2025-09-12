@@ -73,8 +73,6 @@ export class WatermarkController {
     @Body() body: ApplyWatermarkDto,
     @Res() res: Response,
   ) {
-
-    console.log(body)
     const file = files?.file?.[0];
     if (!file) throw new BadRequestException('Feld "file" fehlt.');
 
