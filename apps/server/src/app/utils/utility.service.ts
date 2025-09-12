@@ -40,7 +40,7 @@ export class UtilityService {
     const slug = slugifyLib(text, {
       lower,
       strict,
-      remove: /[\u2000-\u206F\u2E00-\u2E7F'"!@#$%^&*()_+=`~.,?<>{}\[\]|/\\:;]+/g,
+      remove: /[\u2000-\u206F\u2E00-\u2E7F'"!@#$%^&*()_+=`~.,?<>{}[\]|/\\:;]+/g,
       replacement: delimiter,
       trim: true,
     });

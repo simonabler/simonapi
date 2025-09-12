@@ -30,6 +30,6 @@ export class HashCardComponent {
   }
 
   async copy(text: string) {
-    try { await navigator.clipboard.writeText(text); } catch {}
+    try { await navigator.clipboard.writeText(text); } catch {;}
   }
 }

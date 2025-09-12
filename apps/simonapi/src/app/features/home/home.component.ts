@@ -121,6 +121,8 @@ export class HomeComponent {
   async copy(text: string) {
     try {
       await navigator.clipboard.writeText(text);
-    } catch {}
+    } catch {
+      ;
+    }
   }
 }

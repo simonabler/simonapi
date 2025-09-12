@@ -86,7 +86,7 @@ export class BarcodeGs1EditorItemComponent implements OnInit, OnDestroy {
     this.destroy$.next(); this.destroy$.complete(); this.revokePreview();
   }
 
-  private makeAi(ai: string = '01', value: string = ''): AiForm {
+  private makeAi(ai = '01', value = ''): AiForm {
     return this.fb.group({
       ai: this.fb.control<string>(ai, { nonNullable: true }),
       value: this.fb.control<string>(value, { nonNullable: true, validators: [Validators.required] }),

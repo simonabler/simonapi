@@ -139,7 +139,7 @@ export class SignpackController {
     zip.pipe(res);
     res.on('finish', async () => {
       if (destroy) {
-        try { await this.svc.destroy(id, token); } catch {}
+        try { await this.svc.destroy(id, token); } catch {;}
       }
     });
   }

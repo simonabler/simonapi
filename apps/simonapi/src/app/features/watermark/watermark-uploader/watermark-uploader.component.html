@@ -37,7 +37,7 @@
         <div class="card-body">
           <form [formGroup]="form" class="row g-3">
             <div class="col-12 col-md-6">
-              <label class="form-label">Modus</label>
+              <span class="form-label">Modus</span>
               <div class="d-flex gap-3">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" id="modeText" formControlName="mode" value="text" />
@@ -51,7 +51,7 @@
             </div>
 
             <div class="col-12 col-md-6">
-              <label class="form-label">Positionierung</label>
+              <span class="form-label">Positionierung</span>
               <div class="d-flex gap-3">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" id="posAbs" formControlName="positionMode" value="absolute" />
@@ -65,40 +65,40 @@
             </div>
 
             <div class="col-6 col-md-3">
-              <label class="form-label">Pos X</label>
+              <label class="form-label" for="positionX">Pos X</label>
               <input type="number" min="0" class="form-control" formControlName="positionX" [disabled]="form.value.positionMode==='anchor'" />
             </div>
             <div class="col-6 col-md-3">
-              <label class="form-label">Pos Y</label>
+              <label class="form-label" for="positionY">Pos Y</label>
               <input type="number" min="0" class="form-control" formControlName="positionY" [disabled]="form.value.positionMode==='anchor'" />
             </div>
 
             <div class="col-12 col-md-4" *ngIf="form.value.positionMode==='anchor'">
-              <label class="form-label">Anchor</label>
+              <label class="form-label" for="anchor">Anchor</label>
               <select class="form-select" formControlName="anchor">
                 <option *ngFor="let a of anchors" [value]="a">{{ a }}</option>
               </select>
             </div>
 
             <div class="col-12 col-md-6">
-              <label class="form-label">Deckkraft ({{ form.value.opacity }})</label>
+              <label class="form-label" for="opacity">Deckkraft ({{ form.value.opacity }})</label>
               <input type="range" class="form-range" min="0" max="1" step="0.05" formControlName="opacity" />
             </div>
             <div class="col-12 col-md-6">
-              <label class="form-label">Skalierung ({{ form.value.scale }})</label>
+              <label class="form-label" for="scale">Skalierung ({{ form.value.scale }})</label>
               <input type="range" class="form-range" min="0.1" max="5" step="0.1" formControlName="scale" />
             </div>
 
             <div class="col-12 col-md-4">
-              <label class="form-label">Drehung (°)</label>
+              <label class="form-label" for="rotate">Drehung (°)</label>
               <input type="range" class="form-range" min="-180" max="180" step="1" formControlName="rotate" />
             </div>
             <div class="col-12 col-md-4">
-              <label class="form-label">Rand (px)</label>
+              <label class="form-label" for="margin">Rand (px)</label>
               <input type="number" min="0" class="form-control" formControlName="margin" />
             </div>
             <div class="col-12 col-md-4">
-              <label class="form-label">Gap (px)</label>
+              <label class="form-label" for="gap">Gap (px)</label>
               <input type="number" min="0" class="form-control" formControlName="gap" />
             </div>
 
@@ -110,30 +110,30 @@
             </div>
 
             <div class="col-12" *ngIf="form.value.mode === 'text'">
-              <label class="form-label">Text</label>
+              <label class="form-label" for="text">Text</label>
               <input type="text" class="form-control" formControlName="text" placeholder="Wasserzeichen-Text" />
             </div>
 
             <div class="col-6 col-md-3">
-              <label class="form-label">Schriftgröße</label>
+              <label class="form-label" for="fontSize">Schriftgröße</label>
               <input type="number" class="form-control" formControlName="fontSize" />
             </div>
             <div class="col-6 col-md-3">
-              <label class="form-label">Schriftart</label>
+              <label class="form-label" for="fontFamily">Schriftart</label>
               <select class="form-select" formControlName="fontFamily">
                 <option *ngFor="let f of fonts" [value]="f">{{ f }}</option>
               </select>
             </div>
             <div class="col-6 col-md-3">
-              <label class="form-label">Farbe</label>
+              <label class="form-label" for="color">Farbe</label>
               <input type="color" class="form-control form-control-color" formControlName="color" />
             </div>
             <div class="col-6 col-md-3">
-              <label class="form-label">Konturfarbe</label>
+              <label class="form-label" for="strokeColor">Konturfarbe</label>
               <input type="color" class="form-control form-control-color" formControlName="strokeColor" />
             </div>
             <div class="col-12 col-md-3">
-              <label class="form-label">Konturbreite</label>
+              <label class="form-label" for="strokeWidth">Konturbreite</label>
               <input type="number" min="0" class="form-control" formControlName="strokeWidth" />
             </div>
 

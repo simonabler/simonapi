@@ -18,7 +18,7 @@ export class PurgeService {
 
   @Cron(process.env.PURGE_CRON || CronExpression.EVERY_HOUR)
   async run() {
-    try { await this.svc.purgeExpired(); } catch { }
+    try { await this.svc.purgeExpired(); } catch {; }
   }
 }
 

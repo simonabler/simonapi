@@ -78,7 +78,7 @@ export class SignpackService {
     if (dir !== realDir) {
       const newPath = path.join(realDir, path.basename(abs));
       fs.renameSync(abs, newPath);
-      try { fs.rmdirSync(dir); } catch {}
+      try { fs.rmdirSync(dir); } catch {;}
       created.originalPath = newPath;
       await this.repo.save(created);
     }
@@ -157,7 +157,7 @@ export class SignpackService {
     this.assertToken(sp, token);
     const toDelete = [sp.originalPath, sp.signedPath].filter(Boolean) as string[];
     for (const p of toDelete) {
-      try { fs.unlinkSync(p); } catch {}
+      try { fs.unlinkSync(p); } catch {;}
     }
     sp.destroyedAt = new Date();
     sp.status = 'DELETED';
@@ -174,13 +174,13 @@ export class SignpackService {
         try {
           const toDelete = [sp.originalPath, sp.signedPath].filter(Boolean) as string[];
           for (const p of toDelete) {
-            try { fs.unlinkSync(p); } catch {}
+            try { fs.unlinkSync(p); } catch {;}
           }
           sp.destroyedAt = new Date();
           sp.status = 'EXPIRED';
           await this.repo.save(sp);
           purged++;
-        } catch {}
+        } catch {;}
       }
     }
     return purged;
