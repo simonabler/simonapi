@@ -60,7 +60,7 @@ export class HomeComponent {
     {
       key: 'qr',
       title: 'QR Codes',
-      description: 'Erzeuge QR aus URL, Text, E‑Mail, Telefon, SMS, vCard oder WLAN. Export als PNG/SVG.',
+      description: 'Generate QR from URL, text, email, phone, SMS, vCard or Wi‑Fi. Export as PNG/SVG.',
       route: '/qr',
       apiTitle: 'POST /api/qr',
       curl: `curl -X POST http://localhost:3000/api/qr -H "Content-Type: application/json" -d '{"type":"url","payload":{"url":"https://example.com"},"format":"svg"}'`,
@@ -70,7 +70,7 @@ export class HomeComponent {
     {
       key: 'barcode',
       title: 'Barcodes & GS1',
-      description: 'Standardbarcodes (PNG/SVG) und GS1-128/DataMatrix (Render per JSON).',
+      description: 'Standard barcodes (PNG/SVG) and GS1‑128/DataMatrix (JSON render).',
       route: '/barcode',
       apiTitle: 'GET /api/barcode/png | svg, POST /api/barcode/gs1/render',
       curl: `curl -X POST http://localhost:3000/api/barcode/gs1/render -H "Content-Type: application/json" -d '{"symbology":"gs1-128","format":"png","items":[{"ai":"01","value":"09506000134352"}]}'`,
@@ -80,7 +80,7 @@ export class HomeComponent {
     {
       key: 'watermark',
       title: 'Watermark',
-      description: 'Bilder mit Logo/Text versehen. Live‑Preview und Download.',
+      description: 'Apply logo/text watermarks to images. Live preview and download.',
       route: '/tools/watermark',
       apiTitle: 'POST /api/watermark/apply',
       curl: `curl -X POST http://localhost:3000/api/watermark/apply -F "mode=text" -F "file=@image.jpg" -F "text=Demo" -o out.jpg`,
@@ -90,7 +90,7 @@ export class HomeComponent {
     {
       key: 'locks',
       title: 'Locks',
-      description: 'Access‑Links verwalten (Admin) und per Swipe‑to‑Open öffnen.',
+      description: 'Manage access links (admin) and open via swipe‑to‑open.',
       route: '/admin/lock',
       apiTitle: 'GET /api/lock/locks, POST /api/lock/open',
       curl: `curl "http://localhost:3000/api/lock/locks?slug=...&t=..."`,
@@ -100,7 +100,7 @@ export class HomeComponent {
     {
       key: 'utils',
       title: 'Utilities',
-      description: 'Echo, IDs, Slugify, Hashing, Markdown → HTML für den Alltag.',
+      description: 'Echo, IDs, slugify, hashing, markdown → HTML for everyday use.',
       route: '/dev-utils',
       apiTitle: 'GET /api/utils/echo | id, POST /api/utils/slugify | hash | md2html',
       curl: `curl http://localhost:3000/api/utils/echo`,
