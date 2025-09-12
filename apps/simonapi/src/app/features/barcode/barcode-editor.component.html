@@ -7,10 +7,10 @@
     </button>
   </div>
 
-  <div class="grid">
+  <div class="row">
     <ng-container *ngFor="let it of items; trackBy: trackById">
-      <app-barcode-editor-item [removable]="true" (remove)="remove(it.id)"></app-barcode-editor-item>
+      <app-barcode-editor-item class="col-md-6 col" [removable]="true" (remove)="remove(it.id)"></app-barcode-editor-item>
     </ng-container>
-    <app-barcode-gs1-editor-item></app-barcode-gs1-editor-item>
+    <app-barcode-gs1-editor-item class="col-md-6 col" ></app-barcode-gs1-editor-item>
   </div>
 </div>

@@ -27,7 +27,7 @@ select, input[type="text"], input[type="url"], input[type="email"], input[type="
 
 textarea { min-height: 90px; resize: vertical; }
 
-.qr-preview-img { max-width: 100%; height: auto; image-rendering: pixelated; }
+.code-preview-img { max-width: 100%; height: auto; image-rendering: pixelated; }
 
 .checkbox { display: flex; align-items: center; gap: .5rem; }
 

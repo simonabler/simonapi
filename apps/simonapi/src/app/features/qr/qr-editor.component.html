@@ -7,9 +7,9 @@
   </button>
 </div>
 
-<div class="grid">
+<div class="row">
   <ng-container *ngFor="let it of items; trackBy: trackById">
-    <app-qr-editor-item [removable]="true" (remove)="remove(it.id)"></app-qr-editor-item>
+    <app-qr-editor-item class="col-md-6 col" [removable]="true" (remove)="remove(it.id)"></app-qr-editor-item>
   </ng-container>
 </div>
 </div>

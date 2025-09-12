@@ -2,8 +2,15 @@
   <div class="card-body">
     <div class="d-flex justify-content-between align-items-center mb-2">
       <div class="d-flex align-items-center gap-2">
-        <div class="d-inline-grid place-items-center bg-body-secondary rounded-3" style="width:36px;height:36px; position:relative">
-          <lucide-icon class="lucide-center" [img]="BarcodeIcon" [size]="20"></lucide-icon>
+        <div
+          class="d-inline-grid place-items-center bg-body-secondary rounded-3"
+          style="width: 36px; height: 36px; position: relative"
+        >
+          <lucide-icon
+            class="lucide-center"
+            [img]="BarcodeIcon"
+            [size]="20"
+          ></lucide-icon>
         </div>
         <div>
           <div class="fw-semibold">GS1 Generator</div>
@@ -13,23 +20,29 @@
       <div class="d-flex align-items-center gap-2">
         <span class="badge text-bg-dark">gs1</span>
         @if(removable){
-          <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove.emit()">
-            <lucide-icon [img]="Trash2Icon" [size]="16"></lucide-icon>
-          </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          (click)="remove.emit()"
+        >
+          <lucide-icon [img]="Trash2Icon" [size]="16"></lucide-icon>
+        </button>
         }
       </div>
     </div>
 
     <form (ngSubmit)="$event.preventDefault()" [formGroup]="form" class="panel">
       <div class="cols">
-        <label>Symbologie
+        <label
+          >Symbologie
           <select [formControl]="form.controls.symbology">
             <option value="gs1-128">GS1-128</option>
             <option value="gs1datamatrix">GS1 DataMatrix</option>
           </select>
         </label>
         <label class="checkbox">
-          <input type="checkbox" [formControl]="form.controls.includetext" /> Text unter Barcode anzeigen
+          <input type="checkbox" [formControl]="form.controls.includetext" />
+          Text unter Barcode anzeigen
         </label>
       </div>
 
@@ -37,50 +50,95 @@
         <legend class="small">Application Identifiers (AI)</legend>
         <div class="d-grid gap-2">
           @for(ctrl of items.controls; track $index){
-            <div class="ai-row">
-              <select [formControl]="ctrl.controls.ai">
-                <option *ngFor="let k of aiKeys" [value]="k">{{k}} — {{aiDb[k].label}}</option>
-              </select>
-              <div>
-                <input type="text" [formControl]="ctrl.controls.value" />
-                @if(errors[$index]; as err){
-                  <div class="hint">{{err}}</div>
-                }
-                <div class="hint" *ngIf="!errors[$index] && aiDb[ctrl.value.ai]?.hint">{{aiDb[ctrl.value.ai].hint}}</div>
+          <div class="ai-row">
+            <select [formControl]="ctrl.controls.ai">
+              <option *ngFor="let k of aiKeys" [value]="k">
+                {{ k }} — {{ aiDb[k].label }}
+              </option>
+            </select>
+            <div>
+              <input type="text" [formControl]="ctrl.controls.value" />
+              @if(errors[$index]; as err){
+              <div class="hint">{{ err }}</div>
+              }
+              <div
+                class="hint"
+                *ngIf="!errors[$index] && aiDb[ctrl.value.ai]?.hint"
+              >
+                {{ aiDb[ctrl.value.ai].hint }}
               </div>
-              <button type="button" class="btn btn-outline-danger" (click)="removeItem($index)">Entfernen</button>
             </div>
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              (click)="removeItem($index)"
+            >
+              Entfernen
+            </button>
+          </div>
           }
           <div>
-            <button type="button" class="btn btn-outline-primary" (click)="addItem()">AI hinzufügen</button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              (click)="addItem()"
+            >
+              AI hinzufügen
+            </button>
           </div>
         </div>
       </fieldset>
 
       <fieldset>
         <div class="cols">
-          <label>Skalierung
-            <input type="number" [formControl]="form.controls.scale" min="1" max="10" />
+          <label
+            >Skalierung
+            <input
+              type="number"
+              [formControl]="form.controls.scale"
+              min="1"
+              max="10"
+            />
           </label>
-          <label>Höhe
-            <input type="number" [formControl]="form.controls.height" min="0" max="200" />
+          <label
+            >Höhe
+            <input
+              type="number"
+              [formControl]="form.controls.height"
+              min="0"
+              max="200"
+            />
           </label>
         </div>
       </fieldset>
 
       @if(globalError){
-        <div class="hint">{{globalError}}</div>
+      <div class="hint">{{ globalError }}</div>
       }
 
       <div class="actions">
-        <button type="button" class="btn btn-secondary" (click)="download('png')">Als PNG herunterladen</button>
-        <button type="button" class="btn btn-secondary" (click)="download('svg')">Als SVG herunterladen</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="download('png')"
+        >
+          Als PNG herunterladen
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="download('svg')"
+        >
+          Als SVG herunterladen
+        </button>
       </div>
     </form>
 
-    <div class="border rounded p-3 mt-2 qrbox d-flex align-items-center justify-content-center">
+    <div
+      class="border rounded p-3 mt-2 qrbox d-flex align-items-center justify-content-center"
+    >
       @if(previewUrl; as url){
-        <img [src]="url" alt="GS1 Vorschau" class="barcode-preview-img" />
+      <img [src]="url" alt="GS1 Vorschau" class="code-preview-img" />
       }
     </div>
   </div>
