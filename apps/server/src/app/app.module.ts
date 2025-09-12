@@ -14,6 +14,7 @@ import appConfig from './config/app.config';
 //dummyload for NX project.json
 import {} from 'sqlite3'
 import { APP_GUARD } from '@nestjs/core';
+import { LockModule } from './lock/lock.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { APP_GUARD } from '@nestjs/core';
     SignpackModule,
     WatermarkModule,
     UtilityModule,
+    LockModule,
   ],
   controllers: [AppController, ReportsController],
   providers: [AppService,
