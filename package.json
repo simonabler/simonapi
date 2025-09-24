@@ -7,6 +7,9 @@
     "test": "nx run server:test",
     "start": "nx run server:serve"
   },
+  "scarfSettings": {
+    "enabled": false
+  },
   "private": true,
   "dependencies": {
     "@angular/common": "~20.1.0",

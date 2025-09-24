@@ -5,6 +5,8 @@ WORKDIR /build/simonapi
 
 # Install dependencies first (leverages Docker layer cache)
 COPY   ./package*.json ./
+ENV DO_NOT_TRACK=1
+ENV SCARF_ANALYTICS=false
 RUN npm ci
 
 # Copy workspace and build the NestJS server
