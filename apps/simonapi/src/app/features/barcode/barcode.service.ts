@@ -1,14 +1,22 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom, Observable } from 'rxjs';
 import { environment } from '../../../environments/environments';
 import { BarcodeRequest, Gs1Request, AiSpecJson } from './models';
+import { isPlatformBrowser } from '@angular/common';
 
-const API = (environment.API_BASE_URL || window.origin) + '/api';
 
 @Injectable({ providedIn: 'root' })
 export class BarcodeService {
   private http = inject(HttpClient);
+  private API;
+  private platformId = inject(PLATFORM_ID);
+  isBrowser = false;
+
+  constructor() {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+    this.API = (environment.API_BASE_URL || window.origin) + '/api';
+  }
 
   private buildParams(req: BarcodeRequest): HttpParams {
     let p = new HttpParams().set('type', req.type).set('text', req.text);
@@ -20,13 +28,18 @@ export class BarcodeService {
 
   preview$(req: BarcodeRequest): Observable<Blob> {
     const params = this.buildParams(req);
-    return this.http.get(`${API}/barcode/png`, { params, responseType: 'blob' });
+    return this.http.get(`${this.API}/barcode/png`, {
+      params,
+      responseType: 'blob',
+    });
   }
 
   async download(req: BarcodeRequest, format: 'png' | 'svg'): Promise<void> {
     const params = this.buildParams(req);
     if (format === 'png') {
-      const blob = await firstValueFrom(this.http.get(`${API}/barcode/png`, { params, responseType: 'blob' }));
+      const blob = await firstValueFrom(
+        this.http.get(`${this.API}/barcode/png`, { params, responseType: 'blob' })
+      );
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -36,7 +49,9 @@ export class BarcodeService {
       return;
     }
     // SVG as text → blob for download
-    const svgText = await firstValueFrom(this.http.get(`${API}/barcode/svg`, { params, responseType: 'text' }));
+    const svgText = await firstValueFrom(
+      this.http.get(`${this.API}/barcode/svg`, { params, responseType: 'text' })
+    );
     const blob = new Blob([svgText], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -48,29 +63,45 @@ export class BarcodeService {
 
   // GS1
   previewGs1$(req: Gs1Request): Observable<Blob> {
-    const body = { ...req};
-    return this.http.post(`${API}/barcode/gs1/png`, body, { responseType: 'blob' });
+    const body = { ...req };
+    return this.http.post(`${this.API}/barcode/gs1/png`, body, {
+      responseType: 'blob',
+    });
   }
 
   getGs1Registry$(): Observable<Record<string, AiSpecJson>> {
-    return this.http.get<Record<string, AiSpecJson>>(`${API}/barcode/gs1/registry`);
+    return this.http.get<Record<string, AiSpecJson>>(
+      `${this.API}/barcode/gs1/registry`
+    );
   }
 
   async downloadGs1(req: Gs1Request, format: 'png' | 'svg'): Promise<void> {
     const body = { ...req, format } as const;
     if (format === 'png') {
-      const blob = await firstValueFrom(this.http.post(`${API}/barcode/gs1/render`, body, { responseType: 'blob' }));
+      const blob = await firstValueFrom(
+        this.http.post(`${this.API}/barcode/gs1/render`, body, {
+          responseType: 'blob',
+        })
+      );
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url; a.download = `gs1-${req.symbology}.png`; a.click();
+      a.href = url;
+      a.download = `gs1-${req.symbology}.png`;
+      a.click();
       URL.revokeObjectURL(url);
       return;
     }
-    const svgText = await firstValueFrom(this.http.post(`${API}/barcode/gs1/render`, body, { responseType: 'text' }));
+    const svgText = await firstValueFrom(
+      this.http.post(`${this.API}/barcode/gs1/render`, body, {
+        responseType: 'text',
+      })
+    );
     const blob = new Blob([svgText], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `gs1-${req.symbology}.svg`; a.click();
+    a.href = url;
+    a.download = `gs1-${req.symbology}.svg`;
+    a.click();
     URL.revokeObjectURL(url);
   }
 }

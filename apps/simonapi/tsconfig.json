@@ -27,6 +27,9 @@
     },
     {
       "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "apps/simonapi/tsconfig.server.json"
     }
   ]
 }

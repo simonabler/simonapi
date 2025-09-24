@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environments';
+import { isPlatformBrowser } from '@angular/common';
 
 export type WatermarkMode = 'logo' | 'text';
 export type WatermarkAnchor =
@@ -36,15 +37,18 @@ export interface WatermarkOptions {
   download?: boolean; // when true, backend may hint filename, etc.
 }
 
-const API = (environment.API_BASE_URL || window.origin ) + '/api';
-
-
 @Injectable({ providedIn: 'root' })
 export class WatermarkService {
-  private readonly endpoint = `${API}/watermark/apply`;
-
+  
   private http = inject(HttpClient);
+  private API;
+  private platformId = inject(PLATFORM_ID);
+  isBrowser = false;
 
+  constructor() {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+    this.API = (environment.API_BASE_URL || window.origin) + '/api';
+  }
   apply(file: File, opts: WatermarkOptions, logo?: File): Observable<Blob> {
     const fd = new FormData();
     fd.append('file', file, file.name);
@@ -75,6 +79,6 @@ export class WatermarkService {
     if (opts.strokeWidth != null) fd.append('strokeWidth', String(opts.strokeWidth));
     if (opts.download != null) fd.append('download', String(!!opts.download));
 
-    return this.http.post(this.endpoint, fd, { responseType: 'blob' });
+    return this.http.post(`${this.API}/watermark/apply`, fd, { responseType: 'blob' });
   }
 }
