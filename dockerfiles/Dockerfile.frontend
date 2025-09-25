@@ -31,8 +31,8 @@ USER nodeuser
 # Dist & runtime deps übernehmen
 # Pfade für Nx/Angular SSR (Angular 17+): dist/apps/<app>/browser + /server/server.mjs
 ARG APP_NAME=simonapi
-COPY --from=build /build/simonapi/dist/apps/${APP_NAME}/browser ./dist/browser
-COPY --from=build /build/simonapi/dist/apps/${APP_NAME}/server ./dist/server
+COPY --from=build /build/simonapi/dist/apps/${APP_NAME}/browser ./dist/apps/simonapi/browser
+COPY --from=build /build/simonapi/dist/apps/${APP_NAME}/server ./dist/apps/simonapi/server
 # Prod node_modules (nur falls dein Server-Bundle externe deps benötigt)
 COPY --from=build /build/simonapi/node_modules ./node_modules
 # (Optional) package.json falls der Server sie liest
@@ -40,4 +40,4 @@ COPY package.json ./
 
 EXPOSE 80
 # Start: server.mjs liefert SSR und static Assets aus ./dist/browser
-CMD ["node", "dist/server/main.js"]
+CMD ["node", "dist/apps/simonapi/server/main.js"]
