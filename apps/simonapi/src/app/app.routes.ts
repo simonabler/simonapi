@@ -37,4 +37,9 @@ export const appRoutes: Route[] = [
     path: 'lock',
     loadChildren: () => import('./features/lock/lock.routes').then(m => m.LOCK_PUBLIC_ROUTES),
   },
+  {
+    path: 'impressum',
+    loadComponent: () => import('./features/legal/impressum.component').then(c => c.ImpressumComponent),
+    title: 'Impressum',
+  },
 ];
