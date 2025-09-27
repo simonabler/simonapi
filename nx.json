@@ -42,6 +42,9 @@
           "codeCoverage": true
         }
       }
+    },
+    "server": {
+      "cache": true
     }
   },
   "plugins": [

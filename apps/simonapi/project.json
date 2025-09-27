@@ -8,16 +8,12 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/simonapi",
+        "outputPath": "dist/apps/simonapi/browser",
         "index": "apps/simonapi/src/index.html",
         "main": "apps/simonapi/src/main.ts",
-        "polyfills": [
-          "zone.js"
-        ],
+        "polyfills": ["zone.js"],
         "tsConfig": "apps/simonapi/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -26,9 +22,7 @@
             "input": "apps/simonapi/public"
           }
         ],
-        "styles": [
-          "apps/simonapi/src/styles.scss"
-        ]
+        "styles": ["apps/simonapi/src/styles.scss"]
       },
       "configurations": {
         "production": {
@@ -90,9 +84,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/{projectRoot}"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "apps/simonapi/jest.config.ts",
         "tsConfig": "apps/simonapi/tsconfig.spec.json"
@@ -106,6 +98,67 @@
         "port": 4200,
         "spa": true
       }
+    },
+    "server": {
+      "dependsOn": ["build"],
+      "executor": "@angular-devkit/build-angular:server",
+      "options": {
+        "outputPath": "dist/apps/simonapi/server",
+        "main": "apps/simonapi/src/server.ts",
+        "tsConfig": "apps/simonapi/tsconfig.server.json",
+        "inlineStyleLanguage": "scss"
+      },
+      "configurations": {
+        "production": {
+          "outputHashing": "media",
+          "fileReplacements": [
+            {
+              "replace": "apps/simonapi/src/environments/environments.ts",
+              "with": "apps/simonapi/src/environments/environments.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "sourceMap": true,
+          "extractLicenses": false,
+          "vendorChunk": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve-ssr": {
+      "continuous": true,
+      "executor": "@angular-devkit/build-angular:ssr-dev-server",
+      "configurations": {
+        "development": {
+          "browserTarget": "simonapi:build:development",
+          "serverTarget": "simonapi:server:development"
+        },
+        "production": {
+          "browserTarget": "simonapi:build:production",
+          "serverTarget": "simonapi:server:production"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "prerender": {
+      "executor": "@angular-devkit/build-angular:prerender",
+      "options": {
+        "routes": ["/"]
+      },
+      "configurations": {
+        "development": {
+          "browserTarget": "simonapi:build:development",
+          "serverTarget": "simonapi:server:development"
+        },
+        "production": {
+          "browserTarget": "simonapi:build:production",
+          "serverTarget": "simonapi:server:production"
+        }
+      },
+      "defaultConfiguration": "production"
     }
   }
 }
