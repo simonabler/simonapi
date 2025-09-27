@@ -8,7 +8,7 @@ export const appRoutes: Route[] = [
   {
     path: '',
     component: HomeComponent,
-    title: 'Home'
+    title: 'SimonAPI'
   },
   {
     path: 'qr',
