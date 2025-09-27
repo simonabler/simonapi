@@ -17,6 +17,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { LockModule } from './lock/lock.module';
 import databaseConfig from './config/database.config';
 import throttlerConfig from './config/throttler.config';
+import { MetricsModule } from './metrics/metrics.module';
 
 @Module({
   imports: [
@@ -88,6 +89,7 @@ import throttlerConfig from './config/throttler.config';
     WatermarkModule,
     UtilityModule,
     LockModule,
+    MetricsModule
   ],
   controllers: [AppController, ReportsController],
   providers: [AppService,
