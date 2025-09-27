@@ -10,8 +10,8 @@ services:
       - "traefik.http.routers.simonapi-frontend.entrypoints=websecure"
       - "traefik.http.routers.simonapi-frontend.rule=Host(`hub.abler.tirol`) && PathPrefix(`/`)"
       - "traefik.http.routers.simonapi-frontend.priority=10"
-      - "traefik.http.routers.simonapi-frontend.middelwares=simonapi-frontend-compress"
-      - "traefik.http.middelwares.simonapi-frontend-compress.compress=true"
+      - "traefik.http.routers.simonapi-frontend.middlewares=simonapi-frontend-compress"
+      - "traefik.http.middlewares.simonapi-frontend-compress.compress=true"
       # Interner Container-Port des Frontends (ggf. anpassen)
       - "traefik.http.services.simonapi-frontend.loadbalancer.server.port=80"
 
