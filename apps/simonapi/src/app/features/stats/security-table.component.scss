@@ -1,0 +1,27 @@
+:host {
+  display: block;
+}
+
+.table {
+  font-size: 0.9rem;
+}
+
+.text-monospace {
+  font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+.reason {
+  max-width: 240px;
+  white-space: pre-line;
+}
+
+.meta {
+  max-width: 240px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.alert {
+  margin-bottom: 1rem;
+}

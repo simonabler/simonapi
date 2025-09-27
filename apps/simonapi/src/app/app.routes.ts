@@ -38,8 +38,15 @@ export const appRoutes: Route[] = [
     loadChildren: () => import('./features/lock/lock.routes').then(m => m.LOCK_PUBLIC_ROUTES),
   },
   {
+    path: 'admin/stats',
+    loadChildren: () => import('./features/stats/stats.module').then(m => m.StatsModule),
+    title: 'API Stats',
+  },
+  {
     path: 'impressum',
     loadComponent: () => import('./features/legal/impressum.component').then(c => c.ImpressumComponent),
     title: 'Impressum',
   },
 ];
+
+

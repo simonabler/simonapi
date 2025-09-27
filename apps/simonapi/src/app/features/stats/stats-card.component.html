@@ -1,0 +1,14 @@
+<div class="stats-card card">
+  <div class="card-header d-flex justify-content-between align-items-start gap-3">
+    <div>
+      <h2 class="card-title h5 mb-0">{{ title }}</h2>
+      <p *ngIf="subTitle" class="card-subtitle text-body-secondary mb-0">{{ subTitle }}</p>
+    </div>
+    <div class="card-actions">
+      <ng-content select="[card-actions]"></ng-content>
+    </div>
+  </div>
+  <div class="card-body">
+    <ng-content></ng-content>
+  </div>
+</div>

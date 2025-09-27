@@ -1,0 +1,44 @@
+<div *ngIf="errorMessage" class="alert alert-warning" role="alert">
+  {{ errorMessage }}
+</div>
+
+<div *ngIf="!data || data.length === 0" class="text-body-secondary small">
+  Keine aktiven Sperren.
+</div>
+
+<div *ngIf="data && data.length" class="table-responsive">
+  <table class="table table-sm align-middle mb-0">
+    <thead>
+      <tr>
+        <th scope="col">IP</th>
+        <th scope="col">Reason</th>
+        <th scope="col" class="text-end">Strikes</th>
+        <th scope="col" class="text-end">Remaining</th>
+        <th scope="col">Until</th>
+        <th scope="col">Meta</th>
+        <th *ngIf="showUnban" scope="col" class="text-end">Aktion</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let entry of data; trackBy: trackByIp">
+        <th scope="row" class="text-monospace">{{ entry.ip }}</th>
+        <td class="reason">{{ entry.reason }}</td>
+        <td class="text-end">{{ entry.strikes }}</td>
+        <td class="text-end">{{ entry.remainingMs | duration }}</td>
+        <td>{{ entry.until | isoDate }}</td>
+        <td class="meta">{{ formatMeta(entry.meta) }}</td>
+        <td *ngIf="showUnban" class="text-end">
+          <button
+            type="button"
+            class="btn btn-outline-danger btn-sm"
+            [disabled]="isLoading(entry.ip)"
+            (click)="onUnban(entry)"
+          >
+            <span *ngIf="isLoading(entry.ip)" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span *ngIf="!isLoading(entry.ip)">Unban</span>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
