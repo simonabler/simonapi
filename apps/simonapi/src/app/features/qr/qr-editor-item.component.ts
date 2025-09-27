@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit, inject, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { debounceTime, distinctUntilChanged, map, startWith, switchMap, takeUntil, catchError } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, startWith, switchMap, takeUntil, catchError, tap } from 'rxjs/operators';
 import { Subject, EMPTY } from 'rxjs';
-import { LucideAngularModule, QrCodeIcon, Trash2Icon } from 'lucide-angular';
+import { LucideAngularModule, InfoIcon, QrCodeIcon, Trash2Icon } from 'lucide-angular';
 import { QrService } from './qr-editor.sevice';
 import { GenerateRequest, QrDataType, QrPreset } from './models';
 
@@ -23,12 +23,17 @@ export class QrEditorItemComponent implements OnInit, OnDestroy {
 
   readonly QrCodeIcon = QrCodeIcon;
   readonly Trash2Icon = Trash2Icon;
+  readonly InfoIcon = InfoIcon;
 
   svgPreview: string | null = null;
   presets: QrPreset[] = [];
   saving = false;
   previewUrl: string | null = null;
   loading = false;
+
+  infoVisible = false;
+  shareGetUrl = '';
+  shareCurlCommand = '';
 
   private destroy$ = new Subject<void>();
 
@@ -57,6 +62,7 @@ export class QrEditorItemComponent implements OnInit, OnDestroy {
       startWith(this.form.getRawValue()),
       map(() => this.buildPayload()),
       distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+      tap(req => this.updateShareInfo(req)),
       debounceTime(400),
       switchMap(req => {
         this.loading = true;
@@ -82,6 +88,13 @@ export class QrEditorItemComponent implements OnInit, OnDestroy {
     this.revokePreview();
   }
 
+  toggleInfo() {
+    if (!this.infoVisible && !this.shareGetUrl) {
+      this.updateShareInfo(this.buildPayload());
+    }
+    this.infoVisible = !this.infoVisible;
+  }
+
   private buildPayload(): GenerateRequest {
     const v = this.form.getRawValue();
     const type = v.type;
@@ -97,6 +110,31 @@ export class QrEditorItemComponent implements OnInit, OnDestroy {
     }
     const opts = this.form.controls.options.getRawValue();
     return { type, payload, format: 'svg', size: opts.size!, margin: opts.margin!, ecc: opts.ecc as any };
+  }
+
+  private updateShareInfo(req: GenerateRequest) {
+    const endpoint = this.api.getQrEndpoint();
+    const params = new URLSearchParams();
+    params.set('type', req.type);
+    params.set('payload', JSON.stringify(req.payload));
+    if (req.format && req.format !== 'svg') {
+      params.set('format', req.format);
+    }
+    if (req.size) {
+      params.set('size', String(req.size));
+    }
+    if (req.margin !== undefined) {
+      params.set('margin', String(req.margin));
+    }
+    if (req.ecc) {
+      params.set('ecc', req.ecc);
+    }
+    this.shareGetUrl = `${endpoint}?${params.toString()}`;
+
+    const postBody: GenerateRequest = JSON.parse(JSON.stringify(req));
+    const json = JSON.stringify(postBody);
+    const escaped = json.replace(/'/g, "'\\''");
+    this.shareCurlCommand = `curl -X POST "${endpoint}" -H "Content-Type: application/json" --data '${escaped}'`;
   }
 
   private revokePreview() {

@@ -2,16 +2,18 @@
   <div class="card-body">
     <div class="d-flex justify-content-between align-items-center mb-2">
       <div class="d-flex align-items-center gap-2">
-        <div class="d-inline-grid place-items-center bg-body-secondary rounded-3"
-          style="width:36px;height:36px; position:relative">
+        <div class="d-inline-grid place-items-center bg-body-secondary rounded-3" style="width:36px;height:36px; position:relative">
           <lucide-icon class="lucide-center" [img]="QrCodeIcon" [size]="20"></lucide-icon>
         </div>
         <div>
           <div class="fw-semibold">QR Code Generator</div>
-          <div class="text-body-secondary small">Client‑Preview</div>
+          <div class="text-body-secondary small">Client preview</div>
         </div>
       </div>
       <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="toggleInfo()" [attr.aria-expanded]="infoVisible" aria-label="Show API usage">
+          <lucide-icon [img]="InfoIcon" [size]="16"></lucide-icon>
+        </button>
         <span class="badge text-bg-dark">utility</span>
         @if(removable){
           <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove.emit()">
@@ -21,16 +23,27 @@
       </div>
     </div>
 
+    @if(infoVisible){
+      <div class="share-panel mb-3">
+        <div class="fw-semibold mb-2">Share Current Request</div>
+        <p class="mb-2">
+          <a [href]="shareGetUrl" target="_blank" rel="noopener noreferrer">{{ shareGetUrl }}</a>
+        </p>
+        <p class="mb-1">curl (POST):</p>
+        <pre class="share-command">{{ shareCurlCommand }}</pre>
+      </div>
+    }
+
     <form (ngSubmit)="$event.preventDefault()" [formGroup]="form" class="panel">
-      <label>Typ
+      <label>Type
         <select [formControl]="form.controls.type">
           <option value="url">URL</option>
           <option value="text">Text</option>
           <option value="email">Email</option>
-          <option value="phone">Telefon</option>
+          <option value="phone">Phone</option>
           <option value="sms">SMS</option>
           <option value="vcard">vCard</option>
-          <option value="wifi">WLAN</option>
+          <option value="wifi">Wi-Fi</option>
         </select>
       </label>
 
@@ -51,39 +64,39 @@
       <!-- Email -->
       @if(form.value.type==='email'){
       <div class="cols">
-        <label>Empfänger <input formControlName="email_to" /></label>
-        <label>Betreff <input formControlName="email_subject" /></label>
-        <label>Nachricht <textarea formControlName="email_body"></textarea></label>
+        <label>Recipient <input formControlName="email_to" /></label>
+        <label>Subject <input formControlName="email_subject" /></label>
+        <label>Message <textarea formControlName="email_body"></textarea></label>
       </div>
       }
 
       <!-- Phone -->
       @if(form.value.type==='phone'){
       <div>
-        <label>Telefonnummer <input formControlName="phone_number" /></label>
+        <label>Phone number <input formControlName="phone_number" /></label>
       </div>
       }
 
       <!-- SMS -->
       @if(form.value.type==='sms'){
       <div class="cols">
-        <label>Nummer <input formControlName="sms_number" /></label>
-        <label>Nachricht <input formControlName="sms_message" /></label>
+        <label>Number <input formControlName="sms_number" /></label>
+        <label>Message <input formControlName="sms_message" /></label>
       </div>
       }
 
       <!-- vCard -->
       @if(form.value.type==='vcard'){
       <div class="cols">
-        <label>Vorname <input formControlName="v_firstName" /></label>
-        <label>Nachname <input formControlName="v_lastName" /></label>
-        <label>Firma <input formControlName="v_org" /></label>
-        <label>Titel <input formControlName="v_title" /></label>
-        <label>Telefon <input formControlName="v_phone" /></label>
+        <label>First name <input formControlName="v_firstName" /></label>
+        <label>Last name <input formControlName="v_lastName" /></label>
+        <label>Company <input formControlName="v_org" /></label>
+        <label>Title <input formControlName="v_title" /></label>
+        <label>Phone <input formControlName="v_phone" /></label>
         <label>Email <input formControlName="v_email" /></label>
-        <label>Web <input formControlName="v_website" /></label>
-        <label>Adresse <input formControlName="v_address" /></label>
-        <label>Notiz <input formControlName="v_note" /></label>
+        <label>Website <input formControlName="v_website" /></label>
+        <label>Address <input formControlName="v_address" /></label>
+        <label>Note <input formControlName="v_note" /></label>
       </div>
       }
 
@@ -91,8 +104,8 @@
       @if(form.value.type==='wifi'){
       <div class="cols">
         <label>SSID <input formControlName="wifi_ssid" /></label>
-        <label>Passwort <input formControlName="wifi_password" /></label>
-        <label>Verschlüsselung
+        <label>Password <input formControlName="wifi_password" /></label>
+        <label>Encryption
           <select formControlName="wifi_encryption">
             <option>WPA</option>
             <option>WEP</option>
@@ -100,18 +113,18 @@
           </select>
         </label>
         <label class="checkbox">
-          <input type="checkbox" formControlName="wifi_hidden" /> SSID versteckt
+          <input type="checkbox" formControlName="wifi_hidden" /> Hidden SSID
         </label>
       </div>
       }
 
       <fieldset>
         <div class="cols">
-          <label>Größe (px)
+          <label>Size (px)
             <input type="number" [formControl]="form.controls.options.controls.size" min="64" max="4096" />
           </label>
           
-          <label>Fehlerkorrektur
+          <label>Error correction
             <select [formControl]="form.controls.options.controls.ecc">
               <option>M</option>
               <option>L</option>
@@ -126,14 +139,14 @@
       </fieldset>
 
       <div class="actions">
-        <button type="button" class="btn btn-secondary" (click)="download('png')">Als PNG herunterladen</button>
-        <button type="button" class="btn btn-secondary" (click)="download('svg')">Als SVG herunterladen</button>
+        <button type="button" class="btn btn-secondary" (click)="download('png')">Download as PNG</button>
+        <button type="button" class="btn btn-secondary" (click)="download('svg')">Download as SVG</button>
       </div>
     </form>
 
-    <div class="border rounded p-3 mt-2 qrbox d-flex align-items-center justify-content-center">     
+    <div class="border rounded p-3 mt-2 qrbox d-flex align-items-center justify-content-center">
       @if(previewUrl; as url){
-        <img [src]="url" alt="QR Vorschau" class="code-preview-img" />
+        <img [src]="url" alt="QR preview" class="code-preview-img" />
       }
     </div>
   </div>

@@ -5,24 +5,23 @@ import { firstValueFrom, Observable } from 'rxjs';
 import { environment } from '../../../environments/environments';
 import { isPlatformBrowser } from '@angular/common';
 
-
 @Injectable({ providedIn: 'root' })
 export class QrService {
   private http = inject(HttpClient);
-  private API;
-  private platformId = inject(PLATFORM_ID);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly API: string;
   isBrowser = false;
 
   constructor() {
     this.isBrowser = isPlatformBrowser(this.platformId);
-    this.API = (environment.API_BASE_URL || window.origin) + '/api';
+    const origin = this.isBrowser ? window.origin : '';
+    this.API = (environment.API_BASE_URL || origin) + '/api';
   }
 
   generateSvg(req: GenerateRequest): Promise<string> {
     const body = { ...req, format: 'svg' };
     return firstValueFrom(this.http.post(`${this.API}/qr`, body, { responseType: 'text' }));
   }
-
 
   download(req: GenerateRequest & { format: 'png' | 'svg' }): Promise<void> {
     const body = { ...req };
@@ -38,9 +37,13 @@ export class QrService {
   }
 
   preview$(req: GenerateRequest): Observable<Blob> {
-    const body = { ...req, format: 'png' }; // PNG für Vorschau
+    const body = { ...req, format: 'png' }; // Use PNG for preview
     body.size = 256;
     return this.http.post(`${this.API}/qr`, body, { responseType: 'blob' });
+  }
+
+  getQrEndpoint(): string {
+    return `${this.API}/qr`;
   }
 
   // Presets
@@ -54,3 +57,4 @@ export class QrService {
     return firstValueFrom(this.http.delete<void>(`${this.API}/qr/presets/${id}`));
   }
 }
+
