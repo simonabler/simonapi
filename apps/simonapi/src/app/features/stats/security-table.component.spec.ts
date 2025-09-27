@@ -1,8 +1,5 @@
-import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { DurationPipe } from './duration.pipe';
-import { IsoDatePipe } from './iso-date.pipe';
 import { BlockEntryView, StatsService } from './stats.service';
 import { SecurityTableComponent } from './security-table.component';
 
@@ -27,8 +24,7 @@ describe('SecurityTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonModule, DurationPipe, IsoDatePipe],
-      declarations: [SecurityTableComponent],
+      imports: [SecurityTableComponent],
       providers: [{ provide: StatsService, useValue: statsServiceMock }],
     }).compileComponents();
   });

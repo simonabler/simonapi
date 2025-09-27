@@ -2,6 +2,7 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
+  Logger,
   NestInterceptor,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
@@ -27,6 +28,8 @@ function resolveRoutePath(req: any): string {
 
 @Injectable()
 export class MetricsInterceptor implements NestInterceptor {
+  private readonly log = new Logger(MetricsInterceptor.name);
+
   constructor(
     private readonly metrics: MetricsService,
     private readonly reflector: Reflector,
@@ -57,7 +60,9 @@ export class MetricsInterceptor implements NestInterceptor {
         const status = res?.statusCode ?? 0;
 
         if (!skip) {
-          this.metrics.record(path, method, status, durationMs);
+          this.metrics.record(path, method, status, durationMs).catch((err) => {
+            this.log.error('Failed to store request metric', err instanceof Error ? err.stack : String(err));
+          });
         }
         this.anomaly.observe(req, path, method, status);
       }),

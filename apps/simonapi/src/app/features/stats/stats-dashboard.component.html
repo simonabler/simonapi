@@ -19,7 +19,7 @@
       <ng-container *ngIf="vm.loading; else overviewContent">
         <div class="loading-state">
           <div class="spinner-border" role="status" aria-hidden="true"></div>
-          <span>Lade…</span>
+          <span>Lade</span>
         </div>
       </ng-container>
 
@@ -31,7 +31,7 @@
           </div>
           <div class="stat-kpi">
             <span class="label">Uptime</span>
-            <span class="value">{{ uptimeMs(vm.stats) | duration }}</span>
+            <span class="value">{{ vm.uptimeMs | duration }}</span>
           </div>
           <div class="stat-kpi">
             <span class="label">Distinct Routes</span>
@@ -42,7 +42,7 @@
         <div class="started-at">
           <span class="text-body-secondary">Started:</span>
           <strong>{{ vm.stats?.startedAtIso | isoDate }}</strong>
-          <span class="text-body-secondary">( {{ relativeFromNow(vm.stats?.startedAtIso) }} )</span>
+          <span class="text-body-secondary">( {{ vm.startedRelative }} )</span>
         </div>
 
         <ng-container *ngIf="dailyEntries(vm.stats) as dailyEntriesList; else noDaily">
@@ -97,7 +97,7 @@
       <ng-container *ngIf="vm.loading; else securityContent">
         <div class="loading-state">
           <div class="spinner-border" role="status" aria-hidden="true"></div>
-          <span>Lade…</span>
+          <span>Lade</span>
         </div>
       </ng-container>
 

@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class DurationPipe implements PipeTransform {
   transform(value: number | null | undefined): string {
     if (value == null || Number.isNaN(value)) {
-      return '—';
+      return '';
     }
 
     const totalSeconds = Math.max(0, Math.floor(value / 1000));

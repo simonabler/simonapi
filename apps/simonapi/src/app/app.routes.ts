@@ -39,7 +39,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'admin/stats',
-    loadChildren: () => import('./features/stats/stats.module').then(m => m.StatsModule),
+    loadComponent: () => import('./features/stats/stats-dashboard.component').then(m => m.StatsDashboardComponent),
     title: 'API Stats',
   },
   {

@@ -20,8 +20,8 @@ export class MetricsController {
   @Get('_stats/reset')
   @HttpCode(200)
   @SkipMetrics()
-  reset() {
-    this.metrics.reset();
+  async reset() {
+    await this.metrics.reset();
     return { ok: true };
   }
 

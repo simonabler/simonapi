@@ -1,9 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
-import { DurationPipe } from './duration.pipe';
-import { IsoDatePipe } from './iso-date.pipe';
 import { MetricsSnapshot, SecuritySnapshot, StatsService } from './stats.service';
 import { StatsDashboardComponent } from './stats-dashboard.component';
 
@@ -29,8 +26,7 @@ describe('StatsDashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, DurationPipe, IsoDatePipe],
-      declarations: [StatsDashboardComponent],
+      imports: [StatsDashboardComponent],
       providers: [{ provide: StatsService, useValue: statsServiceMock }],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();

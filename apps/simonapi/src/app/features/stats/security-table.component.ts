@@ -1,11 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { BlockEntryView, StatsService } from './stats.service';
+import { DurationPipe } from './duration.pipe';
+import { IsoDatePipe } from './iso-date.pipe';
 import { environment } from '../../../environments/environments';
 
 @Component({
   selector: 'app-security-table',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, DurationPipe, IsoDatePipe],
   templateUrl: './security-table.component.html',
   styleUrls: ['./security-table.component.scss'],
 })
@@ -13,12 +17,10 @@ export class SecurityTableComponent {
   @Input() data: BlockEntryView[] | null = [];
   @Output() refreshRequested = new EventEmitter<void>();
 
-private readonly statsService = inject(StatsService);
+  private readonly statsService = inject(StatsService);
   readonly showUnban = !environment.production || environment.allowUnbanButton === true;
   errorMessage: string | null = null;
   private readonly unbanLoading = new Map<string, boolean>();
-
-
 
   isLoading(ip: string): boolean {
     return this.unbanLoading.get(ip) ?? false;
