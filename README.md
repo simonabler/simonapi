@@ -268,3 +268,8 @@ Usage: strictly non‑commercial. For commercial use, please get in touch before
 ## Contributors
 
 Contributions are welcome — please see the license. For larger changes, open an issue first and describe your plan.
+## Frontend Privacy & Cookies
+
+- The Angular frontend ships with an in-app cookie banner. It stores the consent status in the first-party cookie `simonapi-consent` (SameSite=Lax, 180 days).
+- Aside from that consent cookie, SimonAPI does not place additional browser cookies or run analytics scripts.
+- The home page fetches the avatar image from `gravatar.com`, which may process the visitor's IP address but does not set SimonAPI cookies.

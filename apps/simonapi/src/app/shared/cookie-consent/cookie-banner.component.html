@@ -1,0 +1,35 @@
+<ng-container *ngIf="visible()">
+  <div class="cookie-banner" role="dialog" aria-live="polite" aria-labelledby="cookie-banner-title" aria-describedby="cookie-banner-description">
+    <div class="cookie-banner__content">
+      <h2 id="cookie-banner-title" class="cookie-banner__title">Cookies & externe Dienste</h2>
+      <p id="cookie-banner-description" class="cookie-banner__intro">
+        SimonAPI setzt nur ein technisch notwendiges Cookie, um deine Auswahl zu speichern. Deine Entscheidung wird im Cookie
+        <code>simonapi-consent</code> (Speicherdauer: 180 Tage, SameSite=Lax) abgelegt.
+      </p>
+      <ul class="cookie-banner__summary">
+        <li><strong>Notwendig:</strong> <code>simonapi-consent</code> dokumentiert, ob du notwendige bzw. optionale Cookies zugelassen hast.</li>
+        <li><strong>Funktion:</strong> Die Web-Tools arbeiten zustandslos &ndash; API-Aufrufe legen keine Browser-Cookies an.</li>
+        <li><strong>Externe Medien:</strong> Das Avatar-Bild auf der Startseite wird direkt ueber <code>gravatar.com</code> geladen; dabei wird deine IP an Automattic uebertragen.</li>
+        <li><strong>Keine Analyse/Marketing:</strong> Es laufen keine Tracking-, Werbe- oder Social-Media-Skripte.</li>
+      </ul>
+      <button type="button" class="cookie-banner__details-toggle" (click)="toggleDetails()" [attr.aria-expanded]="showDetails()">
+        {{ showDetails() ? 'Details ausblenden' : 'Details anzeigen' }}
+      </button>
+      <div class="cookie-banner__details" *ngIf="showDetails()">
+        <dl>
+          <dt>simonapi-consent</dt>
+          <dd>Zweck: Speichert deine aktuellen Cookie-Einstellungen. Kategorie: technisch notwendig. Speicherdauer: 180 Tage. Inhalt: Flags fuer notwendig/optional sowie Zeitstempel.</dd>
+          <dt>Gravatar</dt>
+          <dd>Wenn du die Startseite besuchst, wird das Avatar ueber <code>https://www.gravatar.com/</code> geladen. Der Dienst setzt fuer reine Bildauslieferung keine Cookies, verarbeitet aber deine IP-Adresse.</dd>
+          <dt>API-Aufrufe</dt>
+          <dd>Bei allen Tools werden Requests direkt an die SimonAPI gestellt. Es werden derzeit keine Sitzungs- oder Tracking-Cookies zurueckgegeben.</dd>
+        </dl>
+        <button type="button" class="cookie-banner__reset" (click)="reset()">Einstellungen zuruecksetzen</button>
+      </div>
+      <div class="cookie-banner__actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="acceptEssential()">Nur notwendige akzeptieren</button>
+        <button type="button" class="btn btn-primary" (click)="acceptAll()">Alle akzeptieren</button>
+      </div>
+    </div>
+  </div>
+</ng-container>

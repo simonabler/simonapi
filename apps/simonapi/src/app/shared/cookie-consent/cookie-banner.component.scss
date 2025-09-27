@@ -1,0 +1,120 @@
+:host {
+  position: fixed;
+  inset: auto 0 1.5rem 0;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1100;
+}
+
+.cookie-banner {
+  width: min(100%, 720px);
+  background: color-mix(in oklab, var(--surface, #ffffff) 85%, white 15%);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: var(--radius-lg, 0.75rem);
+  box-shadow: var(--shadow, 0 8px 30px rgba(15, 23, 42, 0.15));
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+}
+
+.cookie-banner__content {
+  padding: 1.5rem;
+  color: var(--text, #0f172a);
+  display: grid;
+  gap: 1rem;
+}
+
+.cookie-banner__title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.cookie-banner__intro {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.cookie-banner__summary {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.cookie-banner__summary li {
+  line-height: 1.4;
+}
+
+.cookie-banner__details-toggle {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--brand, #6366f1);
+  cursor: pointer;
+  text-decoration: underline;
+  width: fit-content;
+}
+
+.cookie-banner__details {
+  border-top: 1px solid var(--border, #e2e8f0);
+  padding-top: 0.75rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.cookie-banner__details dl {
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.cookie-banner__details dt {
+  font-weight: 600;
+}
+
+.cookie-banner__details dd {
+  margin: 0;
+}
+
+.cookie-banner__reset {
+  margin-top: 0.5rem;
+  background: none;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: var(--radius, 0.75rem);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--text, #0f172a);
+}
+
+.cookie-banner__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+@media (max-width: 640px) {
+  :host {
+    inset: auto 0 1rem 0;
+    padding: 0.5rem;
+  }
+
+  .cookie-banner__content {
+    padding: 1.25rem;
+  }
+
+  .cookie-banner__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cookie-banner__actions .btn {
+    width: 100%;
+  }
+}

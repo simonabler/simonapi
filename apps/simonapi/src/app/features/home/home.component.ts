@@ -59,9 +59,9 @@ export class HomeComponent {
 
   profile = {
     name: 'Simon Abler',
-    role: 'Senior Full-Stack Engineer (Cybersecurity / CISO mindset)',
+    role: 'Senior Full-Stack Engineer',
     location: 'Tyrol, AT',
-    bio: 'Senior full-stack engineer with a security-first, CISO mindset. I design and operate secure API platforms, developer tools and web UIs end-to-end. Focus on cybersecurity (OWASP, threat modeling, IAM), API governance, automation and measurable DX. Strong with NestJS, Angular, TypeORM, PostgreSQL and containers — shipping clean architecture from home-lab to cloud.',
+    bio: 'Senior full-stack engineer with a security-first. I design and operate secure API platforms, developer tools and web UIs end-to-end. Focus on cybersecurity (OWASP, threat modeling, IAM), API governance, automation and measurable DX. Strong with NestJS, Angular, TypeORM, PostgreSQL and containers — shipping clean architecture from home-lab to cloud.',
     links: [
       { label: 'Website', href: 'https://hub.abler.tirol' },
       { label: 'GitHub', href: 'https://github.com/simonabler' },
