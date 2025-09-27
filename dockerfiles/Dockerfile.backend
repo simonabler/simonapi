@@ -9,6 +9,7 @@ RUN npm ci
 
 # Copy workspace and build the NestJS server
 COPY ./ ./
+RUN rm -R ./apps/simonapi-e2e
 
 RUN npx nx build server
 
