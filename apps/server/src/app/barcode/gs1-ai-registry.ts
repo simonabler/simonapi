@@ -562,7 +562,26 @@ export type Gs1CombinationRule =
   | { type: 'mutuallyExclusive'; aiList: string[] }
   | { type: 'unique'; ai: string };
 
-export const COMBINATION_RULES: Gs1CombinationRule[] = [];
+/**
+ * Global GS1 combination rules that apply across all AI combinations.
+ * Per-AI constraints (requiresOneOf, notTogetherWith) are already encoded in
+ * AI_REGEX_DB and checked in validateCombination via spec lookups.
+ * These rules capture structural constraints not expressible per-AI.
+ */
+export const COMBINATION_RULES: Gs1CombinationRule[] = [
+  // GS1 primary identification AIs are mutually exclusive — a label carries
+  // exactly one type of primary key (GTIN, CONTENT, or MTO GTIN).
+  { type: 'mutuallyExclusive', aiList: ['01', '02', '03'] },
+
+  // GSRN provider and recipient cannot appear on the same label.
+  { type: 'mutuallyExclusive', aiList: ['8017', '8018'] },
+
+  // SSCC must be unique — only one serial shipping container code per label.
+  { type: 'unique', ai: '00' },
+
+  // GTIN must be unique — duplicate GTINs on a single label is undefined behaviour.
+  { type: 'unique', ai: '01' },
+];
 
 export function getAiSpec(ai: string): AiRegexSpec | undefined {
   return AI_REGEX_DB[ai];
@@ -580,7 +599,11 @@ export type AiSerializedSpec = {
   hint?: string;
 };
 
+// Memoized — the AI registry is static at runtime; no need to re-serialize on every request.
+let _registryCache: Record<string, AiSerializedSpec> | null = null;
+
 export function getSerializedAiRegistry(): Record<string, AiSerializedSpec> {
+  if (_registryCache) return _registryCache;
   const out: Record<string, AiSerializedSpec> = {};
   for (const [k, v] of Object.entries(AI_REGEX_DB)) {
     out[k] = {
@@ -594,6 +617,7 @@ export function getSerializedAiRegistry(): Record<string, AiSerializedSpec> {
       hint: v.hint,
     };
   }
+  _registryCache = out;
   return out;
 }
 
@@ -630,5 +654,18 @@ export function validateCombination(items: Array<{ ai: string; value: string }>)
       }
     }
   }
-  // Additional project-wide rules may be added here
+  // Global combination rules (COMBINATION_RULES array)
+  for (const rule of COMBINATION_RULES) {
+    if (rule.type === 'mutuallyExclusive') {
+      const present = rule.aiList.filter(a => (counts.get(a) ?? 0) > 0);
+      if (present.length > 1) {
+        throw new Error(`AIs [${present.join(', ')}] are mutually exclusive — only one may appear per label`);
+      }
+    }
+    if (rule.type === 'unique') {
+      if ((counts.get(rule.ai) ?? 0) > 1) {
+        throw new Error(`AI ${rule.ai} must appear at most once per label`);
+      }
+    }
+  }
 }
