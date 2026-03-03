@@ -94,10 +94,10 @@ export class HomeComponent {
     {
       key: 'barcode',
       title: 'Barcodes & GS1',
-      description: 'Standard barcodes (PNG/SVG) and GS1-128/DataMatrix (JSON render).',
+      description: 'Standard barcodes (PNG/SVG), GS1-128/DataMatrix with full AI validation, batch render (up to 100 per request) and GS1 Digital Link encode/decode.',
       route: '/barcode',
-      apiTitle: 'GET /api/barcode/png | svg, POST /api/barcode/gs1/render',
-      curl: `curl -X POST http://localhost:3000/api/barcode/gs1/render -H "Content-Type: application/json" -d '{"symbology":"gs1-128","format":"png","items":[{"ai":"01","value":"09506000134352"}]}'`,
+      apiTitle: 'POST /api/barcode/gs1/render | gs1/batch | gs1/digital-link/encode',
+      curl: `curl -X POST http://localhost:3000/api/barcode/gs1/batch -H "Content-Type: application/json" -d '{"symbology":"gs1-128","format":"png","barcodes":[{"ref":"pal-1","items":[{"ai":"01","value":"09506000134376"},{"ai":"17","value":"261231"}]}]}'`,
       activeTab: 'info',
       icon: '🏷️',
     },

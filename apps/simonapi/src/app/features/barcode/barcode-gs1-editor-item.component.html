@@ -6,11 +6,7 @@
           class="d-inline-grid place-items-center bg-body-secondary rounded-3"
           style="width: 36px; height: 36px; position: relative"
         >
-          <lucide-icon
-            class="lucide-center"
-            [img]="BarcodeIcon"
-            [size]="20"
-          ></lucide-icon>
+          <lucide-icon class="lucide-center" [img]="BarcodeIcon" [size]="20"></lucide-icon>
         </div>
         <div>
           <div class="fw-semibold">GS1 Generator</div>
@@ -20,11 +16,7 @@
       <div class="d-flex align-items-center gap-2">
         <span class="badge text-bg-dark">gs1</span>
         @if(removable){
-        <button
-          type="button"
-          class="btn btn-sm btn-outline-danger"
-          (click)="remove.emit()"
-        >
+        <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove.emit()">
           <lucide-icon [img]="Trash2Icon" [size]="16"></lucide-icon>
         </button>
         }
@@ -33,8 +25,7 @@
 
     <form (ngSubmit)="$event.preventDefault()" [formGroup]="form" class="panel">
       <div class="cols">
-        <label
-          >Symbologie
+        <label>Symbologie
           <select [formControl]="form.controls.symbology">
             <option value="gs1-128">GS1-128</option>
             <option value="gs1datamatrix">GS1 DataMatrix</option>
@@ -59,30 +50,20 @@
             <div>
               <input type="text" [formControl]="ctrl.controls.value" />
               @if(errors[$index]; as err){
-              <div class="hint">{{ err }}</div>
+              <div class="hint text-danger">{{ err }}</div>
               }
-              <div
-                class="hint"
-                *ngIf="!errors[$index] && aiDb[ctrl.value.ai]?.hint"
-              >
+              <div class="hint text-body-secondary"
+                *ngIf="!errors[$index] && aiDb[ctrl.value.ai]?.hint">
                 {{ aiDb[ctrl.value.ai].hint }}
               </div>
             </div>
-            <button
-              type="button"
-              class="btn btn-outline-danger"
-              (click)="removeItem($index)"
-            >
+            <button type="button" class="btn btn-outline-danger" (click)="removeItem($index)">
               Entfernen
             </button>
           </div>
           }
           <div>
-            <button
-              type="button"
-              class="btn btn-outline-primary"
-              (click)="addItem()"
-            >
+            <button type="button" class="btn btn-outline-primary" (click)="addItem()">
               AI hinzufügen
             </button>
           </div>
@@ -91,53 +72,43 @@
 
       <fieldset>
         <div class="cols">
-          <label
-            >Skalierung
-            <input
-              type="number"
-              [formControl]="form.controls.scale"
-              min="1"
-              max="10"
-            />
+          <label>Skalierung
+            <input type="number" [formControl]="form.controls.scale" min="1" max="10" />
           </label>
-          <label
-            >Höhe
-            <input
-              type="number"
-              [formControl]="form.controls.height"
-              min="0"
-              max="200"
-            />
+          <label>Höhe
+            <input type="number" [formControl]="form.controls.height" min="0" max="200" />
           </label>
         </div>
       </fieldset>
 
+      <!-- Client-side combination error -->
       @if(globalError){
-      <div class="hint">{{ globalError }}</div>
+      <div class="hint text-danger">{{ globalError }}</div>
+      }
+
+      <!-- Server-side validation error (structured, from gs1-error.ts) -->
+      @if(serverError){
+      <div class="alert alert-danger py-2 px-3 small mt-2">
+        <strong>Validierungsfehler:</strong> {{ serverError }}
+      </div>
       }
 
       <div class="actions">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="download('png')"
-        >
+        <button type="button" class="btn btn-secondary" (click)="download('png')">
           Als PNG herunterladen
         </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="download('svg')"
-        >
+        <button type="button" class="btn btn-secondary" (click)="download('svg')">
           Als SVG herunterladen
         </button>
       </div>
     </form>
 
-    <div
-      class="border rounded p-3 mt-2 qrbox d-flex align-items-center justify-content-center"
-    >
-      @if(previewUrl; as url){
+    <div class="border rounded p-3 mt-2 qrbox d-flex align-items-center justify-content-center">
+      @if(loading){
+      <div class="spinner-border spinner-border-sm text-secondary" role="status">
+        <span class="visually-hidden">Lade…</span>
+      </div>
+      } @else if(previewUrl; as url){
       <img [src]="url" alt="GS1 Vorschau" class="code-preview-img" />
       }
     </div>
