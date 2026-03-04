@@ -13,32 +13,33 @@ $color-emerald-600: oklch(59.6% 0.145 163.225);
 
 /* Design Tokens */
 :root {
-  /* Colors */
-  --brand: #6366f1;
-  /* indigo */
-  --brand-2: #0ea5e9;
-  /* sky */
-  --bg: #f6f8fc;
-  --surface: #ffffff;
-  --text: #0f172a;
-  /* slate-900 */
-  --muted: #64748b;
-  /* slate-500 */
-  --border: #e2e8f0;
-  /* slate-200 */
+  /* Brand — Cyber/Industrial Palette */
+  --brand:    #22d3ee;   /* cyan-400  — Hauptakzent */
+  --brand-2:  #0ea5e9;   /* sky-500   — Gradient-Partner */
+  --brand-3:  #00ff88;   /* Terminal-Grün — sparend einsetzen */
+
+  /* Backgrounds */
+  --bg:       #f1f5f9;   /* slate-100 */
+  --surface:  #ffffff;
+  --surface-2: #f8fafc;  /* für Karten-Innenflächen */
+
+  /* Text */
+  --text:     #0f172a;   /* slate-900 */
+  --muted:    #475569;   /* slate-600 */
+  --border:   #e2e8f0;   /* slate-200 */
 
   /* Radius & Shadows */
-  --radius-sm: .5rem;
-  --radius: .75rem;
-  --radius-lg: 0.5rem;
-  --shadow-sm: 0 2px 10px rgba(0, 0, 0, .06);
-  --shadow: 0 8px 30px rgba(0, 0, 0, .08);
+  --radius-sm: .375rem;
+  --radius:    .75rem;
+  --radius-lg: 1rem;
+  --shadow-sm: 0 1px 6px rgba(0,0,0,.06);
+  --shadow:    0 6px 24px rgba(0,0,0,.09);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.12);
 
   /* Transitions */
-  --ease: cubic-bezier(.2, .8, .2, 1);
+  --ease: cubic-bezier(.2,.8,.2,1);
 
   color-scheme: light;
-
 }
 
 /* Base */
@@ -244,3 +245,49 @@ kbd {
 .chip.PUT { color: #b45309; background: #fffbeb; border-color: #fde68a; }
 .chip.PATCH { color: #4338ca; background: #eef2ff; border-color: #c7d2fe; }
 .chip.DELETE { color: #be123c; background: #ffe4e6; border-color: #fecdd3; }
+
+/* Skill-Cluster-Karten (Profil-Sektion) */
+.skill-cluster {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+.skill-cluster .cluster-label {
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: .5rem;
+}
+
+/* Tier-Karten (GS1 Pricing) */
+.tier-card {
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border);
+  padding: 1.5rem;
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.tier-card.featured {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--brand), transparent 85%);
+}
+.tier-card .tier-price {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.tier-card .tier-price small {
+  font-size: .9rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* Hero-Hintergrund (ersetzt Blob-Animationen) */
+.hero-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, color-mix(in oklab, var(--brand), transparent 88%), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 60%, color-mix(in oklab, var(--brand-2), transparent 92%), transparent),
+    #f8fafc;
+}
