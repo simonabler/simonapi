@@ -1,460 +1,322 @@
-<!-- Hero -->
-<header class="hero-bg py-5 text-center">
-  <div class="container py-4 py-lg-5">
-    <span class="badge border mb-3 fw-semibold px-3 py-2" style="color: var(--brand); border-color: var(--brand) !important; background: color-mix(in oklab, var(--brand), transparent 92%);">
-      hub.abler.tirol
-    </span>
-    <h1 class="display-5 fw-bold mb-3" style="letter-spacing: -.02em;">
-      Secure APIs.<br>
-      <span style="background: linear-gradient(90deg, var(--brand-2), var(--brand)); -webkit-background-clip: text; background-clip: text; color: transparent;">
-        Resilient Systems.
-      </span>
-    </h1>
-    <p class="text-body-secondary mt-3 mb-4 mx-auto" style="max-width: 520px; font-size: 1.05rem;">
-      GS1 barcodes, QR codes, watermarking, locks and dev utilities — built by a Cyber Security Engineer from Tyrol.
-    </p>
-    <div class="d-flex justify-content-center gap-2 flex-wrap">
-      <a href="/api" target="_blank" rel="noopener" class="btn btn-primary px-4">
-        <lucide-icon [img]="BookOpenIcon" [size]="18"></lucide-icon>
-        API Docs
-      </a>
-      <a href="#apis" class="btn btn-outline-secondary px-4">
-        <lucide-icon [img]="SendIcon" [size]="18"></lucide-icon>
-        Explore APIs
-      </a>
-      <a href="mailto:simon@abler.tirol" class="btn btn-outline-secondary px-4">
-        Contact
-      </a>
+<!-- ══════════════════════════════════════════════
+     HERO  — zwei Spalten
+══════════════════════════════════════════════════ -->
+<header class="hero-bg py-5">
+  <div class="container py-3 py-lg-4">
+    <div class="row align-items-center g-4">
+
+      <!-- Linke Spalte: Text + CTAs -->
+      <div class="col-12 col-lg-7">
+        <span class="badge border fw-semibold px-3 py-2 mb-3 d-inline-block"
+              style="color:var(--brand);border-color:var(--brand)!important;
+                     background:color-mix(in oklab,var(--brand),transparent 92%);">
+          hub.abler.tirol
+        </span>
+        <h1 class="fw-bold mb-3"
+            style="font-size:clamp(2rem,5vw,3rem);line-height:1.1;letter-spacing:-.025em">
+          Secure APIs.<br>
+          <span style="background:linear-gradient(100deg,var(--brand-2),var(--brand));
+                       -webkit-background-clip:text;background-clip:text;color:transparent;">
+            Resilient Systems.
+          </span>
+        </h1>
+        <p class="text-body-secondary mb-4"
+           style="font-size:1.05rem;max-width:500px;line-height:1.65">
+          GS1 barcodes, QR codes, watermarking and dev utilities —
+          built by a Cyber Security Engineer from Tyrol.
+        </p>
+        <div class="d-flex gap-2 flex-wrap">
+          <a href="/api" target="_blank" rel="noopener"
+             class="btn btn-primary d-inline-flex align-items-center gap-2 px-4">
+            <lucide-icon [img]="BookOpenIcon" [size]="17"></lucide-icon>
+            API Docs
+          </a>
+          <a href="#catalog"
+             class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 px-4">
+            <lucide-icon [img]="SendIcon" [size]="17"></lucide-icon>
+            Explore APIs
+          </a>
+          <a href="mailto:simon@abler.tirol"
+             class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 px-4">
+            <lucide-icon [img]="MailIcon" [size]="17"></lucide-icon>
+            Contact
+          </a>
+        </div>
+      </div>
+
+      <!-- Rechte Spalte: 3 Feature-Items -->
+      <div class="col-12 col-lg-5">
+        <div class="d-flex flex-column gap-2">
+          <div class="d-flex align-items-center gap-3 p-3 rounded-3 border bg-white"
+               style="box-shadow:var(--shadow-sm)">
+            <span style="font-size:1.4rem;flex-shrink:0">🏭</span>
+            <div>
+              <div class="fw-semibold small">Industrial GS1</div>
+              <div class="text-body-secondary" style="font-size:.8rem">
+                GS1-128, DataMatrix, batch up to 100 barcodes/request
+              </div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-3 p-3 rounded-3 border bg-white"
+               style="box-shadow:var(--shadow-sm)">
+            <span style="font-size:1.4rem;flex-shrink:0">🔐</span>
+            <div>
+              <div class="fw-semibold small">Security-first</div>
+              <div class="text-body-secondary" style="font-size:.8rem">
+                Rate limiting, anomaly detection, blocklist
+              </div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-3 p-3 rounded-3 border bg-white"
+               style="box-shadow:var(--shadow-sm)">
+            <span style="font-size:1.4rem;flex-shrink:0">⚡</span>
+            <div>
+              <div class="fw-semibold small">Open &amp; free</div>
+              <div class="text-body-secondary" style="font-size:.8rem">
+                Standard APIs free to use · GS1 with API key
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </header>
 
-<!-- Intro / Overview -->
-<section class="py-5">
+
+<!-- ══════════════════════════════════════════════
+     API CATALOG
+══════════════════════════════════════════════════ -->
+<section id="catalog" class="py-5">
   <div class="container">
-    <div class="row g-4 align-items-stretch">
-      <div class="col-12 col-lg-4">
-        <div class="p-4 border rounded h-100">
-          <h3 class="h6">Quick Start</h3>
-          <p class="text-body-secondary mb-2">
-            Run locally and test requests instantly:
-          </p>
-          <pre
-            class="code mb-0"
-          ><code>nx serve server  # Backend (http://localhost:3000)
-nx serve simonapi  # Frontend (http://localhost:4200)</code></pre>
+    <div class="d-flex align-items-end justify-content-between mb-4">
+      <div>
+        <p class="section-label mb-1">API Catalog</p>
+        <h2 class="h4 fw-bold m-0">Available APIs</h2>
+      </div>
+      <code class="small text-body-secondary d-none d-md-block">
+        https://hub.abler.tirol
+      </code>
+    </div>
+
+    <div class="row g-3">
+      @for (card of catalog; track card.key) {
+      <div class="col-12 col-sm-6 col-xl-4">
+        <div class="catalog-card">
+          <div class="catalog-card-body">
+
+            <!-- Header -->
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center gap-2">
+                <div class="catalog-icon" [class]="card.iconClass ?? ''">
+                  {{ card.icon }}
+                </div>
+                <div>
+                  <div class="fw-semibold" style="font-size:.95rem">{{ card.title }}</div>
+                  <div class="text-body-secondary" style="font-size:.76rem">{{ card.sub }}</div>
+                </div>
+              </div>
+              @if (card.badge) {
+              <span class="badge"
+                    style="background:var(--brand);color:#0f172a;font-size:.7rem">
+                {{ card.badge }}
+              </span>
+              }
+            </div>
+
+            <!-- Routes -->
+            <div class="catalog-routes">
+              @for (r of card.routes; track r.path) {
+              <div class="route-row">
+                <span class="chip" [class]="r.method">{{ r.method }}</span>
+                <code>{{ r.path }}</code>
+                <span class="badge ms-auto flex-shrink-0"
+                      [class.bg-dark]="r.tag === 'stable'"
+                      [class.text-bg-light]="r.tag === 'beta'"
+                      [style.background]="r.tag === 'new' ? 'var(--brand)' : null"
+                      [style.color]="r.tag === 'new' ? '#0f172a' : null"
+                      style="font-size:.66rem">
+                  {{ r.tag }}
+                </span>
+              </div>
+              }
+            </div>
+
+            <!-- CTAs -->
+            <div class="catalog-cta">
+              <a [routerLink]="card.ctaPrimary.href" class="btn btn-sm btn-primary">
+                {{ card.ctaPrimary.label }}
+              </a>
+              @if (card.ctaSecondary) {
+              <a [href]="card.ctaSecondary.href" class="btn btn-sm btn-outline-secondary">
+                {{ card.ctaSecondary.label }}
+              </a>
+              }
+            </div>
+
+          </div>
         </div>
       </div>
-      <div class="col-12 col-lg-4">
-        <div class="p-4 border rounded h-100">
-          <h3 class="h6">Features</h3>
-          <ul class="m-0 ps-3 small text-body-secondary">
-            <li>QR & Barcodes (PNG/SVG, GS1)</li>
-            <li>Watermarking (logo/text, preview)</li>
-            <li>Locks (access links, swipe‑to‑open)</li>
-            <li>Utilities (echo, IDs, slugify, hash, markdown)</li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-12 col-lg-4">
-        <div class="p-4 border rounded h-100">
-          <h3 class="h6">DX & Architecture</h3>
-          <p class="text-body-secondary small mb-0">
-            NX monorepo, Angular standalone, NestJS, TypeORM, Bootstrap 5. Focus
-            on clear interfaces, good defaults and pragmatic tools.
-          </p>
-        </div>
-      </div>
+      }
     </div>
   </div>
 </section>
-<!-- Fair Use / Disclaimer -->
+
+
+<!-- ══════════════════════════════════════════════
+     QUICK-START SHOWCASE (Tab-Toggle, 3 highlights)
+══════════════════════════════════════════════════ -->
 <section class="py-4">
   <div class="container">
-    <h2 class="h6 mb-2">Fair Use & Disclaimer</h2>
-    <p class="text-body-secondary small mb-0">
-      This API is free to use under a fair-use principle: personal and light commercial usage is welcome —
-      please avoid abuse, scraping and excessive traffic. Rate limits and changes may apply at any time.
-      No warranties are given; use at your own risk. Data and results may be inaccurate or unavailable,
-      and I am not liable for any damages.
-    </p>
-  </div>
-  
-</section>
-<!-- API Catalog -->
-<section id="apis" class="py-5">
-  <div class="d-flex justify-content-between align-items-end mb-3">
-    <h2 class="h4 m-0">API Catalog</h2>
-    <div class="text-body-secondary small d-flex align-items-center gap-2">
-      🌐 APP server:
-      <code>https://hub.abler.tirol</code>
-    </div>
-  </div>
-  <div class="row g-3">
-    <!-- Card: QR Codes -->
-    <div class="col-12 col-lg-6 col-xl-4">
-      <div class="card rounded-card h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <div class="d-flex align-items-center gap-2">
-              <div
-                class="d-inline-grid place-items-center bg-body-secondary rounded-3 icon-36"
-              >
-                🔳
-              </div>
-              <div>
-                <div class="fw-semibold">QR Codes</div>
-                <div class="text-body-secondary small">
-                  PNG &amp; SVG Generator
-                </div>
-              </div>
-            </div>
-            <span class="badge text-bg-secondary">qr</span>
+    <p class="section-label mb-4">Quick Start</p>
+    <div class="row g-3">
+      @for (s of services; track s.key) {
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card service-card h-100 glass">
+          <div class="card-header bg-transparent border-0 pb-0
+                      d-flex align-items-center justify-content-between">
+            <h3 class="h6 m-0 d-flex align-items-center gap-2">
+              <span class="icon">{{ s.icon }}</span>{{ s.title }}
+            </h3>
+            <ul class="nav nav-pills small">
+              <li class="nav-item">
+                <button type="button" class="nav-link"
+                        [class.active]="s.activeTab === 'info'"
+                        (click)="setTab(s.key, 'info')">Info</button>
+              </li>
+              <li class="nav-item">
+                <button type="button" class="nav-link"
+                        [class.active]="s.activeTab === 'api'"
+                        (click)="setTab(s.key, 'api')">API</button>
+              </li>
+            </ul>
           </div>
-          <div class="d-flex flex-column gap-2">
-            <div
-              class="d-flex justify-content-between align-items-center border rounded p-2 small"
-            >
-              <span class="chip POST">POST</span>
-              <code class="text-truncate">/api/qr</code>
-              <span class="badge bg-dark">stable</span>
-            </div>
-          </div>
-          <div class="pt-2">
-            <a class="btn btn-sm btn-link" href="/qr">➡️ Open QR Code Generator</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card: Barcodes -->
-    <div class="col-12 col-lg-6 col-xl-4">
-      <div class="card rounded-card h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <div class="d-flex align-items-center gap-2">
-              <div
-                class="d-inline-grid place-items-center bg-body-secondary rounded-3 icon-36"
-              >
-                📊
-              </div>
-              <div>
-                <div class="fw-semibold">Barcodes</div>
-                <div class="text-body-secondary small">
-                  Standard PNG/SVG Generator
-                </div>
-              </div>
-            </div>
-            <span class="badge text-bg-secondary">barcode</span>
-          </div>
-          <div class="d-flex flex-column gap-2">
-            <div
-              class="d-flex justify-content-between align-items-center border rounded p-2 small"
-            >
-              <span class="chip GET">GET</span>
-              <code class="text-truncate">/api/barcode/png</code>
-              <span class="badge bg-dark">stable</span>
-            </div>
-            <div
-              class="d-flex justify-content-between align-items-center border rounded p-2 small"
-            >
-              <span class="chip GET">GET</span>
-              <code class="text-truncate">/api/barcode/svg</code>
-              <span class="badge bg-dark">stable</span>
-            </div>
-          </div>
-          <div class="pt-2">
-            <a class="btn btn-sm btn-link" href="/barcode">➡️ Open Barcode Generator</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card: GS1 API -->
-    <div class="col-12 col-lg-6 col-xl-4">
-      <div class="card rounded-card h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <div class="d-flex align-items-center gap-2">
-              <div
-                class="d-inline-grid place-items-center bg-body-secondary rounded-3 icon-36"
-              >
-                🏷️
-              </div>
-              <div>
-                <div class="fw-semibold">GS1 API</div>
-                <div class="text-body-secondary small">
-                  GS1‑128, DataMatrix, Digital Link
-                </div>
-              </div>
-            </div>
-            <span class="badge text-bg-secondary">gs1</span>
-          </div>
-          <div class="d-flex flex-column gap-2">
-            <div
-              class="d-flex justify-content-between align-items-center border rounded p-2 small"
-            >
-              <span class="chip POST">POST</span>
-              <code class="text-truncate">/api/barcode/gs1/render</code>
-              <span class="badge text-bg-light">beta</span>
-            </div>
-            <div
-              class="d-flex justify-content-between align-items-center border rounded p-2 small"
-            >
-              <span class="chip POST">POST</span>
-              <code class="text-truncate">/api/barcode/gs1/batch</code>
-              <span class="badge text-bg-light">beta</span>
-            </div>
-            <div
-              class="d-flex justify-content-between align-items-center border rounded p-2 small"
-            >
-              <span class="chip POST">POST</span>
-              <code class="text-truncate">/api/barcode/gs1/digital-link/encode</code>
-              <span class="badge text-bg-light">beta</span>
-            </div>
-          </div>
-          <div class="pt-2">
-            <a class="btn btn-sm btn-link" href="/barcode/gs1">➡️ Open GS1 API</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card: Watermark -->
-    <div class="col-12 col-lg-6 col-xl-4">
-      <div class="card rounded-card h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <div class="d-flex align-items-center gap-2">
-              <div
-                class="d-inline-grid place-items-center bg-body-secondary rounded-3 icon-36"
-              >
-                🖼️
-              </div>
-              <div>
-                <div class="fw-semibold">Watermark</div>
-                <div class="text-body-secondary small">
-                  Logo/Text, Preview, Download
-                </div>
-              </div>
-            </div>
-            <span class="badge text-bg-secondary">image</span>
-          </div>
-          <div class="d-flex flex-column gap-2">
-            <div
-              class="d-flex justify-content-between align-items-center border rounded p-2 small"
-            >
-              <span class="chip POST">POST</span>
-              <code class="text-truncate">/api/watermark/apply</code>
-              <span class="badge bg-dark">stable</span>
-            </div>
-          </div>
-          <div class="pt-2">
-            <a class="btn btn-sm btn-link" href="/tools/watermark">➡️ Open</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card: Locks -->
-    <div class="col-12 col-lg-6 col-xl-4">
-      <div class="card rounded-card h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <div class="d-flex align-items-center gap-2">
-              <div
-                class="d-inline-grid place-items-center bg-body-secondary rounded-3 icon-36"
-              >
-                🔒
-              </div>
-              <div>
-                <div class="fw-semibold">Locks</div>
-                <div class="text-body-secondary small">
-                  Access links, swipe‑to‑open
-                </div>
-              </div>
-            </div>
-            <span class="badge text-bg-secondary">lock</span>
-          </div>
-          <div class="d-flex flex-column gap-2">
-            <div
-              class="d-flex justify-content-between align-items-center border rounded p-2 small"
-            >
-              <span class="chip GET">GET</span>
-              <code class="text-truncate">/api/lock/locks</code>
-              <span class="badge bg-dark">stable</span>
-            </div>
-            <div
-              class="d-flex justify-content-between align-items-center border rounded p-2 small"
-            >
-              <span class="chip POST">POST</span>
-              <code class="text-truncate">/api/lock/open</code>
-              <span class="badge bg-dark">stable</span>
-            </div>
-          </div>
-          <div class="pt-2">
-            <a class="btn btn-sm btn-link" href="/admin/lock">➡️ Admin</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card: Utilities -->
-    <div class="col-12 col-lg-6 col-xl-4">
-      <div class="card rounded-card h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <div class="d-flex align-items-center gap-2">
-              <div
-                class="d-inline-grid place-items-center bg-body-secondary rounded-3 icon-36"
-              >
-                🧰
-              </div>
-              <div>
-                <div class="fw-semibold">Utilities</div>
-                <div class="text-body-secondary small">
-                  Echo, IDs, slugify, hash
-                </div>
-              </div>
-            </div>
-            <span class="badge text-bg-secondary">utils</span>
-          </div>
-          <div class="d-flex flex-column gap-2">
-            <div
-              class="d-flex justify-content-between align-items-center border rounded p-2 small"
-            >
-              <span class="chip GET">GET</span>
-              <code class="text-truncate">/api/utils/echo</code>
-              <span class="badge bg-dark">stable</span>
-            </div>
-            <div
-              class="d-flex justify-content-between align-items-center border rounded p-2 small"
-            >
-              <span class="chip GET">GET</span>
-              <code class="text-truncate">/api/utils/id</code>
-              <span class="badge bg-dark">stable</span>
-            </div>
-            <div
-              class="d-flex justify-content-between align-items-center border rounded p-2 small"
-            >
-              <span class="chip POST">POST</span>
-              <code class="text-truncate">/api/utils/slugify</code>
-              <span class="badge bg-dark">stable</span>
-            </div>
-          </div>
-          <div class="pt-2">
-            <a class="btn btn-sm btn-link" href="/dev-utils">➡️ Open</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <h2 class="h4 mb-3">Services</h2>
-  <div class="row g-3">
-    @for (s of services; track s.key) {
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="card service-card shadow-sm h-100 glass">
-        <div
-          class="card-header bg-transparent border-0 pb-0 d-flex align-items-center justify-content-between"
-        >
-          <h3 class="h6 m-0 d-flex align-items-center gap-2">
-            <span class="icon">{{ s.icon }}</span
-            >{{ s.title }}
-          </h3>
-          <ul class="nav nav-pills small">
-            <li class="nav-item">
-              <button type="button" class="nav-link" [class.active]="s.activeTab === 'info'"
-                      (click)="setTab(s.key, 'info')"
-                      (keydown.enter)="setTab(s.key, 'info')"
-                      (keydown.space)="setTab(s.key, 'info')">
-                Info
-              </button>
-            </li>
-            <li class="nav-item">
-              <button type="button" class="nav-link" [class.active]="s.activeTab === 'api'"
-                      (click)="setTab(s.key, 'api')"
-                      (keydown.enter)="setTab(s.key, 'api')"
-                      (keydown.space)="setTab(s.key, 'api')">
-                API
-              </button>
-            </li>
-          </ul>
-        </div>
-        <div class="card-body">
-          @if (s.activeTab==='info') {
-          <p class="service-desc mb-3">{{ s.description }}</p>
-          <a class="btn btn-primary btn-sm" [routerLink]="s.route">Open</a>
-          } @else {
-          <div>
+          <div class="card-body">
+            @if (s.activeTab === 'info') {
+            <p class="service-desc mb-3">{{ s.description }}</p>
+            <a class="btn btn-primary btn-sm" [routerLink]="s.route">Open</a>
+            } @else {
             <div class="d-flex align-items-center justify-content-between mb-2">
-              <strong>{{ s.apiTitle }}</strong>
-              <button
-                class="btn btn-outline-secondary btn-sm"
-                (click)="copy(s.curl)"
-              >
+              <strong class="small">{{ s.apiTitle }}</strong>
+              <button class="btn btn-outline-secondary btn-sm" (click)="copy(s.curl)">
                 Copy
               </button>
             </div>
             <pre class="code"><code>{{ s.curl }}</code></pre>
+            }
           </div>
-          }
         </div>
       </div>
+      }
     </div>
-    }
   </div>
 </section>
 
-<!-- Profile -->
-<section id="profile" class="container py-5">
-  <div class="mb-3">
-    <h2 class="h4 m-0">Developer</h2>
-    <div class="text-body-secondary">Who's behind the APIs?</div>
-  </div>
-  <div class="card rounded-card profile">
-    <div class="card-body">
-      <div class="d-flex align-items-start gap-3 flex-wrap">
-        <div class="avatar">
-          @if (profile.gravatarHash) {
-            <img class="avatar-img" [src]="gravatarUrl" alt="{{ profile.name }} avatar" loading="lazy">
-          } @else {
-            {{ avatarInitials }}
-          }
-        </div>
-        <div class="flex-grow-1">
-          <div class="fw-semibold">{{ profile.name }}</div>
-          <div class="text-body-secondary small mb-2">
-            {{ profile.role }} · {{ profile.location }}
-          </div>
-          <div class="d-flex gap-2 flex-wrap">
-            @for (l of profile.links; track l.label) {
-              @if (l.label !== 'Contact') {
-                <a class="btn btn-sm btn-outline-secondary" [href]="l.href" target="_blank" rel="noopener">{{ l.label }}</a>
-              }
+
+<!-- ══════════════════════════════════════════════
+     PROFIL
+══════════════════════════════════════════════════ -->
+<section id="profile" class="py-5">
+  <div class="container">
+    <p class="section-label mb-4">Developer</p>
+
+    <div class="profile-wrap">
+
+      <!-- Header: Avatar + Name + Links -->
+      <div class="profile-header">
+        <div class="d-flex align-items-center gap-4 flex-wrap">
+          <div class="profile-avatar">
+            @if (profile.gravatarHash) {
+              <img [src]="gravatarUrl" [alt]="profile.name + ' avatar'" loading="lazy">
+            } @else {
+              {{ avatarInitials }}
             }
-            <a class="btn btn-primary" href="mailto:simon@abler.tirol" rel="noopener">Contact</a>
+          </div>
+          <div style="min-width:0">
+            <h2 class="h4 fw-bold mb-1">{{ profile.name }}</h2>
+            <div class="text-body-secondary mb-3" style="font-size:.88rem">
+              {{ profile.role }} · {{ profile.location }}
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              @for (l of profile.links; track l.label) {
+              <a [href]="l.href" target="_blank" rel="noopener"
+                 class="btn btn-sm btn-outline-secondary">
+                {{ l.label }}
+              </a>
+              }
+              <a href="mailto:simon@abler.tirol"
+                 class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1">
+                <lucide-icon [img]="MailIcon" [size]="14"></lucide-icon>
+                Contact
+              </a>
+            </div>
           </div>
         </div>
       </div>
-      <p class="mt-3 mb-3">{{ profile.bio }}</p>
-      <!-- Skill Clusters -->
-      <div class="row g-3">
-        @for (skill of profile.skills; track skill.label) {
+
+      <!-- Body: Bio + Skill-Cluster -->
+      <div class="profile-body">
+        <p class="mb-0" style="line-height:1.75;max-width:700px">{{ profile.bio }}</p>
+
+        <div class="row g-3">
+          @for (skill of profile.skills; track skill.label) {
           <div class="col-12 col-md-4">
-            <div class="skill-cluster">
+            <div class="skill-cluster h-100">
               <div class="cluster-label">{{ skill.label }}</div>
-              <div class="d-flex flex-wrap gap-1">
+              <div class="d-flex flex-wrap gap-1 mt-2">
                 @for (tag of skill.tags; track tag) {
-                  <span class="badge text-bg-light">{{ tag }}</span>
+                <span class="cluster-tag">{{ tag }}</span>
                 }
               </div>
             </div>
           </div>
-        }
+          }
+        </div>
       </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     CTA
+══════════════════════════════════════════════════ -->
+<section class="py-5">
+  <div class="container">
+    <div class="cta-section">
+      <h2 class="cta-title mb-2">Request an API key or collaborate?</h2>
+      <p class="text-body-secondary mb-4" style="max-width:460px;margin-inline:auto">
+        GS1 keys are issued manually — a short email is all it takes,
+        reply within 24 hours.
+      </p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href="mailto:simon@abler.tirol?subject=API Key Request"
+           class="btn btn-primary d-inline-flex align-items-center gap-2">
+          <lucide-icon [img]="MailIcon" [size]="17"></lucide-icon>
+          simon@abler.tirol
+        </a>
+        <a href="https://github.com/simonabler" target="_blank" rel="noopener"
+           class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+          <lucide-icon [img]="ExternalLinkIcon" [size]="17"></lucide-icon>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     FAIR USE (Kleingedrucktes)
+══════════════════════════════════════════════════ -->
+<section class="pb-5">
+  <div class="container">
+    <div class="fair-use">
+      <strong>Fair Use:</strong>
+      Personal and light commercial use welcome — no scraping, no abuse.
+      Rate limits and changes may apply at any time. No warranties given; use at your own risk.
     </div>
   </div>
 </section>
