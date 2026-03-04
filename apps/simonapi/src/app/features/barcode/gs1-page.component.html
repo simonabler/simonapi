@@ -1,0 +1,66 @@
+<div class="container py-4">
+
+  <!-- Page Header -->
+  <div class="d-flex align-items-center gap-2 mb-4">
+    <a routerLink="/barcode" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1">
+      <lucide-icon [img]="ArrowLeftIcon" [size]="16"></lucide-icon>
+      Barcodes
+    </a>
+    <h1 class="h4 m-0">GS1 API</h1>
+    <span class="badge text-bg-secondary">gs1</span>
+  </div>
+
+  <!-- Subscription Tiers -->
+  <div class="mb-5">
+    <h2 class="h5 fw-bold mb-1">Subscription</h2>
+    <p class="text-body-secondary small mb-3">
+      Standard barcodes are free. GS1-128, DataMatrix and batch generation require an API key.
+    </p>
+    <div class="row g-3">
+      @for (tier of tiers; track tier.key) {
+        <div class="col-12 col-md-4">
+          <div class="tier-card h-100" [class.featured]="tier.featured">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <div class="fw-bold">{{ tier.name }}</div>
+              @if (tier.featured) {
+                <span class="badge" style="background: var(--brand); color: #0f172a;">Recommended</span>
+              }
+            </div>
+            <div class="tier-price mb-2">{{ tier.price }} <small>{{ tier.period }}</small></div>
+            <ul class="list-unstyled small text-body-secondary mb-3">
+              @for (f of tier.features; track f.text) {
+                <li>{{ f.included ? '✅' : '❌' }} {{ f.text }}</li>
+              }
+              <li class="mt-1 text-muted">{{ tier.limit }}</li>
+            </ul>
+            @if (tier.cta) {
+              <a
+                [href]="tier.cta.href"
+                class="btn btn-sm w-100"
+                [class.btn-primary]="tier.cta.variant === 'primary'"
+                [class.btn-outline-primary]="tier.cta.variant === 'outline'"
+              >
+                <lucide-icon [img]="MailIcon" [size]="14"></lucide-icon>
+                {{ tier.cta.label }}
+              </a>
+            } @else {
+              <span class="badge bg-secondary">No key needed</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- API Key note -->
+    <div class="alert alert-light border mt-3 small mb-0">
+      <strong>Using an API key:</strong>
+      Add header <code>x-api-key: sk_pro_...</code> to every request.<br>
+      Keys are issued manually — just request one via email, response within 24h.
+    </div>
+  </div>
+
+  <!-- GS1 Generator -->
+  <h2 class="h5 fw-bold mb-3">Generator — Live Preview</h2>
+  <app-barcode-gs1-editor-item></app-barcode-gs1-editor-item>
+
+</div>
