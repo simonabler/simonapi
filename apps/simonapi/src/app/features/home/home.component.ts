@@ -1,7 +1,19 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { BookOpenIcon, LucideAngularModule, SendIcon } from 'lucide-angular';
+import { BookOpenIcon, ExternalLinkIcon, LucideAngularModule, MailIcon, SendIcon } from 'lucide-angular';
+
+type CatalogCard = {
+  key: string;
+  title: string;
+  sub: string;
+  icon: string;
+  iconClass?: string;
+  badge?: string;
+  routes: Array<{ method: 'GET' | 'POST'; path: string; tag: string }>;
+  ctaPrimary:    { label: string; href: string };
+  ctaSecondary?: { label: string; href: string };
+};
 
 type ServiceCard = {
   key: string;
@@ -19,43 +31,13 @@ type ServiceCard = {
   selector: 'app-home',
   imports: [CommonModule, LucideAngularModule, RouterLink],
   templateUrl: './home.component.html',
-  styles: [`
-  .hero { background: linear-gradient(135deg, var(--brand-2), var(--brand)); }
-  .service-card .nav-link { cursor: pointer; }
-  .service-card .nav-pills .nav-link.active { background: linear-gradient(135deg, var(--brand-2), var(--brand)); }
-  .code { background: #0f172a; color: #e2e8f0; border-radius: .5rem; padding: .75rem; overflow: auto; }
-  .code code { white-space: pre-wrap; word-break: break-word; }
-  .profile .avatar {
-    /* Keep a perfect circle and prevent shrinking on small screens */
-    width: clamp(64px, 10vw, 96px);
-    height: clamp(64px, 10vw, 96px);
-    min-width: 64px;
-    min-height: 64px;
-    aspect-ratio: 1 / 1;
-    border-radius: 50%;
-    display: grid; place-items: center;
-    background: linear-gradient(135deg, #22d3ee, #818cf8);
-    color: #0b1020;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-  .profile .avatar-img {
-    width: 100%; height: 100%;
-    object-fit: cover; object-position: center;
-    border-radius: 50%; display: block;
-  }
-  .profile { backdrop-filter: saturate(1.2); }
-  .service-card .icon { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: color-mix(in oklab, var(--brand), white 85%); }
-  .service-desc { color: var(--bs-body-color); }
-  .service-card .card-body { color: var(--bs-body-color); }
-  `],
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
-
-  readonly BookOpenIcon = BookOpenIcon;
-  readonly SendIcon = SendIcon;
-
-
+  readonly BookOpenIcon     = BookOpenIcon;
+  readonly SendIcon         = SendIcon;
+  readonly MailIcon         = MailIcon;
+  readonly ExternalLinkIcon = ExternalLinkIcon;
 
   profile = {
     name: 'Simon Abler',
@@ -63,89 +45,97 @@ export class HomeComponent {
     location: 'Tyrol, Austria',
     bio: 'Cyber Security Engineer from Tyrol focused on reverse engineering (hardware & software), 24/7 industrial high-availability systems and secure API platforms. I analyse firmware, reverse-engineer hardware protocols and design redundant architectures for industrial environments — and build the tooling myself.',
     links: [
-      { label: 'Website', href: 'https://hub.abler.tirol' },
-      { label: 'GitHub', href: 'https://github.com/simonabler' },
+      { label: 'Website',  href: 'https://hub.abler.tirol' },
+      { label: 'GitHub',   href: 'https://github.com/simonabler' },
       { label: 'LinkedIn', href: 'https://www.linkedin.com/in/simon-abler-b88a60157' },
-      { label: 'Contact', href: 'mailto:simon@abler.tirol' },
     ],
     gravatarHash: 'fd97500da3d31da41dbfc114c04d2e455c32401de85c35ed6ceca18a09cc1957',
     skills: [
-      { label: '🔐 Reverse Engineering', tags: ['Firmware Analysis', 'Protocol RE', 'Binary Analysis', 'Hardware Debugging'] },
-      { label: '⚙️ Industrial HA', tags: ['PLC/SCADA', 'Redundancy Design', '24/7 Operations', 'Failover Architecture'] },
-      { label: '💻 Full-Stack', tags: ['NestJS', 'Angular', 'Linux', 'PostgreSQL', 'Docker', '.net'] },
+      { label: '🔐 Reverse Engineering',
+        tags: ['Firmware Analysis', 'Protocol RE', 'Binary Analysis', 'HW Debugging'] },
+      { label: '⚙️ Industrial HA',
+        tags: ['PLC/SCADA', 'Redundancy Design', '24/7 Operations', 'Failover'] },
+      { label: '💻 Full-Stack',
+        tags: ['NestJS', 'Angular', 'Linux', 'PostgreSQL', 'Docker', '.NET'] },
     ],
   };
-  get gravatarUrl() {
-    const hash = this.profile.gravatarHash?.trim();
-    if (!hash) return `https://www.gravatar.com/avatar/?s=128&d=identicon`;
-    return `https://www.gravatar.com/avatar/${hash}?s=128&d=identicon`;
+
+  get gravatarUrl(): string {
+    const h = this.profile.gravatarHash?.trim();
+    return h
+      ? `https://www.gravatar.com/avatar/${h}?s=192&d=identicon`
+      : `https://www.gravatar.com/avatar/?s=192&d=identicon`;
   }
-  get avatarInitials() {
-    const n = this.profile.name?.trim() || '';
-    const parts = n.split(/\s+/).filter(Boolean);
-    const initials = parts.slice(0, 2).map(p => p[0]?.toUpperCase() || '').join('');
-    return initials || 'DN';
+
+  get avatarInitials(): string {
+    return this.profile.name
+      .split(/\s+/).slice(0, 2)
+      .map(p => p[0]?.toUpperCase() ?? '')
+      .join('') || 'SA';
   }
+
+  catalog: CatalogCard[] = [
+    {
+      key: 'qr', title: 'QR Codes', sub: 'URL, text, vCard, Wi-Fi, SMS …', icon: '🔳',
+      routes: [{ method: 'POST', path: '/api/qr', tag: 'stable' }],
+      ctaPrimary: { label: 'Open Generator', href: '/qr' },
+    },
+    {
+      key: 'barcode', title: 'Barcodes', sub: 'Code128, EAN, ITF-14, PDF417 …', icon: '🏷️',
+      routes: [
+        { method: 'GET', path: '/api/barcode/png', tag: 'stable' },
+        { method: 'GET', path: '/api/barcode/svg', tag: 'stable' },
+      ],
+      ctaPrimary: { label: 'Open Generator', href: '/barcode' },
+    },
+    {
+      key: 'gs1', title: 'GS1 API', sub: 'GS1-128 · DataMatrix · Batch · Digital Link',
+      icon: '📦', iconClass: 'pro', badge: 'Pro',
+      routes: [
+        { method: 'POST', path: '/api/barcode/gs1/render',              tag: 'stable' },
+        { method: 'POST', path: '/api/barcode/gs1/batch',               tag: 'stable' },
+        { method: 'POST', path: '/api/barcode/gs1/digital-link/encode', tag: 'new'    },
+      ],
+      ctaPrimary:   { label: 'GS1 Page',    href: '/barcode/gs1' },
+      ctaSecondary: { label: 'Request Key', href: 'mailto:simon@abler.tirol?subject=GS1 Pro API Key' },
+    },
+    {
+      key: 'watermark', title: 'Watermark', sub: 'Logo/text on images, live preview', icon: '🖼️',
+      routes: [{ method: 'POST', path: '/api/watermark/apply', tag: 'stable' }],
+      ctaPrimary: { label: 'Try it', href: '/tools/watermark' },
+    },
+    {
+      key: 'utils', title: 'Utilities', sub: 'Echo, IDs, slugify, hash, markdown', icon: '🧰',
+      routes: [
+        { method: 'GET',  path: '/api/utils/echo',    tag: 'stable' },
+        { method: 'GET',  path: '/api/utils/id',      tag: 'stable' },
+        { method: 'POST', path: '/api/utils/slugify', tag: 'stable' },
+      ],
+      ctaPrimary: { label: 'Open Dev-Utils', href: '/dev-utils' },
+    },
+  ];
+
   services: ServiceCard[] = [
     {
-      key: 'qr',
-      title: 'QR Codes',
-      description: 'Generate QR from URL, text, email, phone, SMS, vCard or Wi-Fi. Export as PNG/SVG.',
-      route: '/qr',
-      apiTitle: 'POST /api/qr',
-      curl: `curl -X POST http://localhost:3000/api/qr -H "Content-Type: application/json" -d '{"type":"url","payload":{"url":"https://example.com"},"format":"svg"}'`,
+      key: 'gs1', title: 'GS1 API', icon: '📦',
+      description: 'GS1-128 and DataMatrix with full AI validation, batch (up to 100/request) and Digital Link encode/decode.',
+      route: '/barcode/gs1', apiTitle: 'POST /api/barcode/gs1/batch',
+      curl: `curl -X POST https://hub.abler.tirol/api/barcode/gs1/batch \\\n  -H "Content-Type: application/json" \\\n  -d '{"symbology":"gs1-128","format":"png","barcodes":[{"ref":"p1","items":[{"ai":"01","value":"09506000134376"},{"ai":"17","value":"261231"}]}]}'`,
       activeTab: 'info',
-      icon: '🔳',
     },
     {
-      key: 'barcode',
-      title: 'Barcodes',
-      description: 'Standard barcodes (Code 128, EAN, QR, etc.) as PNG or SVG — no key required.',
-      route: '/barcode',
-      apiTitle: 'GET /api/barcode/png | /api/barcode/svg',
-      curl: `curl "http://localhost:3000/api/barcode/png?type=code128&value=Hello"`,
+      key: 'qr', title: 'QR Codes', icon: '🔳',
+      description: 'Generate QR codes for URL, text, email, phone, SMS, vCard or Wi-Fi. Export as PNG or SVG.',
+      route: '/qr', apiTitle: 'POST /api/qr',
+      curl: `curl -X POST https://hub.abler.tirol/api/qr \\\n  -H "Content-Type: application/json" \\\n  -d '{"type":"url","payload":{"url":"https://example.com"},"format":"svg"}'`,
       activeTab: 'info',
-      icon: '📊',
     },
     {
-      key: 'gs1',
-      title: 'GS1 API',
-      description: 'GS1-128/DataMatrix with full AI validation, batch render (up to 100 per request) and GS1 Digital Link encode/decode.',
-      route: '/barcode/gs1',
-      apiTitle: 'POST /api/barcode/gs1/render | gs1/batch | gs1/digital-link/encode',
-      curl: `curl -X POST http://localhost:3000/api/barcode/gs1/batch -H "Content-Type: application/json" -d '{"symbology":"gs1-128","format":"png","barcodes":[{"ref":"pal-1","items":[{"ai":"01","value":"09506000134376"},{"ai":"17","value":"261231"}]}]}'`,
+      key: 'watermark', title: 'Watermark', icon: '🖼️',
+      description: 'Apply logo or text watermarks to images. Live preview and direct download.',
+      route: '/tools/watermark', apiTitle: 'POST /api/watermark/apply',
+      curl: `curl -X POST https://hub.abler.tirol/api/watermark/apply \\\n  -F "mode=text" \\\n  -F "file=@image.jpg" \\\n  -F "text=Confidential" \\\n  -o out.jpg`,
       activeTab: 'info',
-      icon: '🏷️',
-    },
-    {
-      key: 'watermark',
-      title: 'Watermark',
-      description: 'Apply logo/text watermarks to images. Live preview and download.',
-      route: '/tools/watermark',
-      apiTitle: 'POST /api/watermark/apply',
-      curl: `curl -X POST http://localhost:3000/api/watermark/apply -F "mode=text" -F "file=@image.jpg" -F "text=Demo" -o out.jpg`,
-      activeTab: 'info',
-      icon: '🖼️',
-    },
-    {
-      key: 'locks',
-      title: 'Locks',
-      description: 'Manage access links (admin) and open via swipe-to-open.',
-      route: '/admin/lock',
-      apiTitle: 'GET /api/lock/locks, POST /api/lock/open',
-      curl: `curl "http://localhost:3000/api/lock/locks?slug=...&t=..."`,
-      activeTab: 'info',
-      icon: '🔒',
-    },
-    {
-      key: 'utils',
-      title: 'Utilities',
-      description: 'Echo, IDs, slugify, hashing, markdown → HTML for everyday use.',
-      route: '/dev-utils',
-      apiTitle: 'GET /api/utils/echo | id, POST /api/utils/slugify | hash | md2html',
-      curl: `curl http://localhost:3000/api/utils/echo`,
-      activeTab: 'info',
-      icon: '🧰',
     },
   ];
 
@@ -154,10 +144,6 @@ export class HomeComponent {
   }
 
   async copy(text: string) {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      ;
-    }
+    try { await navigator.clipboard.writeText(text); } catch { /* ignore */ }
   }
 }
