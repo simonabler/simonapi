@@ -46,11 +46,13 @@
         </div>
 
         <ng-container *ngIf="dailyEntries(vm.stats) as dailyEntriesList; else noDaily">
-          <div class="daily-chart">
-            <div class="daily-bar" *ngFor="let entry of dailyEntriesList">
-              <div class="bar" [style.height.%]="entry.percent"></div>
-              <span class="label">{{ entry.day }}</span>
-              <span class="count">{{ entry.count }}</span>
+          <div class="daily-chart-wrap">
+            <div class="daily-chart">
+              <div class="daily-bar" *ngFor="let entry of dailyEntriesList">
+                <div class="bar" [style.height.%]="entry.percent"></div>
+                <span class="day-label">{{ entry.day | slice:5 }}</span>
+                <span class="day-count">{{ entry.count }}</span>
+              </div>
             </div>
           </div>
         </ng-container>
@@ -61,7 +63,7 @@
         <div>
           <h3 class="h6 mb-2">Top Routes</h3>
           <ng-container *ngIf="topRoutes(vm.stats) as routes; else noRoutes">
-            <div class="table-responsive">
+            <div class="routes-table-wrap">
               <table class="table table-sm align-middle mb-0">
                 <thead>
                   <tr>
