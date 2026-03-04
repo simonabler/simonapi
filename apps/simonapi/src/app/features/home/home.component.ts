@@ -59,15 +59,21 @@ export class HomeComponent {
 
   profile = {
     name: 'Simon Abler',
-    role: 'Senior Full-Stack Engineer',
-    location: 'Tyrol, AT',
-    bio: 'Senior full-stack engineer with a security-first. I design and operate secure API platforms, developer tools and web UIs end-to-end. Focus on cybersecurity (OWASP, threat modeling, IAM), API governance, automation and measurable DX. Strong with NestJS, Angular, TypeORM, PostgreSQL and containers — shipping clean architecture from home-lab to cloud.',
+    role: 'Cyber Security Engineer & API Architect',
+    location: 'Tirol, Österreich',
+    bio: 'Cyber Security Engineer aus Tirol mit Fokus auf Reverse Engineering (Hardware & Software), 24/7 Industrial High-Availability Systems und sichere API-Plattformen. Ich analysiere Firmware, reverse-engineere Hardware-Protokolle und designe redundante Architekturen für industrielle Umgebungen — und baue die Tools dazu selbst.',
     links: [
       { label: 'Website', href: 'https://hub.abler.tirol' },
       { label: 'GitHub', href: 'https://github.com/simonabler' },
       { label: 'LinkedIn', href: 'https://www.linkedin.com/in/simon-abler-b88a60157' },
+      { label: 'Kontakt', href: 'mailto:simon@abler.tirol' },
     ],
     gravatarHash: 'fd97500da3d31da41dbfc114c04d2e455c32401de85c35ed6ceca18a09cc1957',
+    skills: [
+      { label: '🔐 Reverse Engineering', tags: ['Firmware-Analyse', 'Protokoll-RE', 'Binäranalyse', 'Hardware-Debugging'] },
+      { label: '⚙️ Industrial HA', tags: ['PLC/SCADA', 'Redundanz-Design', '24/7-Betrieb', 'Failover-Architektur'] },
+      { label: '💻 Full-Stack', tags: ['NestJS', 'Angular', 'TypeORM', 'PostgreSQL', 'Docker'] },
+    ],
   };
   get gravatarUrl() {
     const hash = this.profile.gravatarHash?.trim();
