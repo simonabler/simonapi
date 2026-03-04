@@ -5,13 +5,13 @@
       hub.abler.tirol
     </span>
     <h1 class="display-5 fw-bold mb-3" style="letter-spacing: -.02em;">
-      Sichere APIs.<br>
+      Secure APIs.<br>
       <span style="background: linear-gradient(90deg, var(--brand-2), var(--brand)); -webkit-background-clip: text; background-clip: text; color: transparent;">
-        Resiliente Systeme.
+        Resilient Systems.
       </span>
     </h1>
     <p class="text-body-secondary mt-3 mb-4 mx-auto" style="max-width: 520px; font-size: 1.05rem;">
-      GS1-Barcodes, QR-Codes, Watermarking, Locks und Dev-Utilities — gebaut von einem Cyber Security Engineer aus Tirol.
+      GS1 barcodes, QR codes, watermarking, locks and dev utilities — built by a Cyber Security Engineer from Tyrol.
     </p>
     <div class="d-flex justify-content-center gap-2 flex-wrap">
       <a href="/api" target="_blank" rel="noopener" class="btn btn-primary px-4">
@@ -20,10 +20,10 @@
       </a>
       <a href="#apis" class="btn btn-outline-secondary px-4">
         <lucide-icon [img]="SendIcon" [size]="18"></lucide-icon>
-        APIs erkunden
+        Explore APIs
       </a>
       <a href="mailto:simon@abler.tirol" class="btn btn-outline-secondary px-4">
-        Kontakt
+        Contact
       </a>
     </div>
   </div>
@@ -369,7 +369,7 @@ nx serve simonapi  # Frontend (http://localhost:4200)</code></pre>
 <section id="profile" class="container py-5">
   <div class="mb-3">
     <h2 class="h4 m-0">Developer</h2>
-    <div class="text-body-secondary">Wer steckt hinter den APIs?</div>
+    <div class="text-body-secondary">Who's behind the APIs?</div>
   </div>
   <div class="card rounded-card profile">
     <div class="card-body">
@@ -388,11 +388,11 @@ nx serve simonapi  # Frontend (http://localhost:4200)</code></pre>
           </div>
           <div class="d-flex gap-2 flex-wrap">
             @for (l of profile.links; track l.label) {
-              @if (l.label !== 'Kontakt') {
+              @if (l.label !== 'Contact') {
                 <a class="btn btn-sm btn-outline-secondary" [href]="l.href" target="_blank" rel="noopener">{{ l.label }}</a>
               }
             }
-            <a class="btn btn-primary" href="mailto:simon@abler.tirol" rel="noopener">Kontakt</a>
+            <a class="btn btn-primary" href="mailto:simon@abler.tirol" rel="noopener">Contact</a>
           </div>
         </div>
       </div>

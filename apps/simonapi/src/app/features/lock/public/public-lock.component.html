@@ -8,7 +8,7 @@
       <span class="badge text-bg-secondary">Restzeit: {{ getRemainingLabel() }}</span>
     </div>
 
-    <div *ngIf="!locks(); else listTpl" class="text-muted">Lade …</div>
+    <div *ngIf="!locks(); else listTpl" class="text-muted">Loading…</div>
     <ng-template #listTpl>
       <div class="row g-4 justify-content-center w-100" style="max-width: 960px;">
         <div class="col-12 col-md-8" *ngFor="let l of locks()!">

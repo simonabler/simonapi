@@ -34,7 +34,7 @@
     <form (ngSubmit)="$event.preventDefault()" [formGroup]="form" class="panel">
       <div class="cols">
         <label
-          >Typ
+          >Type
           <select [formControl]="form.controls.type">
             <option value="code128">Code 128</option>
             <option value="ean13">EAN-13</option>
@@ -47,11 +47,11 @@
           </select>
         </label>
         <label
-          >Inhalt
+          >Content
           <input
             type="text"
             formControlName="text"
-            placeholder="Text / Zahlen"
+            placeholder="Text / Numbers"
           />
         </label>
       </div>
@@ -60,10 +60,10 @@
         <div class="cols">
           <label class="checkbox">
             <input type="checkbox" [formControl]="form.controls.includetext" />
-            Text unter Barcode anzeigen
+            Show text below barcode
           </label>
           <label
-            >Skalierung
+            >Scale
             <input
               type="number"
               [formControl]="form.controls.scale"
@@ -72,7 +72,7 @@
             />
           </label>
           <label
-            >Höhe
+            >Height
             <input
               type="number"
               [formControl]="form.controls.height"
@@ -89,14 +89,14 @@
           class="btn btn-secondary"
           (click)="download('png')"
         >
-          Als PNG herunterladen
+          Download as PNG
         </button>
         <button
           type="button"
           class="btn btn-secondary"
           (click)="download('svg')"
         >
-          Als SVG herunterladen
+          Download as SVG
         </button>
       </div>
     </form>
@@ -105,7 +105,7 @@
       class="border rounded p-3 mt-2 qrbox d-flex align-items-center justify-content-center"
     >
       @if(previewUrl; as url){
-      <img [src]="url" alt="Barcode Vorschau" class="code-preview-img" />
+      <img [src]="url" alt="Barcode Preview" class="code-preview-img" />
       }
     </div>
   </div>

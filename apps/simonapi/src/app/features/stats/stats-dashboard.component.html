@@ -1,6 +1,6 @@
 <div class="stats-dashboard container py-4" *ngIf="vm$ | async as vm">
   <div class="stats-grid">
-    <app-stats-card title="API Overview" subTitle="Aktuelle Backend-Metriken">
+    <app-stats-card title="API Overview" subTitle="Current backend metrics">
       <div card-actions class="d-flex align-items-center gap-2">
         <label class="form-check form-switch m-0">
           <input
@@ -12,14 +12,14 @@
           <span class="form-check-label">Auto-Refresh (5s)</span>
         </label>
         <button type="button" class="btn btn-outline-secondary btn-sm" (click)="refresh()">
-          Jetzt aktualisieren
+          Refresh now
         </button>
       </div>
 
       <ng-container *ngIf="vm.loading; else overviewContent">
         <div class="loading-state">
           <div class="spinner-border" role="status" aria-hidden="true"></div>
-          <span>Lade</span>
+          <span>Loading</span>
         </div>
       </ng-container>
 
@@ -55,7 +55,7 @@
           </div>
         </ng-container>
         <ng-template #noDaily>
-          <p class="text-body-secondary small m-0">Keine Tageswerte vorhanden.</p>
+          <p class="text-body-secondary small m-0">No daily values available.</p>
         </ng-template>
 
         <div>
@@ -83,7 +83,7 @@
             </div>
           </ng-container>
           <ng-template #noRoutes>
-            <p class="text-body-secondary small mb-0">Keine Routenstatistiken vorhanden.</p>
+            <p class="text-body-secondary small mb-0">No route statistics available.</p>
           </ng-template>
         </div>
       </ng-template>
@@ -93,11 +93,11 @@
       </div>
     </app-stats-card>
 
-    <app-stats-card title="Security / Blocklist" subTitle="Aktive Sperren und Rate-Limits">
+    <app-stats-card title="Security / Blocklist" subTitle="Active blocks and rate limits">
       <ng-container *ngIf="vm.loading; else securityContent">
         <div class="loading-state">
           <div class="spinner-border" role="status" aria-hidden="true"></div>
-          <span>Lade</span>
+          <span>Loading</span>
         </div>
       </ng-container>
 

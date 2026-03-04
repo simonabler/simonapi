@@ -111,7 +111,7 @@ export function extractGs1ErrorMessage(body: unknown): string {
     }
     if (b.message) return String(b.message);
   }
-  return 'Unbekannter Fehler';
+  return 'Unknown error';
 }
 
 // ---------------------------------------------------------------------------
@@ -162,14 +162,14 @@ export function validateAiValue(db: Record<string, AiSpec>, ai: string, value: s
   const spec = db[ai];
   if (!spec) return null; // unknown AI → no client-side validation, let backend decide
   if (ai === '01') {
-    if (!/^\d{13,14}$/.test(value)) return '13–14 Ziffern erwartet (Prüfziffer automatisch)';
+    if (!/^\d{13,14}$/.test(value)) return '13–14 digits expected (check digit auto-computed)';
     return null;
   }
   if (ai === '00') {
-    if (!/^\d{17,18}$/.test(value)) return '17–18 Ziffern erwartet (Prüfziffer automatisch)';
+    if (!/^\d{17,18}$/.test(value)) return '17–18 digits expected (check digit auto-computed)';
     return null;
   }
-  if (!spec.pattern.test(value)) return 'Wert entspricht nicht dem geforderten Muster';
+  if (!spec.pattern.test(value)) return 'Value does not match the required pattern';
   return null;
 }
 
@@ -203,7 +203,7 @@ export function validateCombination(
     const spec = db[ai];
     if (!spec) continue;
     if (cnt > (spec.maxOccurrences ?? 1)) {
-      return `AI ${ai} kommt ${cnt}× vor (max ${spec.maxOccurrences ?? 1})`;
+      return `AI ${ai} occurs ${cnt}× (max ${spec.maxOccurrences ?? 1})`;
     }
   }
   for (const [ai] of counts) {
@@ -211,16 +211,16 @@ export function validateCombination(
     if (!spec) continue;
     if (spec.notTogetherWith?.length) {
       const conflict = spec.notTogetherWith.filter(a => (counts.get(a) || 0) > 0);
-      if (conflict.length) return `AI ${ai} darf nicht zusammen mit ${conflict.join(', ')} verwendet werden`;
+      if (conflict.length) return `AI ${ai} cannot be used together with ${conflict.join(', ')}`;
     }
     if (spec.requiresOneOf?.length) {
       const ok = spec.requiresOneOf.some(a => (counts.get(a) || 0) > 0);
-      if (!ok) return `AI ${ai} erfordert eines von [${spec.requiresOneOf.join(', ')}]`;
+      if (!ok) return `AI ${ai} requires one of [${spec.requiresOneOf.join(', ')}]`;
     }
     if (spec.requiresGroups?.length) {
       for (const group of spec.requiresGroups) {
         const ok = group.some(a => (counts.get(a) || 0) > 0);
-        if (!ok) return `AI ${ai} erfordert eines aus der Gruppe [${group.join(', ')}]`;
+        if (!ok) return `AI ${ai} requires one from group [${group.join(', ')}]`;
       }
     }
   }
@@ -230,12 +230,12 @@ export function validateCombination(
     if (rule.type === 'mutuallyExclusive') {
       const present = rule.aiList.filter(a => (counts.get(a) ?? 0) > 0);
       if (present.length > 1) {
-        return `AIs ${present.join(' und ')} schließen sich gegenseitig aus`;
+        return `AIs ${present.join(' and ')} are mutually exclusive`;
       }
     }
     if (rule.type === 'unique') {
       if ((counts.get(rule.ai) ?? 0) > 1) {
-        return `AI ${rule.ai} darf nur einmal vorkommen`;
+        return `AI ${rule.ai} may only appear once`;
       }
     }
   }

@@ -210,7 +210,7 @@ export class StatsDashboardComponent implements OnDestroy {
 
   private describeError(error: unknown): string {
     if (!error) {
-      return 'Unbekannter Fehler';
+      return 'Unknown error';
     }
     if (typeof error === 'string') {
       return error;
@@ -221,6 +221,6 @@ export class StatsDashboardComponent implements OnDestroy {
     if (typeof error === 'object' && 'message' in (error as any)) {
       return String((error as any).message);
     }
-    return 'Unbekannter Fehler';
+    return 'Unknown error';
   }
 }

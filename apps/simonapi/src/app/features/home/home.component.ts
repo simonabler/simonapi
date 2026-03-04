@@ -60,19 +60,19 @@ export class HomeComponent {
   profile = {
     name: 'Simon Abler',
     role: 'Cyber Security Engineer & API Architect',
-    location: 'Tirol, Österreich',
-    bio: 'Cyber Security Engineer aus Tirol mit Fokus auf Reverse Engineering (Hardware & Software), 24/7 Industrial High-Availability Systems und sichere API-Plattformen. Ich analysiere Firmware, reverse-engineere Hardware-Protokolle und designe redundante Architekturen für industrielle Umgebungen — und baue die Tools dazu selbst.',
+    location: 'Tyrol, Austria',
+    bio: 'Cyber Security Engineer from Tyrol focused on reverse engineering (hardware & software), 24/7 industrial high-availability systems and secure API platforms. I analyse firmware, reverse-engineer hardware protocols and design redundant architectures for industrial environments — and build the tooling myself.',
     links: [
       { label: 'Website', href: 'https://hub.abler.tirol' },
       { label: 'GitHub', href: 'https://github.com/simonabler' },
       { label: 'LinkedIn', href: 'https://www.linkedin.com/in/simon-abler-b88a60157' },
-      { label: 'Kontakt', href: 'mailto:simon@abler.tirol' },
+      { label: 'Contact', href: 'mailto:simon@abler.tirol' },
     ],
     gravatarHash: 'fd97500da3d31da41dbfc114c04d2e455c32401de85c35ed6ceca18a09cc1957',
     skills: [
-      { label: '🔐 Reverse Engineering', tags: ['Firmware-Analyse', 'Protokoll-RE', 'Binäranalyse', 'Hardware-Debugging'] },
-      { label: '⚙️ Industrial HA', tags: ['PLC/SCADA', 'Redundanz-Design', '24/7-Betrieb', 'Failover-Architektur'] },
-      { label: '💻 Full-Stack', tags: ['NestJS', 'Angular', 'TypeORM', 'PostgreSQL', 'Docker'] },
+      { label: '🔐 Reverse Engineering', tags: ['Firmware Analysis', 'Protocol RE', 'Binary Analysis', 'Hardware Debugging'] },
+      { label: '⚙️ Industrial HA', tags: ['PLC/SCADA', 'Redundancy Design', '24/7 Operations', 'Failover Architecture'] },
+      { label: '💻 Full-Stack', tags: ['NestJS', 'Angular', 'Linux', 'PostgreSQL', 'Docker', '.net'] },
     ],
   };
   get gravatarUrl() {

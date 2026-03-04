@@ -2,7 +2,7 @@
 <div class="mb-4">
   <h2 class="h5 fw-bold mb-1">GS1 API — Subscription</h2>
   <p class="text-body-secondary small mb-3">
-    Standard-Barcodes sind kostenlos. GS1-128, DataMatrix und Batch-Generierung erfordern einen API-Key.
+    Standard barcodes are free. GS1-128, DataMatrix and batch generation require an API key.
   </p>
   <div class="row g-3">
 
@@ -10,17 +10,17 @@
     <div class="col-12 col-md-4">
       <div class="tier-card h-100">
         <div class="fw-bold mb-1">Free</div>
-        <div class="tier-price mb-2">€0 <small>/ Monat</small></div>
+        <div class="tier-price mb-2">€0 <small>/ month</small></div>
         <ul class="list-unstyled small text-body-secondary mb-3">
           <li>✅ Standard-Barcodes (PNG/SVG)</li>
           <li>✅ QR-Codes</li>
           <li>✅ GS1 AI-Registry (Lookup)</li>
           <li>❌ GS1-128 / DataMatrix</li>
-          <li>❌ Batch-Generierung</li>
+          <li>❌ Batch generation</li>
           <li>❌ Digital Link</li>
-          <li class="mt-1 text-muted">10 Req/min · keine AI-Validierung</li>
+          <li class="mt-1 text-muted">10 req/min · no AI validation</li>
         </ul>
-        <span class="badge bg-secondary">Kein Key nötig</span>
+        <span class="badge bg-secondary">No key needed</span>
       </div>
     </div>
 
@@ -29,19 +29,19 @@
       <div class="tier-card featured h-100">
         <div class="d-flex align-items-center justify-content-between mb-1">
           <div class="fw-bold">Pro</div>
-          <span class="badge" style="background: var(--brand); color: #0f172a;">Empfohlen</span>
+          <span class="badge" style="background: var(--brand); color: #0f172a;">Recommended</span>
         </div>
-        <div class="tier-price mb-2">€29 <small>/ Monat</small></div>
+        <div class="tier-price mb-2">€29 <small>/ month</small></div>
         <ul class="list-unstyled small text-body-secondary mb-3">
-          <li>✅ Alles aus Free</li>
+          <li>✅ Everything in Free</li>
           <li>✅ GS1-128 & DataMatrix</li>
           <li>✅ GS1 Digital Link encode/decode</li>
-          <li>✅ Vollständige AI-Validierung</li>
-          <li>❌ Batch-Generierung</li>
-          <li class="mt-1 text-muted">100 Req/min · 10.000 Req/Tag</li>
+          <li>✅ Full AI validation</li>
+          <li>❌ Batch generation</li>
+          <li class="mt-1 text-muted">100 req/min · 10,000 req/day</li>
         </ul>
         <a href="mailto:simon@abler.tirol?subject=GS1 Pro API Key" class="btn btn-sm btn-primary w-100">
-          Key anfragen
+          Request key
         </a>
       </div>
     </div>
@@ -50,17 +50,17 @@
     <div class="col-12 col-md-4">
       <div class="tier-card h-100">
         <div class="fw-bold mb-1">Industrial</div>
-        <div class="tier-price mb-2">€99 <small>/ Monat</small></div>
+        <div class="tier-price mb-2">€99 <small>/ month</small></div>
         <ul class="list-unstyled small text-body-secondary mb-3">
-          <li>✅ Alles aus Pro</li>
+          <li>✅ Everything in Pro</li>
           <li>✅ Batch bis 100 Barcodes/Request</li>
           <li>✅ Base64-PNG + SVG im Batch</li>
           <li>✅ Priority Support</li>
-          <li>✅ SLA auf Anfrage</li>
-          <li class="mt-1 text-muted">1.000 Req/min · unbegrenzt/Tag</li>
+          <li>✅ SLA on request</li>
+          <li class="mt-1 text-muted">1,000 req/min · unlimited/day</li>
         </ul>
         <a href="mailto:simon@abler.tirol?subject=GS1 Industrial API Key" class="btn btn-sm btn-outline-primary w-100">
-          Key anfragen
+          Request key
         </a>
       </div>
     </div>
@@ -69,9 +69,9 @@
 
   <!-- API Key Hinweis -->
   <div class="alert alert-light border mt-3 small mb-0">
-    <strong>API-Key verwenden:</strong>
-    Header <code>x-api-key: sk_pro_...</code> bei jedem Request mitschicken.<br>
-    Keys werden manuell vergeben — einfach per E-Mail anfragen, Antwort innerhalb von 24h.
+    <strong>Using an API key:</strong>
+    Add header <code>x-api-key: sk_pro_...</code> to every request.<br>
+    Keys are issued manually — just request one via email, response within 24h.
   </div>
 </div>
 
@@ -102,7 +102,7 @@
 
     <form (ngSubmit)="$event.preventDefault()" [formGroup]="form" class="panel">
       <div class="cols">
-        <label>Symbologie
+        <label>Symbology
           <select [formControl]="form.controls.symbology">
             <option value="gs1-128">GS1-128</option>
             <option value="gs1datamatrix">GS1 DataMatrix</option>
@@ -110,7 +110,7 @@
         </label>
         <label class="checkbox">
           <input type="checkbox" [formControl]="form.controls.includetext" />
-          Text unter Barcode anzeigen
+          Show text below barcode
         </label>
       </div>
 
@@ -135,13 +135,13 @@
               </div>
             </div>
             <button type="button" class="btn btn-outline-danger" (click)="removeItem($index)">
-              Entfernen
+              Remove
             </button>
           </div>
           }
           <div>
             <button type="button" class="btn btn-outline-primary" (click)="addItem()">
-              AI hinzufügen
+              Add AI
             </button>
           </div>
         </div>
@@ -149,10 +149,10 @@
 
       <fieldset>
         <div class="cols">
-          <label>Skalierung
+          <label>Scale
             <input type="number" [formControl]="form.controls.scale" min="1" max="10" />
           </label>
-          <label>Höhe
+          <label>Height
             <input type="number" [formControl]="form.controls.height" min="0" max="200" />
           </label>
         </div>
@@ -166,16 +166,16 @@
       <!-- Server-side validation error (structured, from gs1-error.ts) -->
       @if(serverError){
       <div class="alert alert-danger py-2 px-3 small mt-2">
-        <strong>Validierungsfehler:</strong> {{ serverError }}
+        <strong>Validation error:</strong> {{ serverError }}
       </div>
       }
 
       <div class="actions">
         <button type="button" class="btn btn-secondary" (click)="download('png')">
-          Als PNG herunterladen
+          Download as PNG
         </button>
         <button type="button" class="btn btn-secondary" (click)="download('svg')">
-          Als SVG herunterladen
+          Download as SVG
         </button>
       </div>
     </form>
@@ -183,11 +183,13 @@
     <div class="border rounded p-3 mt-2 qrbox d-flex align-items-center justify-content-center">
       @if(loading){
       <div class="spinner-border spinner-border-sm text-secondary" role="status">
-        <span class="visually-hidden">Lade…</span>
+        <span class="visually-hidden">Loading…</span>
       </div>
-      } @else if(previewUrl; as url){
-      <img [src]="url" alt="GS1 Vorschau" class="code-preview-img" />
-      }
+      } @else {
+        @if(previewUrl; as url){
+        <img [src]="url" alt="GS1 Preview" class="code-preview-img" />
+        }
+    }
     </div>
   </div>
 </div>

@@ -249,7 +249,7 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
 
   updatePreview(): void {
     if (!this.mainFile) {
-      this.errorMsg = 'Bitte zunächst ein Hauptbild hochladen.';
+      this.errorMsg = 'Please upload a main image first.';
       return;
     }
     this.errorMsg = null;
@@ -265,7 +265,7 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
       error: (err) => {
-        this.errorMsg = err?.message || 'Fehler bei der Vorschau-Erzeugung.';
+        this.errorMsg = err?.message || 'Preview generation failed.';
         this.loading = false;
       },
     });
@@ -292,7 +292,7 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
       error: (err) => {
-        this.errorMsg = err?.message || 'Fehler beim Download.';
+        this.errorMsg = err?.message || 'Download failed.';
         this.loading = false;
       },
     });

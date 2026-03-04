@@ -45,7 +45,7 @@ export const appRoutes: Route[] = [
   {
     path: 'impressum',
     loadComponent: () => import('./features/legal/impressum.component').then(c => c.ImpressumComponent),
-    title: 'Impressum',
+    title: 'Legal Notice',
   },
 ];
 
