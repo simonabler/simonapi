@@ -1,3 +1,80 @@
+<!-- GS1 Subscription Tiers -->
+<div class="mb-4">
+  <h2 class="h5 fw-bold mb-1">GS1 API — Subscription</h2>
+  <p class="text-body-secondary small mb-3">
+    Standard-Barcodes sind kostenlos. GS1-128, DataMatrix und Batch-Generierung erfordern einen API-Key.
+  </p>
+  <div class="row g-3">
+
+    <!-- Free -->
+    <div class="col-12 col-md-4">
+      <div class="tier-card h-100">
+        <div class="fw-bold mb-1">Free</div>
+        <div class="tier-price mb-2">€0 <small>/ Monat</small></div>
+        <ul class="list-unstyled small text-body-secondary mb-3">
+          <li>✅ Standard-Barcodes (PNG/SVG)</li>
+          <li>✅ QR-Codes</li>
+          <li>✅ GS1 AI-Registry (Lookup)</li>
+          <li>❌ GS1-128 / DataMatrix</li>
+          <li>❌ Batch-Generierung</li>
+          <li>❌ Digital Link</li>
+          <li class="mt-1 text-muted">10 Req/min · keine AI-Validierung</li>
+        </ul>
+        <span class="badge bg-secondary">Kein Key nötig</span>
+      </div>
+    </div>
+
+    <!-- Pro -->
+    <div class="col-12 col-md-4">
+      <div class="tier-card featured h-100">
+        <div class="d-flex align-items-center justify-content-between mb-1">
+          <div class="fw-bold">Pro</div>
+          <span class="badge" style="background: var(--brand); color: #0f172a;">Empfohlen</span>
+        </div>
+        <div class="tier-price mb-2">€29 <small>/ Monat</small></div>
+        <ul class="list-unstyled small text-body-secondary mb-3">
+          <li>✅ Alles aus Free</li>
+          <li>✅ GS1-128 & DataMatrix</li>
+          <li>✅ GS1 Digital Link encode/decode</li>
+          <li>✅ Vollständige AI-Validierung</li>
+          <li>❌ Batch-Generierung</li>
+          <li class="mt-1 text-muted">100 Req/min · 10.000 Req/Tag</li>
+        </ul>
+        <a href="mailto:simon@abler.tirol?subject=GS1 Pro API Key" class="btn btn-sm btn-primary w-100">
+          Key anfragen
+        </a>
+      </div>
+    </div>
+
+    <!-- Industrial -->
+    <div class="col-12 col-md-4">
+      <div class="tier-card h-100">
+        <div class="fw-bold mb-1">Industrial</div>
+        <div class="tier-price mb-2">€99 <small>/ Monat</small></div>
+        <ul class="list-unstyled small text-body-secondary mb-3">
+          <li>✅ Alles aus Pro</li>
+          <li>✅ Batch bis 100 Barcodes/Request</li>
+          <li>✅ Base64-PNG + SVG im Batch</li>
+          <li>✅ Priority Support</li>
+          <li>✅ SLA auf Anfrage</li>
+          <li class="mt-1 text-muted">1.000 Req/min · unbegrenzt/Tag</li>
+        </ul>
+        <a href="mailto:simon@abler.tirol?subject=GS1 Industrial API Key" class="btn btn-sm btn-outline-primary w-100">
+          Key anfragen
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- API Key Hinweis -->
+  <div class="alert alert-light border mt-3 small mb-0">
+    <strong>API-Key verwenden:</strong>
+    Header <code>x-api-key: sk_pro_...</code> bei jedem Request mitschicken.<br>
+    Keys werden manuell vergeben — einfach per E-Mail anfragen, Antwort innerhalb von 24h.
+  </div>
+</div>
+
 <div class="card rounded-card h-100">
   <div class="card-body">
     <div class="d-flex justify-content-between align-items-center mb-2">
