@@ -127,7 +127,7 @@ nx serve simonapi  # Frontend (http://localhost:4200)</code></pre>
       </div>
     </div>
 
-    <!-- Card: Barcodes & GS1 -->
+    <!-- Card: Barcodes -->
     <div class="col-12 col-lg-6 col-xl-4">
       <div class="card rounded-card h-100">
         <div class="card-body">
@@ -136,12 +136,12 @@ nx serve simonapi  # Frontend (http://localhost:4200)</code></pre>
               <div
                 class="d-inline-grid place-items-center bg-body-secondary rounded-3 icon-36"
               >
-                🏷️
+                📊
               </div>
               <div>
-                <div class="fw-semibold">Barcodes &amp; GS1</div>
+                <div class="fw-semibold">Barcodes</div>
                 <div class="text-body-secondary small">
-                  Standard, GS1‑128/DataMatrix
+                  Standard PNG/SVG Generator
                 </div>
               </div>
             </div>
@@ -162,6 +162,35 @@ nx serve simonapi  # Frontend (http://localhost:4200)</code></pre>
               <code class="text-truncate">/api/barcode/svg</code>
               <span class="badge bg-dark">stable</span>
             </div>
+          </div>
+          <div class="pt-2">
+            <a class="btn btn-sm btn-link" href="/barcode">➡️ Open Barcode Generator</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card: GS1 API -->
+    <div class="col-12 col-lg-6 col-xl-4">
+      <div class="card rounded-card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <div
+                class="d-inline-grid place-items-center bg-body-secondary rounded-3 icon-36"
+              >
+                🏷️
+              </div>
+              <div>
+                <div class="fw-semibold">GS1 API</div>
+                <div class="text-body-secondary small">
+                  GS1‑128, DataMatrix, Digital Link
+                </div>
+              </div>
+            </div>
+            <span class="badge text-bg-secondary">gs1</span>
+          </div>
+          <div class="d-flex flex-column gap-2">
             <div
               class="d-flex justify-content-between align-items-center border rounded p-2 small"
             >
@@ -169,9 +198,23 @@ nx serve simonapi  # Frontend (http://localhost:4200)</code></pre>
               <code class="text-truncate">/api/barcode/gs1/render</code>
               <span class="badge text-bg-light">beta</span>
             </div>
+            <div
+              class="d-flex justify-content-between align-items-center border rounded p-2 small"
+            >
+              <span class="chip POST">POST</span>
+              <code class="text-truncate">/api/barcode/gs1/batch</code>
+              <span class="badge text-bg-light">beta</span>
+            </div>
+            <div
+              class="d-flex justify-content-between align-items-center border rounded p-2 small"
+            >
+              <span class="chip POST">POST</span>
+              <code class="text-truncate">/api/barcode/gs1/digital-link/encode</code>
+              <span class="badge text-bg-light">beta</span>
+            </div>
           </div>
           <div class="pt-2">
-            <a class="btn btn-sm btn-link" href="/barcode">➡️ Open</a>
+            <a class="btn btn-sm btn-link" href="/barcode/gs1">➡️ Open GS1 API</a>
           </div>
         </div>
       </div>
