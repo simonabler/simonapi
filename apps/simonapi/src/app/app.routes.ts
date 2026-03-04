@@ -21,6 +21,11 @@ export const appRoutes: Route[] = [
     title: 'Barcode Generator'
   },
   {
+    path: 'barcode/gs1',
+    loadComponent: () => import('./features/barcode/gs1-page.component').then(c => c.Gs1PageComponent),
+    title: 'GS1 API — Barcode & Digital Link',
+  },
+  {
     path: 'dev-utils',
     component: DevUtilsComponent,
     title: 'Dev Utilities'
@@ -45,7 +50,7 @@ export const appRoutes: Route[] = [
   {
     path: 'impressum',
     loadComponent: () => import('./features/legal/impressum.component').then(c => c.ImpressumComponent),
-    title: 'Impressum',
+    title: 'Legal Notice',
   },
 ];
 

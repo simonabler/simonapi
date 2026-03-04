@@ -14,6 +14,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    path: 'barcode/gs1',
+    renderMode: RenderMode.Server,
+  },
+  {
     path: 'admin/stats',
     renderMode: RenderMode.Client,
   },

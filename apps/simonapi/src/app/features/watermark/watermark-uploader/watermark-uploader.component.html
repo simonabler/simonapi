@@ -4,23 +4,23 @@
       <div class="card h-100">
         <div class="card-header">Upload</div>
         <div class="card-body d-flex flex-column gap-3">
-          <!-- Hauptbild Dropzone -->
+          <!-- Main Image Dropzone -->
           <div class="dropzone text-center p-3" appDnd (fileDropped)="onMainDropped($event)">
-            <div class="mb-2 fw-semibold">Hauptbild</div>
-            <div class="small text-muted">Bild hierher ziehen oder klicken</div>
+            <div class="mb-2 fw-semibold">Main Image</div>
+            <div class="small text-muted">Drag image here or click</div>
             <input type="file" accept="image/*" class="d-none" id="mainFileInput" (change)="onMainSelected($event)" />
-            <label class="stretched-link" for="mainFileInput" aria-label="Hauptbild auswählen"></label>
+            <label class="stretched-link" for="mainFileInput" aria-label="Select main image"></label>
           </div>
-          <div class="text-muted small" *ngIf="mainFile">Gewählt: {{ mainFile.name }}</div>
+          <div class="text-muted small" *ngIf="mainFile">Selected: {{ mainFile.name }}</div>
 
           <!-- Logo Dropzone -->
           <div class="dropzone text-center p-3" appDnd (fileDropped)="onLogoDropped($event)">
             <div class="mb-2 fw-semibold">Logo (optional)</div>
-            <div class="small text-muted">Logo hierher ziehen oder klicken</div>
+            <div class="small text-muted">Drag logo here or click</div>
             <input type="file" accept="image/*" class="d-none" id="logoFileInput" (change)="onLogoSelected($event)" />
-            <label class="stretched-link" for="logoFileInput" aria-label="Logo auswählen"></label>
+            <label class="stretched-link" for="logoFileInput" aria-label="Select logo"></label>
           </div>
-          <div class="text-muted small" *ngIf="logoFile">Gewählt: {{ logoFile.name }}</div>
+          <div class="text-muted small" *ngIf="logoFile">Selected: {{ logoFile.name }}</div>
         </div>
       </div>
     </div>
@@ -28,7 +28,7 @@
     <div class="col-12 col-lg-9">
       <div class="card mb-3">
         <div class="card-header d-flex align-items-center justify-content-between">
-          <span>Einstellungen</span>
+          <span>Settings</span>
           <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="autoPreviewSwitch" [formControl]="$any(form.controls['autoPreview'])" />
             <label class="form-check-label" for="autoPreviewSwitch">Auto-Preview</label>
@@ -37,7 +37,7 @@
         <div class="card-body">
           <form [formGroup]="form" class="row g-3">
             <div class="col-12 col-md-6">
-              <span class="form-label">Modus</span>
+              <span class="form-label">Mode</span>
               <div class="d-flex gap-3">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" id="modeText" formControlName="mode" value="text" />
@@ -51,11 +51,11 @@
             </div>
 
             <div class="col-12 col-md-6">
-              <span class="form-label">Positionierung</span>
+              <span class="form-label">Positioning</span>
               <div class="d-flex gap-3">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" id="posAbs" formControlName="positionMode" value="absolute" />
-                  <label class="form-check-label" for="posAbs">Absolut (x,y)</label>
+                  <label class="form-check-label" for="posAbs">Absolute (x,y)</label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" type="radio" id="posAnchor" formControlName="positionMode" value="anchor" />
@@ -81,20 +81,20 @@
             </div>
 
             <div class="col-12 col-md-6">
-              <label class="form-label" for="opacity">Deckkraft ({{ form.value.opacity }})</label>
+              <label class="form-label" for="opacity">Opacity ({{ form.value.opacity }})</label>
               <input type="range" class="form-range" min="0" max="1" step="0.05" formControlName="opacity" />
             </div>
             <div class="col-12 col-md-6">
-              <label class="form-label" for="scale">Skalierung ({{ form.value.scale }})</label>
+              <label class="form-label" for="scale">Scale ({{ form.value.scale }})</label>
               <input type="range" class="form-range" min="0.1" max="5" step="0.1" formControlName="scale" />
             </div>
 
             <div class="col-12 col-md-4">
-              <label class="form-label" for="rotate">Drehung (°)</label>
+              <label class="form-label" for="rotate">Rotation (°)</label>
               <input type="range" class="form-range" min="-180" max="180" step="1" formControlName="rotate" />
             </div>
             <div class="col-12 col-md-4">
-              <label class="form-label" for="margin">Rand (px)</label>
+              <label class="form-label" for="margin">Margin (px)</label>
               <input type="number" min="0" class="form-control" formControlName="margin" />
             </div>
             <div class="col-12 col-md-4">
@@ -105,40 +105,40 @@
             <div class="col-12">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="tileCheck" formControlName="tile" />
-                <label class="form-check-label" for="tileCheck">Kacheln (Tile)</label>
+                <label class="form-check-label" for="tileCheck">Tile</label>
               </div>
             </div>
 
             <div class="col-12" *ngIf="form.value.mode === 'text'">
               <label class="form-label" for="text">Text</label>
-              <input type="text" class="form-control" formControlName="text" placeholder="Wasserzeichen-Text" />
+              <input type="text" class="form-control" formControlName="text" placeholder="Watermark text" />
             </div>
 
             <div class="col-6 col-md-3">
-              <label class="form-label" for="fontSize">Schriftgröße</label>
+              <label class="form-label" for="fontSize">Font size</label>
               <input type="number" class="form-control" formControlName="fontSize" />
             </div>
             <div class="col-6 col-md-3">
-              <label class="form-label" for="fontFamily">Schriftart</label>
+              <label class="form-label" for="fontFamily">Font family</label>
               <select class="form-select" formControlName="fontFamily">
                 <option *ngFor="let f of fonts" [value]="f">{{ f }}</option>
               </select>
             </div>
             <div class="col-6 col-md-3">
-              <label class="form-label" for="color">Farbe</label>
+              <label class="form-label" for="color">Color</label>
               <input type="color" class="form-control form-control-color" formControlName="color" />
             </div>
             <div class="col-6 col-md-3">
-              <label class="form-label" for="strokeColor">Konturfarbe</label>
+              <label class="form-label" for="strokeColor">Stroke color</label>
               <input type="color" class="form-control form-control-color" formControlName="strokeColor" />
             </div>
             <div class="col-12 col-md-3">
-              <label class="form-label" for="strokeWidth">Konturbreite</label>
+              <label class="form-label" for="strokeWidth">Stroke width</label>
               <input type="number" min="0" class="form-control" formControlName="strokeWidth" />
             </div>
 
             <div class="col-12 d-flex gap-2 align-items-center">
-              <button type="button" class="btn btn-primary" (click)="updatePreview()" [disabled]="!mainFile || loading">Vorschau aktualisieren</button>
+              <button type="button" class="btn btn-primary" (click)="updatePreview()" [disabled]="!mainFile || loading">Update preview</button>
               <button type="button" class="btn btn-success" (click)="download()" [disabled]="!mainFile || loading">Download</button>
               <div class="ms-auto" *ngIf="loading">
                 <span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>

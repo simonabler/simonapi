@@ -1,6 +1,6 @@
 <div class="stats-dashboard container py-4" *ngIf="vm$ | async as vm">
   <div class="stats-grid">
-    <app-stats-card title="API Overview" subTitle="Aktuelle Backend-Metriken">
+    <app-stats-card title="API Overview" subTitle="Current backend metrics">
       <div card-actions class="d-flex align-items-center gap-2">
         <label class="form-check form-switch m-0">
           <input
@@ -12,14 +12,14 @@
           <span class="form-check-label">Auto-Refresh (5s)</span>
         </label>
         <button type="button" class="btn btn-outline-secondary btn-sm" (click)="refresh()">
-          Jetzt aktualisieren
+          Refresh now
         </button>
       </div>
 
       <ng-container *ngIf="vm.loading; else overviewContent">
         <div class="loading-state">
           <div class="spinner-border" role="status" aria-hidden="true"></div>
-          <span>Lade</span>
+          <span>Loading</span>
         </div>
       </ng-container>
 
@@ -46,22 +46,24 @@
         </div>
 
         <ng-container *ngIf="dailyEntries(vm.stats) as dailyEntriesList; else noDaily">
-          <div class="daily-chart">
-            <div class="daily-bar" *ngFor="let entry of dailyEntriesList">
-              <div class="bar" [style.height.%]="entry.percent"></div>
-              <span class="label">{{ entry.day }}</span>
-              <span class="count">{{ entry.count }}</span>
+          <div class="daily-chart-wrap">
+            <div class="daily-chart">
+              <div class="daily-bar" *ngFor="let entry of dailyEntriesList">
+                <div class="bar" [style.height.%]="entry.percent"></div>
+                <span class="day-label">{{ entry.day | slice:5 }}</span>
+                <span class="day-count">{{ entry.count }}</span>
+              </div>
             </div>
           </div>
         </ng-container>
         <ng-template #noDaily>
-          <p class="text-body-secondary small m-0">Keine Tageswerte vorhanden.</p>
+          <p class="text-body-secondary small m-0">No daily values available.</p>
         </ng-template>
 
         <div>
           <h3 class="h6 mb-2">Top Routes</h3>
           <ng-container *ngIf="topRoutes(vm.stats) as routes; else noRoutes">
-            <div class="table-responsive">
+            <div class="routes-table-wrap">
               <table class="table table-sm align-middle mb-0">
                 <thead>
                   <tr>
@@ -83,7 +85,7 @@
             </div>
           </ng-container>
           <ng-template #noRoutes>
-            <p class="text-body-secondary small mb-0">Keine Routenstatistiken vorhanden.</p>
+            <p class="text-body-secondary small mb-0">No route statistics available.</p>
           </ng-template>
         </div>
       </ng-template>
@@ -93,11 +95,11 @@
       </div>
     </app-stats-card>
 
-    <app-stats-card title="Security / Blocklist" subTitle="Aktive Sperren und Rate-Limits">
+    <app-stats-card title="Security / Blocklist" subTitle="Active blocks and rate limits">
       <ng-container *ngIf="vm.loading; else securityContent">
         <div class="loading-state">
           <div class="spinner-border" role="status" aria-hidden="true"></div>
-          <span>Lade</span>
+          <span>Loading</span>
         </div>
       </ng-container>
 

@@ -1,0 +1,23 @@
+/* Inline-Styles aus dem alten Decorator — jetzt hier */
+
+.service-card .nav-link { cursor: pointer; }
+.service-card .nav-pills .nav-link.active {
+  background: linear-gradient(135deg, var(--brand-2), var(--brand));
+}
+.service-card .icon {
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border-radius: 10px;
+  background: color-mix(in oklab, var(--brand), white 85%);
+}
+.service-desc  { color: var(--bs-body-color); }
+.service-card .card-body { color: var(--bs-body-color); }
+
+.code {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: var(--radius);
+  padding: .75rem;
+  overflow: auto;
+}
+.code code { white-space: pre-wrap; word-break: break-word; }

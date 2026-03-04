@@ -1,34 +1,52 @@
 :host {
   display: block;
+  min-width: 0;              /* wichtig: verhindert Overflow im Grid-Child */
 }
 
 .stats-card {
   height: 100%;
+  min-width: 0;
   border: 1px solid var(--border, #e2e8f0);
   box-shadow: var(--shadow-sm, 0 2px 10px rgba(15, 23, 42, 0.06));
+  overflow: hidden;          /* schneidet überstehendes Kind-Content ab */
 }
 
 .card-header {
-  background: color-mix(in oklab, var(--surface, #ffffff) 90%, white 10%);
+  background: color-mix(in oklab, var(--surface, #fff) 95%, var(--bg, #f1f5f9) 5%);
   border-bottom: 1px solid var(--border, #e2e8f0);
+  /* Bricht Actions bei schmalem Viewport in zweite Zeile */
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  row-gap: 0.75rem;
 }
 
 .card-title {
   font-weight: 600;
 }
 
-.card-actions {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
+.card-subtitle {
+  font-size: 0.8rem;
 }
 
-.card-body {
-  display: grid;
-  gap: 1rem;
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  /* Auf kleinen Screens volle Breite */
+  @media (max-width: 576px) {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
 .card-actions:empty {
   display: none;
 }
 
+.card-body {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;              /* Grid-Child muss min-width: 0 haben */
+  overflow: hidden;
+}

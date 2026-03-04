@@ -100,12 +100,12 @@ export class AdminLockComponent implements OnInit {
     try {
       cfg = v.providerConfig ? JSON.parse(v.providerConfig) : {};
     } catch (e: any) {
-      this.error.set('ProviderConfig ist kein gültiges JSON.');
+      this.error.set('ProviderConfig is not valid JSON.');
       return;
     }
     this.busy.set(true);
     const body: Partial<LockEntity> = { name: v.name!, providerType: v.providerType!, providerConfig: cfg, active: !!v.active };
-    const done = () => (this.busy.set(false), this.reloadAll(), this.success.set('Gespeichert'));
+    const done = () => (this.busy.set(false), this.reloadAll(), this.success.set('Saved'));
     if (v.id) this.api.updateLock$(v.id, body).subscribe({ next: done, error: (e) => (this.error.set(e.message), this.busy.set(false)) });
     else this.api.createLock$(body).subscribe({ next: done, error: (e) => (this.error.set(e.message), this.busy.set(false)) });
   }
@@ -114,7 +114,7 @@ export class AdminLockComponent implements OnInit {
     this.busy.set(true);
     this.api.updateLock$(lock.id, { active: !lock.active }).subscribe({
       next: () => {
-        this.success.set('Aktualisiert');
+        this.success.set('Updated');
         this.reloadAll();
       },
       error: (e) => (this.error.set(e.message), this.busy.set(false)),

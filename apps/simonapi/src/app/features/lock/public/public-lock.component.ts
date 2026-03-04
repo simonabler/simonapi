@@ -37,7 +37,7 @@ export class PublicLockComponent implements OnInit, OnDestroy {
     const slug = this.route.snapshot.paramMap.get('slug');
     const token = this.route.snapshot.queryParamMap.get('t');
     if (!slug || !token) {
-      this.error.set('Fehlender Parameter. Bitte Link prüfen.');
+      this.error.set('Missing parameter. Please check the link.');
       return;
     }
     this.slug.set(slug);
@@ -68,7 +68,7 @@ export class PublicLockComponent implements OnInit, OnDestroy {
         this.busy.set(false);
       },
       error: (e) => {
-        this.error.set(e.message || 'Fehler beim Laden');
+        this.error.set(e.message || 'Failed to load');
         this.busy.set(false);
       },
     });
@@ -103,11 +103,11 @@ export class PublicLockComponent implements OnInit, OnDestroy {
     this.api.openPublic$(this.slug()!, this.token()!, lock.id, this.genNonce()).subscribe({
       next: (res) => {
         this.busy.set(false);
-        alert(res?.message || 'Öffnen angefordert');
+        alert(res?.message || 'Open requested');
       },
       error: (e) => {
         this.busy.set(false);
-        alert(e?.message || 'Fehler beim Öffnen');
+        alert(e?.message || 'Failed to open');
       },
     });
   }
