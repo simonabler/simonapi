@@ -3,7 +3,7 @@
     <h2 class="m-0">Barcode Generator</h2>
     <button class="btn btn-primary d-inline-flex align-items-center gap-1" (click)="add()">
       <lucide-icon [img]="PlusIcon" [size]="18"></lucide-icon>
-      <span>Hinzufügen</span>
+      <span>Add</span>
     </button>
   </div>
 
@@ -11,6 +11,18 @@
     <ng-container *ngFor="let it of items; trackBy: trackById">
       <app-barcode-editor-item class="col-md-6 col" [removable]="true" (remove)="remove(it.id)"></app-barcode-editor-item>
     </ng-container>
-    <app-barcode-gs1-editor-item class="col-md-6 col" ></app-barcode-gs1-editor-item>
+  </div>
+
+  <!-- GS1 API Banner -->
+  <div class="card rounded-card mt-3">
+    <div class="card-body d-flex align-items-center justify-content-between gap-3 flex-wrap">
+      <div>
+        <div class="fw-semibold mb-1">🏷️ GS1 Barcodes &amp; Digital Link</div>
+        <p class="text-body-secondary small mb-0">
+          GS1-128, DataMatrix, batch generation and GS1 Digital Link encode/decode — with full AI validation.
+        </p>
+      </div>
+      <a routerLink="/barcode/gs1" class="btn btn-outline-primary btn-sm text-nowrap">Open GS1 API →</a>
+    </div>
   </div>
 </div>

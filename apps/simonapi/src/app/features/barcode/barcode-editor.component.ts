@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { LucideAngularModule, PlusIcon } from 'lucide-angular';
 import { BarcodeEditorItemComponent } from './barcode-editor-item.component';
-import { BarcodeGs1EditorItemComponent } from './barcode-gs1-editor-item.component';
 
 type Item = { id: number };
 
 @Component({
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, BarcodeEditorItemComponent, BarcodeGs1EditorItemComponent],
+  imports: [CommonModule, RouterLink, LucideAngularModule, BarcodeEditorItemComponent],
   selector: 'app-barcode-editor',
   templateUrl: './barcode-editor.component.html',
   styleUrls: ['./barcode-editor.component.scss']
