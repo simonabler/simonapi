@@ -62,15 +62,10 @@ svg.my-icon {
 
 
 ::selection {
-  background: rgba(99, 102, 241, .2);
+  background: rgba(34, 211, 238, .2);
 }
 
 
-
-.hero-bg {
-  position: relative;
-  overflow: hidden
-}
 
 .app-container {
   min-height: 100vh;
@@ -290,4 +285,179 @@ kbd {
     radial-gradient(ellipse 80% 50% at 50% -10%, color-mix(in oklab, var(--brand), transparent 88%), transparent),
     radial-gradient(ellipse 60% 40% at 80% 60%, color-mix(in oklab, var(--brand-2), transparent 92%), transparent),
     #f8fafc;
+}
+
+/* ── Home: Section Label ──────────────────────────────── */
+.section-label {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--brand-dark, #0891b2);
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Home: Catalog Cards ──────────────────────────────── */
+.catalog-card {
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow .2s var(--ease), transform .15s var(--ease),
+              border-color .2s var(--ease);
+}
+.catalog-card:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+  border-color: color-mix(in oklab, var(--brand), transparent 62%);
+}
+.catalog-card-body {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+.catalog-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  background: color-mix(in oklab, var(--brand), transparent 90%);
+}
+.catalog-icon.pro {
+  background: color-mix(in oklab, var(--brand), transparent 80%);
+}
+.catalog-routes {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  flex: 1;
+}
+.route-row {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .3rem .5rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2, #f8fafc);
+  border: 1px solid var(--border);
+  font-size: .78rem;
+  min-width: 0;
+}
+.route-row code {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: .75rem;
+  color: var(--text);
+  background: none;
+  padding: 0;
+}
+.catalog-cta {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+/* ── Home: Profil ─────────────────────────────────────── */
+.profile-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.profile-header {
+  padding: 1.75rem 2rem;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--brand), transparent 93%),
+    color-mix(in oklab, var(--brand-2), transparent 95%)
+  );
+  border-bottom: 1px solid var(--border);
+}
+.profile-avatar {
+  width: clamp(68px, 9vw, 92px);
+  height: clamp(68px, 9vw, 92px);
+  min-width: 68px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #22d3ee, #818cf8);
+  display: grid;
+  place-items: center;
+  color: #0b1020;
+  font-weight: 700;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 3px solid color-mix(in oklab, var(--brand), transparent 55%);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--brand), transparent 85%);
+}
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+.profile-body {
+  padding: 1.5rem 2rem;
+  display: grid;
+  gap: 1.5rem;
+}
+.skill-cluster .cluster-tag {
+  font-size: .75rem;
+  padding: .2rem .6rem;
+  border-radius: 99px;
+  background: color-mix(in oklab, var(--brand), transparent 88%);
+  color: var(--brand-dark, #0891b2);
+  border: 1px solid color-mix(in oklab, var(--brand), transparent 68%);
+  font-weight: 500;
+  display: inline-block;
+}
+
+/* ── Home: CTA-Sektion ────────────────────────────────── */
+.cta-section {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--brand), transparent 90%),
+    color-mix(in oklab, var(--brand-2), transparent 92%)
+  );
+  border: 1px solid color-mix(in oklab, var(--brand), transparent 62%);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+.cta-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -.015em;
+}
+
+/* ── Home: Fair Use ───────────────────────────────────── */
+.fair-use {
+  font-size: .78rem;
+  color: var(--muted);
+  line-height: 1.6;
+  padding: 1rem 1.25rem;
+  background: var(--surface-2, #f8fafc);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
 }
