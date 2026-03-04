@@ -2,34 +2,46 @@ import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom, Observable } from 'rxjs';
 import { environment } from '../../../environments/environments';
-import { BarcodeRequest, Gs1Request, AiSpecJson } from './models';
+import {
+  AiSpecJson,
+  BarcodeRequest,
+  DigitalLinkDecodeRequest,
+  DigitalLinkEncodeRequest,
+  DigitalLinkEncodeResult,
+  Gs1BatchRequest,
+  Gs1BatchResultItem,
+  Gs1Item,
+  Gs1Request,
+} from './models';
 import { isPlatformBrowser } from '@angular/common';
-
 
 @Injectable({ providedIn: 'root' })
 export class BarcodeService {
   private http = inject(HttpClient);
-  private API;
   private platformId = inject(PLATFORM_ID);
   isBrowser = false;
+  private API: string;
 
   constructor() {
     this.isBrowser = isPlatformBrowser(this.platformId);
     this.API = (environment.API_BASE_URL || window.origin) + '/api';
   }
 
+  // ---------------------------------------------------------------------------
+  // Standard barcodes
+  // ---------------------------------------------------------------------------
+
   private buildParams(req: BarcodeRequest): HttpParams {
     let p = new HttpParams().set('type', req.type).set('text', req.text);
     if (req.includetext) p = p.set('includetext', String(req.includetext));
-    if (req.scale) p = p.set('scale', String(req.scale));
-    if (req.height) p = p.set('height', String(req.height));
+    if (req.scale)       p = p.set('scale', String(req.scale));
+    if (req.height)      p = p.set('height', String(req.height));
     return p;
   }
 
   preview$(req: BarcodeRequest): Observable<Blob> {
-    const params = this.buildParams(req);
     return this.http.get(`${this.API}/barcode/png`, {
-      params,
+      params: this.buildParams(req),
       responseType: 'blob',
     });
   }
@@ -40,67 +52,86 @@ export class BarcodeService {
       const blob = await firstValueFrom(
         this.http.get(`${this.API}/barcode/png`, { params, responseType: 'blob' })
       );
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `barcode-${req.type}.png`;
-      a.click();
-      URL.revokeObjectURL(url);
+      this.triggerDownload(blob, `barcode-${req.type}.png`);
       return;
     }
-    // SVG as text → blob for download
     const svgText = await firstValueFrom(
       this.http.get(`${this.API}/barcode/svg`, { params, responseType: 'text' })
     );
-    const blob = new Blob([svgText], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `barcode-${req.type}.svg`;
-    a.click();
-    URL.revokeObjectURL(url);
+    this.triggerDownload(new Blob([svgText], { type: 'image/svg+xml' }), `barcode-${req.type}.svg`);
   }
 
-  // GS1
+  // ---------------------------------------------------------------------------
+  // GS1 — single render
+  // Uses gs1/render (recommended) instead of the deprecated gs1/png endpoint.
+  // ---------------------------------------------------------------------------
+
+  /** Live preview for the GS1 editor — always returns a PNG blob. */
   previewGs1$(req: Gs1Request): Observable<Blob> {
-    const body = { ...req };
-    return this.http.post(`${this.API}/barcode/gs1/png`, body, {
+    return this.http.post(`${this.API}/barcode/gs1/render`, { ...req, format: 'png' }, {
       responseType: 'blob',
     });
   }
 
   getGs1Registry$(): Observable<Record<string, AiSpecJson>> {
-    return this.http.get<Record<string, AiSpecJson>>(
-      `${this.API}/barcode/gs1/registry`
-    );
+    return this.http.get<Record<string, AiSpecJson>>(`${this.API}/barcode/gs1/registry`);
   }
 
   async downloadGs1(req: Gs1Request, format: 'png' | 'svg'): Promise<void> {
-    const body = { ...req, format } as const;
+    const body = { ...req, format };
     if (format === 'png') {
       const blob = await firstValueFrom(
-        this.http.post(`${this.API}/barcode/gs1/render`, body, {
-          responseType: 'blob',
-        })
+        this.http.post(`${this.API}/barcode/gs1/render`, body, { responseType: 'blob' })
       );
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `gs1-${req.symbology}.png`;
-      a.click();
-      URL.revokeObjectURL(url);
+      this.triggerDownload(blob, `gs1-${req.symbology}.png`);
       return;
     }
     const svgText = await firstValueFrom(
-      this.http.post(`${this.API}/barcode/gs1/render`, body, {
-        responseType: 'text',
-      })
+      this.http.post(`${this.API}/barcode/gs1/render`, body, { responseType: 'text' })
     );
-    const blob = new Blob([svgText], { type: 'image/svg+xml' });
+    this.triggerDownload(new Blob([svgText], { type: 'image/svg+xml' }), `gs1-${req.symbology}.svg`);
+  }
+
+  // ---------------------------------------------------------------------------
+  // GS1 — batch render
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Batch-render up to 100 GS1 barcodes in a single request.
+   * Each item in the response carries `data` (Base64 PNG or SVG string) on
+   * success, or `error` + `errorCode` on per-item failure.
+   */
+  gs1Batch$(req: Gs1BatchRequest): Observable<Gs1BatchResultItem[]> {
+    return this.http.post<Gs1BatchResultItem[]>(`${this.API}/barcode/gs1/batch`, req);
+  }
+
+  // ---------------------------------------------------------------------------
+  // GS1 Digital Link
+  // ---------------------------------------------------------------------------
+
+  /** Convert AI items to a GS1 Digital Link URL. */
+  digitalLinkEncode$(req: DigitalLinkEncodeRequest): Observable<DigitalLinkEncodeResult> {
+    return this.http.post<DigitalLinkEncodeResult>(
+      `${this.API}/barcode/gs1/digital-link/encode`, req
+    );
+  }
+
+  /** Parse a GS1 Digital Link URL back into AI items. */
+  digitalLinkDecode$(req: DigitalLinkDecodeRequest): Observable<Gs1Item[]> {
+    return this.http.post<Gs1Item[]>(
+      `${this.API}/barcode/gs1/digital-link/decode`, req
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Shared helper
+  // ---------------------------------------------------------------------------
+
+  private triggerDownload(blob: Blob, filename: string): void {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `gs1-${req.symbology}.svg`;
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
   }

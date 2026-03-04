@@ -67,6 +67,11 @@ export function normalizeSscc(value: string): string {
   throw new Error('AI 00 must be 17 or 18 digits');
 }
 
+// GS1 date AIs that carry a YYMMDD value — all require semantic date validation
+// in addition to the structural regex check already present in AI_REGEX_DB.
+// GS1-Spec: DD=00 is a valid sentinel meaning "last day of the month" (e.g. 251200).
+const DATE_AIS = new Set(['11', '12', '13', '15', '16', '17']);
+
 export function validateAndNormalizeGs1Item(ai: string, value: string): string {
   const spec = getAiSpec(ai);
   if (!spec) throw new Error(`AI ${ai} not supported`);
@@ -75,8 +80,16 @@ export function validateAndNormalizeGs1Item(ai: string, value: string): string {
   if (ai === '01') return normalizeGtin(value);
   if (ai === '00') return normalizeSscc(value);
 
-  // Otherwise validate via regex spec registry (covers dates, numeric, ASCII etc.)
+  // Structural regex check (length, charset, numeric/alphanumeric)
   validateAiByRegex(ai, value);
+
+  // Semantic date validation for date AIs — catches invalid calendar dates
+  // that pass the regex (e.g. 250229 on a non-leap year, month 13, day 32).
+  // DD=00 is explicitly allowed per GS1 General Specifications §3.4.
+  if (DATE_AIS.has(ai) && !value.endsWith('00') && !validateYYMMDD(value)) {
+    throw new Error(`AI ${ai}: '${value}' is not a valid YYMMDD date`);
+  }
+
   return value;
 }
 
