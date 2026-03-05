@@ -28,7 +28,7 @@ type Tier = {
   selector: 'app-gs1-page',
   imports: [
     CommonModule, RouterLink, ReactiveFormsModule,
-    LucideAngularModule, BarcodeGs1EditorItemComponent,
+    LucideAngularModule, BarcodeGs1EditorItemComponent, SsccGeneratorComponent,
   ],
   templateUrl: './gs1-page.component.html',
 })
