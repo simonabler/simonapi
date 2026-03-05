@@ -13,6 +13,7 @@ import {
   Gs1Item,
   DigitalLinkEncodeResult,
 } from './models';
+import { SsccGeneratorComponent } from './sscc-generator.component';
 
 type TierFeature = { text: string; included: boolean };
 type Tier = {
