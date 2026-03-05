@@ -1,8 +1,9 @@
 <div class="container py-4">
 
-  <!-- Page Header -->
+  <!-- ── Page Header ──────────────────────────────────── -->
   <div class="d-flex align-items-center gap-2 mb-4">
-    <a routerLink="/barcode" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1">
+    <a routerLink="/barcode"
+       class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1">
       <lucide-icon [img]="ArrowLeftIcon" [size]="16"></lucide-icon>
       Barcodes
     </a>
@@ -10,7 +11,8 @@
     <span class="badge text-bg-secondary">gs1</span>
   </div>
 
-  <!-- Subscription Tiers -->
+
+  <!-- ── Subscription Tiers ───────────────────────────── -->
   <div class="mb-5">
     <h2 class="h5 fw-bold mb-1">Subscription</h2>
     <p class="text-body-secondary small mb-3">
@@ -18,49 +20,336 @@
     </p>
     <div class="row g-3">
       @for (tier of tiers; track tier.key) {
-        <div class="col-12 col-md-4">
-          <div class="tier-card h-100" [class.featured]="tier.featured">
-            <div class="d-flex align-items-center justify-content-between mb-1">
-              <div class="fw-bold">{{ tier.name }}</div>
-              @if (tier.featured) {
-                <span class="badge" style="background: var(--brand); color: #0f172a;">Recommended</span>
-              }
-            </div>
-            <div class="tier-price mb-2">{{ tier.price }} <small>{{ tier.period }}</small></div>
-            <ul class="list-unstyled small text-body-secondary mb-3">
-              @for (f of tier.features; track f.text) {
-                <li>{{ f.included ? '✅' : '❌' }} {{ f.text }}</li>
-              }
-              <li class="mt-1 text-muted">{{ tier.limit }}</li>
-            </ul>
-            @if (tier.cta) {
-              <a
-                [href]="tier.cta.href"
-                class="btn btn-sm w-100"
-                [class.btn-primary]="tier.cta.variant === 'primary'"
-                [class.btn-outline-primary]="tier.cta.variant === 'outline'"
-              >
-                <lucide-icon [img]="MailIcon" [size]="14"></lucide-icon>
-                {{ tier.cta.label }}
-              </a>
-            } @else {
-              <span class="badge bg-secondary">No key needed</span>
+      <div class="col-12 col-md-4">
+        <div class="tier-card h-100" [class.featured]="tier.featured">
+          <div class="d-flex align-items-center justify-content-between mb-1">
+            <div class="fw-bold">{{ tier.name }}</div>
+            @if (tier.featured) {
+            <span class="badge" style="background:var(--brand);color:#0f172a">Recommended</span>
             }
           </div>
+          <div class="tier-price mb-2">
+            {{ tier.price }} <small>{{ tier.period }}</small>
+          </div>
+          <ul class="list-unstyled small text-body-secondary mb-3 flex-grow-1">
+            @for (f of tier.features; track f.text) {
+            <li>{{ f.included ? '✅' : '❌' }} {{ f.text }}</li>
+            }
+            <li class="mt-2 text-muted" style="font-size:.78rem">{{ tier.limit }}</li>
+          </ul>
+          @if (tier.cta) {
+          <a [href]="tier.cta.href"
+             class="btn btn-sm w-100 mt-auto d-inline-flex align-items-center justify-content-center gap-1"
+             [class.btn-primary]="tier.cta.variant === 'primary'"
+             [class.btn-outline-primary]="tier.cta.variant === 'outline'">
+            <lucide-icon [img]="MailIcon" [size]="14"></lucide-icon>
+            {{ tier.cta.label }}
+          </a>
+          } @else {
+          <span class="badge bg-secondary mt-auto">No key needed</span>
+          }
         </div>
+      </div>
       }
     </div>
-
-    <!-- API Key note -->
     <div class="alert alert-light border mt-3 small mb-0">
       <strong>Using an API key:</strong>
-      Add header <code>x-api-key: sk_pro_...</code> to every request.<br>
-      Keys are issued manually — just request one via email, response within 24h.
+      Add header <code>x-api-key: sk_pro_...</code> to every request.
+      Keys are issued manually — request via email, response within 24h.
     </div>
   </div>
 
-  <!-- GS1 Generator -->
-  <h2 class="h5 fw-bold mb-3">Generator — Live Preview</h2>
+
+  <!-- ── Tool Tabs ────────────────────────────────────── -->
+  <h2 class="h5 fw-bold mb-3">Generator</h2>
+
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <button type="button" class="nav-link"
+              [class.active]="activeTab === 'single'"
+              (click)="activeTab = 'single'">
+        Single Barcode
+      </button>
+    </li>
+    <li class="nav-item">
+      <button type="button" class="nav-link d-inline-flex align-items-center gap-1"
+              [class.active]="activeTab === 'batch'"
+              (click)="activeTab = 'batch'">
+        Batch
+        <span class="badge ms-1" style="font-size:.65rem;background:var(--brand);color:#0f172a">Pro</span>
+      </button>
+    </li>
+    <li class="nav-item">
+      <button type="button" class="nav-link d-inline-flex align-items-center gap-1"
+              [class.active]="activeTab === 'digitallink'"
+              (click)="activeTab = 'digitallink'">
+        Digital Link
+        <span class="badge ms-1" style="font-size:.65rem;background:var(--brand);color:#0f172a">Pro</span>
+      </button>
+    </li>
+  </ul>
+
+
+  <!-- ══ TAB: Single Barcode ══════════════════════════════ -->
+  @if (activeTab === 'single') {
   <app-barcode-gs1-editor-item></app-barcode-gs1-editor-item>
+  }
+
+
+  <!-- ══ TAB: Batch ═══════════════════════════════════════ -->
+  @if (activeTab === 'batch') {
+  <div class="card rounded-card">
+    <div class="card-body">
+      <h3 class="h6 fw-semibold mb-3">
+        Batch Generation
+        <span class="text-body-secondary fw-normal ms-1 small">— up to 100 barcodes per request</span>
+      </h3>
+
+      <form [formGroup]="batchForm" (ngSubmit)="runBatch()">
+        <div class="row g-3 mb-3">
+          <div class="col-auto">
+            <label class="form-label small fw-semibold">Symbology</label>
+            <select class="form-select form-select-sm" formControlName="symbology">
+              <option value="gs1-128">GS1-128</option>
+              <option value="gs1datamatrix">GS1 DataMatrix</option>
+            </select>
+          </div>
+          <div class="col-auto">
+            <label class="form-label small fw-semibold">Format</label>
+            <select class="form-select form-select-sm" formControlName="format">
+              <option value="png">PNG</option>
+              <option value="svg">SVG</option>
+            </select>
+          </div>
+          <div class="col-auto d-flex align-items-end pb-1">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox"
+                     formControlName="includetext" id="batchIncludetext">
+              <label class="form-check-label small" for="batchIncludetext">Show text</label>
+            </div>
+          </div>
+        </div>
+
+        <div formArrayName="barcodes" class="d-flex flex-column gap-2 mb-3">
+          @for (row of barcodeRows.controls; track $index) {
+          <div [formGroupName]="$index"
+               class="d-flex align-items-center gap-2 p-2 border rounded flex-wrap"
+               style="background:var(--surface-2,#f8fafc)">
+            <input class="form-control form-control-sm" style="max-width:90px"
+                   formControlName="ref" placeholder="Ref (opt.)" />
+            <div class="d-flex align-items-center gap-1">
+              <span class="badge bg-dark" style="font-size:.65rem">AI 01</span>
+              <input class="form-control form-control-sm" style="max-width:160px"
+                     formControlName="ai01" placeholder="GTIN (14 digits)" />
+            </div>
+            <div class="d-flex align-items-center gap-1">
+              <span class="badge bg-secondary" style="font-size:.65rem">AI 17</span>
+              <input class="form-control form-control-sm" style="max-width:100px"
+                     formControlName="ai17" placeholder="YYMMDD (opt.)" />
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger ms-auto flex-shrink-0"
+                    [disabled]="barcodeRows.length === 1"
+                    (click)="removeBarcodeRow($index)">
+              <lucide-icon [img]="Trash2Icon" [size]="14"></lucide-icon>
+            </button>
+          </div>
+          }
+        </div>
+
+        <div class="d-flex gap-2 mb-4">
+          <button type="button" class="btn btn-sm btn-outline-secondary" (click)="addBarcodeRow()">
+            <lucide-icon [img]="PlusIcon" [size]="14"></lucide-icon>
+            Add row
+          </button>
+          <button type="submit" class="btn btn-sm btn-primary"
+                  [disabled]="batchForm.invalid || batchLoading">
+            @if (batchLoading) {
+            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+            Running…
+            } @else {
+            Run Batch
+            }
+          </button>
+        </div>
+      </form>
+
+      @if (batchError) {
+      <div class="alert alert-danger small py-2">{{ batchError }}</div>
+      }
+
+      @if (batchResults.length > 0) {
+      <h4 class="h6 mb-3">
+        Results
+        <span class="text-body-secondary fw-normal ms-1 small">({{ batchResults.length }} items)</span>
+      </h4>
+      <div class="row g-3">
+        @for (item of batchResults; track item.index) {
+        <div class="col-6 col-sm-4 col-md-3">
+          <div class="border rounded p-2 text-center h-100 d-flex flex-column align-items-center gap-1"
+               style="background:var(--surface-2,#f8fafc)">
+            @if (item.error) {
+            <div class="text-danger small">{{ item.error }}</div>
+            } @else if (item.data && item.mimeType === 'image/png') {
+            <img [src]="'data:image/png;base64,' + item.data"
+                 [alt]="item.ref ?? 'Barcode ' + item.index"
+                 class="img-fluid" style="max-height:80px" />
+            <div class="small text-body-secondary text-truncate w-100">
+              {{ item.ref ?? '#' + item.index }}
+            </div>
+            <button class="btn btn-outline-secondary btn-sm mt-auto"
+                    style="font-size:.72rem;padding:.15rem .5rem"
+                    (click)="downloadBatchItem(item, 'png')">
+              Download PNG
+            </button>
+            } @else if (item.data) {
+            <div class="small text-body-secondary">SVG ready</div>
+            <div class="small text-truncate w-100">{{ item.ref ?? '#' + item.index }}</div>
+            <button class="btn btn-outline-secondary btn-sm mt-auto"
+                    style="font-size:.72rem;padding:.15rem .5rem"
+                    (click)="downloadBatchItem(item, 'svg')">
+              Download SVG
+            </button>
+            }
+          </div>
+        </div>
+        }
+      </div>
+      }
+
+    </div>
+  </div>
+  }
+
+
+  <!-- ══ TAB: Digital Link ════════════════════════════════ -->
+  @if (activeTab === 'digitallink') {
+  <div class="card rounded-card">
+    <div class="card-body">
+      <h3 class="h6 fw-semibold mb-1">GS1 Digital Link</h3>
+      <p class="text-body-secondary small mb-3">
+        Convert AI items ↔ GS1 Digital Link URL
+        (e.g. <code>https://id.example.com/01/09506000134376/17/251231</code>).
+      </p>
+
+      <ul class="nav nav-pills mb-3">
+        <li class="nav-item">
+          <button type="button" class="nav-link py-1 px-3 small"
+                  [class.active]="dlTab === 'encode'"
+                  (click)="dlTab = 'encode'">Encode → URL</button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="nav-link py-1 px-3 small"
+                  [class.active]="dlTab === 'decode'"
+                  (click)="dlTab = 'decode'">Decode → AIs</button>
+        </li>
+      </ul>
+
+      @if (dlTab === 'encode') {
+      <form [formGroup]="encodeForm" (ngSubmit)="runEncode()">
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label small fw-semibold">Base URL</label>
+            <input class="form-control form-control-sm" formControlName="baseUrl"
+                   placeholder="https://id.example.com" />
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label small fw-semibold">
+              AI 01 <span class="text-danger">*</span>
+            </label>
+            <input class="form-control form-control-sm" formControlName="ai01"
+                   placeholder="GTIN (14 digits)" />
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label small fw-semibold">AI 17 <span class="text-muted">(opt.)</span></label>
+            <input class="form-control form-control-sm" formControlName="ai17" placeholder="YYMMDD" />
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label small fw-semibold">AI 10 <span class="text-muted">(opt.)</span></label>
+            <input class="form-control form-control-sm" formControlName="ai10" placeholder="Batch/Lot" />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-sm btn-primary"
+                [disabled]="encodeForm.invalid || encodeLoading">
+          @if (encodeLoading) {
+          <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+          }
+          Encode
+        </button>
+      </form>
+
+      @if (encodeError) {
+      <div class="alert alert-danger small py-2 mt-3">{{ encodeError }}</div>
+      }
+      @if (encodeResult) {
+      <div class="mt-3 p-3 border rounded" style="background:var(--surface-2,#f8fafc)">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="small fw-semibold">Digital Link URL</span>
+          <button class="btn btn-outline-secondary btn-sm"
+                  style="font-size:.72rem;padding:.15rem .6rem"
+                  (click)="copy(encodeResult.url)">Copy</button>
+        </div>
+        <code class="d-block text-break small mb-3"
+              style="background:var(--surface);padding:.5rem .75rem;border-radius:var(--radius-sm);border:1px solid var(--border)">
+          {{ encodeResult.url }}
+        </code>
+        <div class="d-flex flex-wrap gap-3 small text-body-secondary">
+          <span>Primary AI: <strong class="text-body">{{ encodeResult.primaryAi }}</strong></span>
+          <span>Value: <strong class="text-body">{{ encodeResult.primaryValue }}</strong></span>
+          @if (encodeResult.qualifiers.length) {
+          <span>
+            Qualifiers:
+            @for (q of encodeResult.qualifiers; track q.ai) {
+            <code class="ms-1">{{ q.ai }}={{ q.value }}</code>
+            }
+          </span>
+          }
+        </div>
+      </div>
+      }
+      }
+
+      @if (dlTab === 'decode') {
+      <form [formGroup]="decodeForm" (ngSubmit)="runDecode()">
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">
+            GS1 Digital Link URL <span class="text-danger">*</span>
+          </label>
+          <input class="form-control form-control-sm" formControlName="url"
+                 placeholder="https://id.example.com/01/09506000134376/17/251231" />
+        </div>
+        <button type="submit" class="btn btn-sm btn-primary"
+                [disabled]="decodeForm.invalid || decodeLoading">
+          @if (decodeLoading) {
+          <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+          }
+          Decode
+        </button>
+      </form>
+
+      @if (decodeError) {
+      <div class="alert alert-danger small py-2 mt-3">{{ decodeError }}</div>
+      }
+      @if (decodeResult) {
+      <div class="mt-3">
+        <div class="small fw-semibold mb-2">
+          Extracted AIs
+          <span class="text-body-secondary fw-normal">({{ decodeResult.length }})</span>
+        </div>
+        <div class="d-flex flex-column gap-1">
+          @for (item of decodeResult; track item.ai) {
+          <div class="d-flex align-items-center gap-2 p-2 border rounded"
+               style="background:var(--surface-2,#f8fafc);font-size:.85rem">
+            <span class="badge bg-dark" style="font-size:.7rem;min-width:36px">{{ item.ai }}</span>
+            <code class="flex-grow-1">{{ item.value }}</code>
+          </div>
+          }
+        </div>
+      </div>
+      }
+      }
+
+    </div>
+  </div>
+  }
 
 </div>
