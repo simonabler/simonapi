@@ -11,12 +11,11 @@
     <span class="badge text-bg-secondary">gs1</span>
   </div>
 
-
   <!-- ── Subscription Tiers ───────────────────────────── -->
   <div class="mb-5">
     <h2 class="h5 fw-bold mb-1">Subscription</h2>
     <p class="text-body-secondary small mb-3">
-      Standard barcodes are free. GS1-128, DataMatrix and batch generation require an API key.
+      Standard barcodes are free. GS1-128, DataMatrix, SSCC and batch generation require an API key.
     </p>
     <div class="row g-3">
       @for (tier of tiers; track tier.key) {
@@ -28,9 +27,7 @@
             <span class="badge" style="background:var(--brand);color:#0f172a">Recommended</span>
             }
           </div>
-          <div class="tier-price mb-2">
-            {{ tier.price }} <small>{{ tier.period }}</small>
-          </div>
+          <div class="tier-price mb-2">{{ tier.price }} <small>{{ tier.period }}</small></div>
           <ul class="list-unstyled small text-body-secondary mb-3 flex-grow-1">
             @for (f of tier.features; track f.text) {
             <li>{{ f.included ? '✅' : '❌' }} {{ f.text }}</li>
@@ -59,7 +56,6 @@
     </div>
   </div>
 
-
   <!-- ── Tool Tabs ────────────────────────────────────── -->
   <h2 class="h5 fw-bold mb-3">Generator</h2>
 
@@ -87,14 +83,20 @@
         <span class="badge ms-1" style="font-size:.65rem;background:var(--brand);color:#0f172a">Pro</span>
       </button>
     </li>
+    <li class="nav-item">
+      <button type="button" class="nav-link d-inline-flex align-items-center gap-1"
+              [class.active]="activeTab === 'sscc'"
+              (click)="activeTab = 'sscc'">
+        SSCC
+        <span class="badge ms-1" style="font-size:.65rem;background:var(--brand);color:#0f172a">Pro</span>
+      </button>
+    </li>
   </ul>
-
 
   <!-- ══ TAB: Single Barcode ══════════════════════════════ -->
   @if (activeTab === 'single') {
   <app-barcode-gs1-editor-item></app-barcode-gs1-editor-item>
   }
-
 
   <!-- ══ TAB: Batch ═══════════════════════════════════════ -->
   @if (activeTab === 'batch') {
@@ -104,7 +106,6 @@
         Batch Generation
         <span class="text-body-secondary fw-normal ms-1 small">— up to 100 barcodes per request</span>
       </h3>
-
       <form [formGroup]="batchForm" (ngSubmit)="runBatch()">
         <div class="row g-3 mb-3">
           <div class="col-auto">
@@ -129,7 +130,6 @@
             </div>
           </div>
         </div>
-
         <div formArrayName="barcodes" class="d-flex flex-column gap-2 mb-3">
           @for (row of barcodeRows.controls; track $index) {
           <div [formGroupName]="$index"
@@ -155,7 +155,6 @@
           </div>
           }
         </div>
-
         <div class="d-flex gap-2 mb-4">
           <button type="button" class="btn btn-sm btn-outline-secondary" (click)="addBarcodeRow()">
             <lucide-icon [img]="PlusIcon" [size]="14"></lucide-icon>
@@ -166,22 +165,15 @@
             @if (batchLoading) {
             <span class="spinner-border spinner-border-sm me-1" role="status"></span>
             Running…
-            } @else {
-            Run Batch
-            }
+            } @else { Run Batch }
           </button>
         </div>
       </form>
-
       @if (batchError) {
       <div class="alert alert-danger small py-2">{{ batchError }}</div>
       }
-
       @if (batchResults.length > 0) {
-      <h4 class="h6 mb-3">
-        Results
-        <span class="text-body-secondary fw-normal ms-1 small">({{ batchResults.length }} items)</span>
-      </h4>
+      <h4 class="h6 mb-3">Results <span class="text-body-secondary fw-normal ms-1 small">({{ batchResults.length }} items)</span></h4>
       <div class="row g-3">
         @for (item of batchResults; track item.index) {
         <div class="col-6 col-sm-4 col-md-3">
@@ -193,33 +185,23 @@
             <img [src]="'data:image/png;base64,' + item.data"
                  [alt]="item.ref ?? 'Barcode ' + item.index"
                  class="img-fluid" style="max-height:80px" />
-            <div class="small text-body-secondary text-truncate w-100">
-              {{ item.ref ?? '#' + item.index }}
-            </div>
-            <button class="btn btn-outline-secondary btn-sm mt-auto"
-                    style="font-size:.72rem;padding:.15rem .5rem"
-                    (click)="downloadBatchItem(item, 'png')">
-              Download PNG
-            </button>
+            <div class="small text-body-secondary text-truncate w-100">{{ item.ref ?? '#' + item.index }}</div>
+            <button class="btn btn-outline-secondary btn-sm mt-auto" style="font-size:.72rem;padding:.15rem .5rem"
+                    (click)="downloadBatchItem(item, 'png')">Download PNG</button>
             } @else if (item.data) {
             <div class="small text-body-secondary">SVG ready</div>
             <div class="small text-truncate w-100">{{ item.ref ?? '#' + item.index }}</div>
-            <button class="btn btn-outline-secondary btn-sm mt-auto"
-                    style="font-size:.72rem;padding:.15rem .5rem"
-                    (click)="downloadBatchItem(item, 'svg')">
-              Download SVG
-            </button>
+            <button class="btn btn-outline-secondary btn-sm mt-auto" style="font-size:.72rem;padding:.15rem .5rem"
+                    (click)="downloadBatchItem(item, 'svg')">Download SVG</button>
             }
           </div>
         </div>
         }
       </div>
       }
-
     </div>
   </div>
   }
-
 
   <!-- ══ TAB: Digital Link ════════════════════════════════ -->
   @if (activeTab === 'digitallink') {
@@ -230,20 +212,16 @@
         Convert AI items ↔ GS1 Digital Link URL
         (e.g. <code>https://id.example.com/01/09506000134376/17/251231</code>).
       </p>
-
       <ul class="nav nav-pills mb-3">
         <li class="nav-item">
           <button type="button" class="nav-link py-1 px-3 small"
-                  [class.active]="dlTab === 'encode'"
-                  (click)="dlTab = 'encode'">Encode → URL</button>
+                  [class.active]="dlTab === 'encode'" (click)="dlTab = 'encode'">Encode → URL</button>
         </li>
         <li class="nav-item">
           <button type="button" class="nav-link py-1 px-3 small"
-                  [class.active]="dlTab === 'decode'"
-                  (click)="dlTab = 'decode'">Decode → AIs</button>
+                  [class.active]="dlTab === 'decode'" (click)="dlTab = 'decode'">Decode → AIs</button>
         </li>
       </ul>
-
       @if (dlTab === 'encode') {
       <form [formGroup]="encodeForm" (ngSubmit)="runEncode()">
         <div class="row g-3 mb-3">
@@ -253,11 +231,8 @@
                    placeholder="https://id.example.com" />
           </div>
           <div class="col-6 col-md-3">
-            <label class="form-label small fw-semibold">
-              AI 01 <span class="text-danger">*</span>
-            </label>
-            <input class="form-control form-control-sm" formControlName="ai01"
-                   placeholder="GTIN (14 digits)" />
+            <label class="form-label small fw-semibold">AI 01 <span class="text-danger">*</span></label>
+            <input class="form-control form-control-sm" formControlName="ai01" placeholder="GTIN (14 digits)" />
           </div>
           <div class="col-6 col-md-3">
             <label class="form-label small fw-semibold">AI 17 <span class="text-muted">(opt.)</span></label>
@@ -268,24 +243,17 @@
             <input class="form-control form-control-sm" formControlName="ai10" placeholder="Batch/Lot" />
           </div>
         </div>
-        <button type="submit" class="btn btn-sm btn-primary"
-                [disabled]="encodeForm.invalid || encodeLoading">
-          @if (encodeLoading) {
-          <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-          }
+        <button type="submit" class="btn btn-sm btn-primary" [disabled]="encodeForm.invalid || encodeLoading">
+          @if (encodeLoading) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
           Encode
         </button>
       </form>
-
-      @if (encodeError) {
-      <div class="alert alert-danger small py-2 mt-3">{{ encodeError }}</div>
-      }
+      @if (encodeError) { <div class="alert alert-danger small py-2 mt-3">{{ encodeError }}</div> }
       @if (encodeResult) {
       <div class="mt-3 p-3 border rounded" style="background:var(--surface-2,#f8fafc)">
         <div class="d-flex align-items-center justify-content-between mb-2">
           <span class="small fw-semibold">Digital Link URL</span>
-          <button class="btn btn-outline-secondary btn-sm"
-                  style="font-size:.72rem;padding:.15rem .6rem"
+          <button class="btn btn-outline-secondary btn-sm" style="font-size:.72rem;padding:.15rem .6rem"
                   (click)="copy(encodeResult.url)">Copy</button>
         </div>
         <code class="d-block text-break small mb-3"
@@ -296,45 +264,28 @@
           <span>Primary AI: <strong class="text-body">{{ encodeResult.primaryAi }}</strong></span>
           <span>Value: <strong class="text-body">{{ encodeResult.primaryValue }}</strong></span>
           @if (encodeResult.qualifiers.length) {
-          <span>
-            Qualifiers:
-            @for (q of encodeResult.qualifiers; track q.ai) {
-            <code class="ms-1">{{ q.ai }}={{ q.value }}</code>
-            }
-          </span>
+          <span>Qualifiers: @for (q of encodeResult.qualifiers; track q.ai) { <code class="ms-1">{{ q.ai }}={{ q.value }}</code> }</span>
           }
         </div>
       </div>
       }
       }
-
       @if (dlTab === 'decode') {
       <form [formGroup]="decodeForm" (ngSubmit)="runDecode()">
         <div class="mb-3">
-          <label class="form-label small fw-semibold">
-            GS1 Digital Link URL <span class="text-danger">*</span>
-          </label>
+          <label class="form-label small fw-semibold">GS1 Digital Link URL <span class="text-danger">*</span></label>
           <input class="form-control form-control-sm" formControlName="url"
                  placeholder="https://id.example.com/01/09506000134376/17/251231" />
         </div>
-        <button type="submit" class="btn btn-sm btn-primary"
-                [disabled]="decodeForm.invalid || decodeLoading">
-          @if (decodeLoading) {
-          <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-          }
+        <button type="submit" class="btn btn-sm btn-primary" [disabled]="decodeForm.invalid || decodeLoading">
+          @if (decodeLoading) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
           Decode
         </button>
       </form>
-
-      @if (decodeError) {
-      <div class="alert alert-danger small py-2 mt-3">{{ decodeError }}</div>
-      }
+      @if (decodeError) { <div class="alert alert-danger small py-2 mt-3">{{ decodeError }}</div> }
       @if (decodeResult) {
       <div class="mt-3">
-        <div class="small fw-semibold mb-2">
-          Extracted AIs
-          <span class="text-body-secondary fw-normal">({{ decodeResult.length }})</span>
-        </div>
+        <div class="small fw-semibold mb-2">Extracted AIs <span class="text-body-secondary fw-normal">({{ decodeResult.length }})</span></div>
         <div class="d-flex flex-column gap-1">
           @for (item of decodeResult; track item.ai) {
           <div class="d-flex align-items-center gap-2 p-2 border rounded"
@@ -347,9 +298,13 @@
       </div>
       }
       }
-
     </div>
   </div>
+  }
+
+  <!-- ══ TAB: SSCC ════════════════════════════════════════ -->
+  @if (activeTab === 'sscc') {
+  <app-sscc-generator></app-sscc-generator>
   }
 
 </div>

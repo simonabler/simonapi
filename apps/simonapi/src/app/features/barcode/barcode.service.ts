@@ -12,6 +12,12 @@ import {
   Gs1BatchResultItem,
   Gs1Item,
   Gs1Request,
+  SsccBuildRequest,
+  SsccAutoRequest,
+  SsccValidateRequest,
+  SsccValidateResult,
+  SsccPrefixInfo,
+  SsccCounterState,
 } from './models';
 import { isPlatformBrowser } from '@angular/common';
 
@@ -134,5 +140,35 @@ export class BarcodeService {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  // ---------------------------------------------------------------------------
+  // SSCC
+  // ---------------------------------------------------------------------------
+
+  ssccBuild$(req: SsccBuildRequest): Observable<Blob> {
+    return this.http.post(`${this.API}/barcode/sscc/build`, req, { responseType: 'blob' });
+  }
+
+  ssccAuto$(req: SsccAutoRequest): Observable<Blob> {
+    return this.http.post(`${this.API}/barcode/sscc/auto`, req, { responseType: 'blob' });
+  }
+
+  ssccValidate$(req: SsccValidateRequest): Observable<SsccValidateResult> {
+    return this.http.post<SsccValidateResult>(`${this.API}/barcode/sscc/validate`, req);
+  }
+
+  ssccRender$(sscc: string, format: 'png' | 'svg' = 'png'): Observable<Blob> {
+    return this.http.post(`${this.API}/barcode/sscc/render`, { sscc, format }, { responseType: 'blob' });
+  }
+
+  ssccPrefixInfo$(prefix: string): Observable<SsccPrefixInfo> {
+    return this.http.get<SsccPrefixInfo>(`${this.API}/barcode/sscc/prefix-info`, { params: { prefix } });
+  }
+
+  ssccCounter$(extensionDigit: number, companyPrefix: string): Observable<SsccCounterState> {
+    return this.http.get<SsccCounterState>(`${this.API}/barcode/sscc/counter`, {
+      params: { extensionDigit: String(extensionDigit), companyPrefix },
+    });
   }
 }

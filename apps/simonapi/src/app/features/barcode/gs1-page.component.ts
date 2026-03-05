@@ -13,6 +13,7 @@ import {
   Gs1Item,
   DigitalLinkEncodeResult,
 } from './models';
+import { SsccGeneratorComponent } from './sscc-generator.component';
 
 type TierFeature = { text: string; included: boolean };
 type Tier = {
@@ -27,7 +28,7 @@ type Tier = {
   selector: 'app-gs1-page',
   imports: [
     CommonModule, RouterLink, ReactiveFormsModule,
-    LucideAngularModule, BarcodeGs1EditorItemComponent,
+    LucideAngularModule, BarcodeGs1EditorItemComponent, SsccGeneratorComponent,
   ],
   templateUrl: './gs1-page.component.html',
 })
@@ -42,7 +43,7 @@ export class Gs1PageComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
 
   // ── Active Tab ──────────────────────────────────────────
-  activeTab: 'single' | 'batch' | 'digitallink' = 'single';
+  activeTab: 'single' | 'batch' | 'digitallink' | 'sscc' = 'single';
 
   // ── Batch ───────────────────────────────────────────────
   batchForm = this.fb.group({

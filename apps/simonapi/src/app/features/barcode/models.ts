@@ -242,3 +242,36 @@ export function validateCombination(
 
   return null;
 }
+
+// ---------------------------------------------------------------------------
+// SSCC — Serial Shipping Container Code
+// ---------------------------------------------------------------------------
+
+export interface SsccBuildRequest {
+  extensionDigit:  number;
+  companyPrefix:   string;
+  serialReference: string;
+  format?:         'png' | 'svg';
+  includetext?:    boolean;
+  scale?:          number;
+}
+
+export interface SsccAutoRequest {
+  extensionDigit: number;
+  companyPrefix:  string;
+  format?:        'png' | 'svg';
+  includetext?:   boolean;
+  scale?:         number;
+}
+
+export interface SsccValidateRequest  { sscc: string }
+export interface SsccValidateResult   { valid: boolean; checkDigit: number; expected: number; error?: string }
+
+export interface SsccPrefixInfo {
+  valid:               boolean;
+  memberOrganisation?: string;
+  prefix3?:            string;
+  error?:              string;
+}
+
+export interface SsccCounterState { prefixKey: string; lastSerial: number }
