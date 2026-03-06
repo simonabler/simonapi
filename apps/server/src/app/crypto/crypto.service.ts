@@ -181,10 +181,6 @@ export class CryptoService {
   jwtKeypair(dto: JwtKeypairDto) {
     const { algorithm } = dto;
 
-    if (algorithm === 'EdDSA') {
-      const kp = this.ed25519Keypair();
-      return { algorithm, publicKey: kp.publicKey, privateKey: kp.privateKey };
-    }
     if (algorithm === 'RS256') {
       const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
         modulusLength: 2048,
@@ -201,7 +197,7 @@ export class CryptoService {
       });
       return { algorithm, publicKey, privateKey };
     }
-    throw new BadRequestException(`Unsupported algorithm: ${algorithm}`);
+    throw new BadRequestException(`Unsupported algorithm for JWT keypair: ${algorithm}. Supported: RS256, ES256`);
   }
 
   // ---------------------------------------------------------------------------

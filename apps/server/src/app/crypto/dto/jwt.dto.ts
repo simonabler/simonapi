@@ -1,11 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsIn, IsObject, IsOptional, IsString, Length } from 'class-validator';
 
-export type JwtAlgorithm = 'HS256' | 'HS512' | 'RS256' | 'ES256' | 'EdDSA';
-export type AsymmetricAlgorithm = 'RS256' | 'ES256' | 'EdDSA';
+export type JwtAlgorithm = 'HS256' | 'HS512' | 'RS256' | 'ES256';
+export type AsymmetricAlgorithm = 'RS256' | 'ES256';
 
-const ALL_ALGOS: JwtAlgorithm[]        = ['HS256', 'HS512', 'RS256', 'ES256', 'EdDSA'];
-const ASYMMETRIC_ALGOS: AsymmetricAlgorithm[] = ['RS256', 'ES256', 'EdDSA'];
+const ALL_ALGOS: JwtAlgorithm[]        = ['HS256', 'HS512', 'RS256', 'ES256'];
+const ASYMMETRIC_ALGOS: AsymmetricAlgorithm[] = ['RS256', 'ES256'];
 
 export class JwtKeypairDto {
   @ApiProperty({ enum: ASYMMETRIC_ALGOS, example: 'RS256' })
