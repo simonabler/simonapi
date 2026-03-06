@@ -48,6 +48,11 @@ export const appRoutes: Route[] = [
     title: 'API Stats',
   },
   {
+    path: 'crypto',
+    loadComponent: () => import('./features/crypto/crypto-page.component').then(c => c.CryptoPageComponent),
+    title: 'Crypto API — TOTP / Hash / JWT',
+  },
+  {
     path: 'impressum',
     loadComponent: () => import('./features/legal/impressum.component').then(c => c.ImpressumComponent),
     title: 'Legal Notice',

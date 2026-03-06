@@ -81,7 +81,11 @@ export class UtilityController {
   * Hashing
   */
   @Post('hash')
-  @ApiOperation({ summary: 'Hashing-Service – md5 / sha256 / bcrypt' })
+  @ApiOperation({
+    summary: 'Hashing-Service – md5 / sha256 / bcrypt',
+    deprecated: true,
+    description: '**Deprecated.** Use `POST /api/crypto/hash` instead — same response format plus SHA-512 support.',
+  })
   @ApiQuery({ name: 'algo', required: false, description: 'Hash-Algorithmus', enum: ['md5', 'sha256', 'bcrypt'], example: 'sha256' })
   @ApiBody({
     description: 'Zu hashende Daten (für bcrypt optional saltRounds)',

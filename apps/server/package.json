@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "jsonwebtoken": "^9.0.3",
+    "otplib": "^13.3.0"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10"
+  }
+}

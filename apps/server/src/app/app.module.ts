@@ -18,6 +18,7 @@ import { LockModule } from './lock/lock.module';
 import databaseConfig from './config/database.config';
 import throttlerConfig from './config/throttler.config';
 import { MetricsModule } from './metrics/metrics.module';
+import { CryptoModule } from './crypto/crypto.module';
 
 @Module({
   imports: [
@@ -85,6 +86,7 @@ import { MetricsModule } from './metrics/metrics.module';
     }),
     QrModule,
     BarcodesModule,
+    CryptoModule,
     SignpackModule,
     WatermarkModule,
     UtilityModule,
