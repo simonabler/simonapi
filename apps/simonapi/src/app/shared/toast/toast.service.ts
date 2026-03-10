@@ -27,6 +27,6 @@ export class ToastService {
 
   rateLimitExceeded(retryAfter?: number): void {
     const retry = retryAfter ? ` Try again in ${retryAfter}s.` : '';
-    this.show('warning', 'Rate limit erreicht', `Zu viele Anfragen.${retry}`, 7000);
+    this.show('warning', 'Rate limit exceeded', `Too many requests.${retry}`, 7000);
   }
 }
