@@ -12,6 +12,13 @@ import { matchRule, normalizePath, nowMinuteWindow, todayStr } from './usage.uti
 
 export const USAGE_OPTS = 'USAGE_OPTS';
 
+/** How often to run the stale-entry sweep (ms). Default: every 5 minutes. */
+const SWEEP_INTERVAL_MS = 5 * 60 * 1_000;
+/** Evict minute-buckets older than this (ms). 2 full windows = safe margin. */
+const MINUTE_BUCKET_TTL_MS = 2 * 60 * 1_000;
+/** Evict day-buckets older than this many days. */
+const DAY_BUCKET_KEEP_DAYS = 2;
+
 @Injectable()
 export class UsageService {
   private options: UsageModuleOptions = {};
@@ -20,9 +27,60 @@ export class UsageService {
   private routeStats = new Map<string, RouteStats>(); // key: path
   private keys = new Set<string>();
   private startedAt = new Date();
+  private sweepTimer: ReturnType<typeof setInterval> | null = null;
 
   constructor(@Optional() @Inject(USAGE_OPTS) opts?: UsageModuleOptions) {
     this.configure(opts || {});
+    this.startSweep();
+  }
+
+  /** Start the periodic stale-entry sweep. Safe to call multiple times. */
+  private startSweep(): void {
+    if (this.sweepTimer) return;
+    this.sweepTimer = setInterval(() => this.sweepStale(), SWEEP_INTERVAL_MS);
+    // Don't keep Node process alive just for the sweep
+    if (this.sweepTimer.unref) this.sweepTimer.unref();
+  }
+
+  /**
+   * Remove stale map entries to prevent unbounded heap growth.
+   *
+   * minuteCounters: evict any bucket whose windowStart is older than
+   *   MINUTE_BUCKET_TTL_MS (2 minutes). These entries will never be used
+   *   again — new requests start a fresh bucket for the current window.
+   *
+   * dayCounters: evict entries for days older than DAY_BUCKET_KEEP_DAYS.
+   *   Only today's and yesterday's buckets are ever read.
+   */
+  sweepStale(now = Date.now()): { minuteEvicted: number; dayEvicted: number } {
+    const cutoffMinute = now - MINUTE_BUCKET_TTL_MS;
+    const cutoffDay = todayStr(new Date(now - DAY_BUCKET_KEEP_DAYS * 86_400_000));
+
+    let minuteEvicted = 0;
+    for (const [k, bucket] of this.minuteCounters) {
+      if (bucket.windowStart < cutoffMinute) {
+        this.minuteCounters.delete(k);
+        minuteEvicted++;
+      }
+    }
+
+    let dayEvicted = 0;
+    for (const [k, bucket] of this.dayCounters) {
+      if (bucket.day < cutoffDay) {
+        this.dayCounters.delete(k);
+        dayEvicted++;
+      }
+    }
+
+    return { minuteEvicted, dayEvicted };
+  }
+
+  /** Stop the sweep timer (called in tests / on shutdown). */
+  stopSweep(): void {
+    if (this.sweepTimer) {
+      clearInterval(this.sweepTimer);
+      this.sweepTimer = null;
+    }
   }
 
   configure(opts: UsageModuleOptions) {

@@ -448,3 +448,65 @@ describe('UsageService — overrideRule per-request (no global configure mutatio
     expect(snap.rules.defaultRule?.perMinute).toBe(2);
   });
 });
+
+// ── UsageService.sweepStale — memory leak prevention ─────────────────────────
+
+describe('UsageService — sweepStale()', () => {
+  function makeSvc() {
+    const svc = new UsageService({ defaultRule: { perMinute: 100 } });
+    svc.stopSweep(); // disable auto-sweep so tests control timing manually
+    return svc;
+  }
+
+  it('evicts minute-buckets older than 2 minutes', () => {
+    const svc = makeSvc();
+    const now = Date.now();
+    const twoMinutesAgo = now - 2 * 60 * 1_000 - 1;
+
+    // One recent request (current window) and one stale request (old window)
+    svc.checkAndCount('ip-fresh', '/api/test', undefined, now);
+    svc.checkAndCount('ip-stale', '/api/test', undefined, twoMinutesAgo);
+
+    const { minuteEvicted } = svc.sweepStale(now);
+
+    expect(minuteEvicted).toBe(1); // only the stale bucket
+    // Fresh bucket must survive — rate limiting still works
+    expect(svc.checkAndCount('ip-fresh', '/api/test', undefined, now).allowed).toBe(true);
+  });
+
+  it('does not evict recent minute-buckets', () => {
+    const svc = makeSvc();
+    const now = Date.now();
+    svc.checkAndCount('ip-a', '/api/test', undefined, now);
+    svc.checkAndCount('ip-b', '/api/test', undefined, now);
+
+    const { minuteEvicted } = svc.sweepStale(now);
+    expect(minuteEvicted).toBe(0);
+  });
+
+  it('evicts day-buckets older than 2 days', () => {
+    const svc = makeSvc();
+    const now = Date.now();
+    const threeDaysAgo = now - 3 * 86_400_000;
+
+    svc.checkAndCount('ip-old', '/api/test', undefined, threeDaysAgo);
+    svc.checkAndCount('ip-new', '/api/test', undefined, now);
+
+    const { dayEvicted } = svc.sweepStale(now);
+    expect(dayEvicted).toBe(1);
+  });
+
+  it('returns zero counts when nothing is stale', () => {
+    const svc = makeSvc();
+    svc.checkAndCount('ip-x', '/api/test');
+    const result = svc.sweepStale(Date.now());
+    expect(result.minuteEvicted).toBe(0);
+    expect(result.dayEvicted).toBe(0);
+  });
+
+  it('stopSweep() clears the interval without throwing', () => {
+    const svc = new UsageService({ defaultRule: { perMinute: 10 } });
+    expect(() => svc.stopSweep()).not.toThrow();
+    expect(() => svc.stopSweep()).not.toThrow(); // idempotent
+  });
+});
