@@ -354,6 +354,24 @@ export function validateCombinationDetailed(
         };
       }
     }
+
+    // requiresGroups: each group is a list of AIs of which at least one must
+    // be present. This was present in the old validateCombination() but was
+    // accidentally dropped during the structured-error refactor.
+    if (spec.requiresGroups?.length) {
+      for (const group of spec.requiresGroups) {
+        const ok = group.some(a => (counts.get(a) ?? 0) > 0);
+        if (!ok) {
+          const groupLabels = group.map(a => `${a}${db[a] ? ` (${db[a].label})` : ''}`).join(', ');
+          return {
+            type: 'missingRequired',
+            message: `AI ${ai} (${spec.label}) requires at least one from group: ${groupLabels}`,
+            affectedAis: [ai],
+            suggestion: `Add one of: ${group.slice(0, 3).join(', ')}${group.length > 3 ? '…' : ''}`,
+          };
+        }
+      }
+    }
   }
 
   // ── Global structural rules ───────────────────────────────────────────────
