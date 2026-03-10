@@ -17,6 +17,7 @@ import databaseConfig from './config/database.config';
 import { MetricsModule } from './metrics/metrics.module';
 import { CryptoModule } from './crypto/crypto.module';
 import { ApiKeyModule } from './api-key/api-key.module';
+import { UsageModule } from './usage/usage.module';
 
 @Module({
   imports: [
@@ -82,6 +83,16 @@ import { ApiKeyModule } from './api-key/api-key.module';
     LockModule,
     MetricsModule,
     ApiKeyModule,
+    // Rate limiting — applies to every request via APP_INTERCEPTOR.
+    // Anonymous callers (no valid API key) get the defaultRule.
+    // Authenticated callers get TIER_LIMITS from ApiKeyService (applied
+    // per-request in UsageInterceptor via overrideRule — no global mutation).
+    UsageModule.forRoot({
+      adminToken: process.env.ADMIN_TOKEN,
+      defaultRule: {
+        perMinute: 10,   // anonymous / free tier fallback
+      },
+    }),
   ],
   controllers: [AppController, ReportsController],
   providers: [AppService],
