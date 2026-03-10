@@ -17,6 +17,7 @@ import {
   ApiOperation,
   ApiProduces,
   ApiResponse,
+  ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -183,6 +184,7 @@ export class BarcodesController {
   @Post('gs1/batch')
   @UseGuards(ApiKeyGuard)
   @RequiresTier('pro')
+  @ApiSecurity('x-api-key')
   @ApiOperation({
     summary: 'Batch-render up to 100 GS1 barcodes in a single request',
     description:
@@ -226,6 +228,7 @@ export class BarcodesController {
   @Post('gs1/digital-link/encode')
   @UseGuards(ApiKeyGuard)
   @TierRateLimit()
+  @ApiSecurity('x-api-key')
   @ApiOperation({
     summary: 'Convert GS1 AI items to a GS1 Digital Link URL',
     description:
@@ -271,6 +274,7 @@ export class BarcodesController {
   @Post('gs1/digital-link/decode')
   @UseGuards(ApiKeyGuard)
   @TierRateLimit()
+  @ApiSecurity('x-api-key')
   @ApiOperation({
     summary: 'Parse a GS1 Digital Link URL into AI items',
     description:
@@ -311,6 +315,7 @@ export class BarcodesController {
   @Post('sscc/build')
   @UseGuards(ApiKeyGuard)
   @TierRateLimit()
+  @ApiSecurity('x-api-key')
   @ApiOperation({
     summary: 'Build SSCC from components and render as GS1-128 barcode',
     description:
@@ -359,6 +364,7 @@ export class BarcodesController {
   @Post('sscc/auto')
   @UseGuards(ApiKeyGuard)
   @TierRateLimit()
+  @ApiSecurity('x-api-key')
   @ApiOperation({
     summary: 'Auto-increment SSCC: allocate next serial for this prefix and render',
     description:

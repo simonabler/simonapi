@@ -29,6 +29,20 @@ async function bootstrap() {
     .setDescription('API for standard barcodes and GS1 rendering')
     .setVersion('1.0.0')
     .addServer('https://hub.abler.tirol')
+    .addApiKey(
+      {
+        type: 'apiKey',
+        in: 'header',
+        name: 'x-api-key',
+        description:
+          'API key for authenticated access. ' +
+          'Free tier: no key needed (10 req/min). ' +
+          'Pro (sk_pro_…): 100 req/min · 10k/day. ' +
+          'Industrial (sk_ind_…): 1k req/min. ' +
+          'Request a key at simon@abler.tirol.',
+      },
+      'x-api-key',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {
