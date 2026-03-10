@@ -327,3 +327,68 @@ describe('ApiKeyGuard', () => {
     await expect(g.canActivate(ctx)).rejects.toThrow(UnauthorizedException);
   });
 });
+
+// ── UsageService.checkAndCount — overrideRule (race-condition fix) ────────────
+
+import { UsageService, USAGE_OPTS } from '../usage/usage.service';
+
+describe('UsageService — overrideRule per-request (no global configure mutation)', () => {
+  function makeUsage(defaultPerMinute = 5) {
+    const svc = new UsageService({ defaultRule: { perMinute: defaultPerMinute } });
+    return svc;
+  }
+
+  it('respects overrideRule perMinute instead of global default', () => {
+    const svc = makeUsage(2); // global: 2/min
+    // Override to 5/min — should allow 5 requests
+    for (let i = 0; i < 5; i++) {
+      const r = svc.checkAndCount('key1', '/api/test', { perMinute: 5 });
+      expect(r.allowed).toBe(true);
+    }
+    // 6th should be blocked
+    expect(svc.checkAndCount('key1', '/api/test', { perMinute: 5 }).allowed).toBe(false);
+  });
+
+  it('falls back to global default when overrideRule is undefined', () => {
+    const svc = makeUsage(3);
+    for (let i = 0; i < 3; i++) {
+      expect(svc.checkAndCount('key2', '/api/test', undefined).allowed).toBe(true);
+    }
+    expect(svc.checkAndCount('key2', '/api/test', undefined).allowed).toBe(false);
+  });
+
+  it('different concurrent keys use their own overrideRule independently', () => {
+    const svc = makeUsage(1); // global: 1/min
+
+    // free key gets 1/min (global), pro key gets 10/min (override)
+    expect(svc.checkAndCount('free-key', '/api/test', { perMinute: 1 }).allowed).toBe(true);
+    expect(svc.checkAndCount('free-key', '/api/test', { perMinute: 1 }).allowed).toBe(false);
+
+    // pro key is unaffected by free-key's counter
+    for (let i = 0; i < 10; i++) {
+      expect(svc.checkAndCount('pro-key', '/api/test', { perMinute: 10 }).allowed).toBe(true);
+    }
+    expect(svc.checkAndCount('pro-key', '/api/test', { perMinute: 10 }).allowed).toBe(false);
+  });
+
+  it('overrideRule perDay blocks after daily quota', () => {
+    const svc = makeUsage(1000);
+    for (let i = 0; i < 3; i++) {
+      expect(svc.checkAndCount('key3', '/api/test', { perMinute: 1000, perDay: 3 }).allowed).toBe(true);
+    }
+    expect(svc.checkAndCount('key3', '/api/test', { perMinute: 1000, perDay: 3 }).allowed).toBe(false);
+  });
+
+  it('does NOT mutate global options when overrideRule is passed', () => {
+    const svc = makeUsage(2);
+    // Use override for one key
+    svc.checkAndCount('key-a', '/api/test', { perMinute: 100 });
+    // Another key without override should still see the global limit of 2
+    svc.checkAndCount('key-b', '/api/test');
+    svc.checkAndCount('key-b', '/api/test');
+    expect(svc.checkAndCount('key-b', '/api/test').allowed).toBe(false);
+    // Global options object should be unchanged
+    const snap = svc.snapshot();
+    expect(snap.rules.defaultRule?.perMinute).toBe(2);
+  });
+});

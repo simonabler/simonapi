@@ -4,6 +4,7 @@ import { UsageService } from './usage.service';
 import { RESOLVED_KEY_PROP } from '../api-key/api-key.guard';
 import { ApiKeyTier } from '../api-key/entities/api-key.entity';
 import { TIER_LIMITS } from '../api-key/api-key.service';
+import { PathRule } from './usage.types';
 
 @Injectable()
 export class UsageInterceptor implements NestInterceptor {
@@ -15,7 +16,8 @@ export class UsageInterceptor implements NestInterceptor {
 
     const path = req.originalUrl || req.url;
 
-    // Prefer resolved key from ApiKeyGuard; fall back to raw header or IP
+    // Prefer the resolved key attached by ApiKeyGuard (validated, tier known).
+    // Fall back to the raw header string, then IP, then 'anonymous'.
     const resolved = req[RESOLVED_KEY_PROP] as { id: string; tier: ApiKeyTier } | undefined;
     const rawHeader = req.headers['x-api-key'];
     const key = resolved?.id
@@ -23,18 +25,20 @@ export class UsageInterceptor implements NestInterceptor {
       ?? req.ip
       ?? 'anonymous';
 
-    // Apply tier-specific limits when we have a resolved key
-    if (resolved) {
-      const limits = TIER_LIMITS[resolved.tier];
-      this.usage.configure({
-        defaultRule: {
-          perMinute: limits.perMinute,
-          ...(limits.perDay != null ? { perDay: limits.perDay } : {}),
-        },
-      });
-    }
+    // Build a per-request override rule from the resolved tier.
+    // This is passed directly into checkAndCount() so we never mutate the
+    // shared UsageService.options singleton — which would race under concurrent
+    // requests from different tiers.
+    const overrideRule: PathRule | undefined = resolved
+      ? {
+          perMinute: TIER_LIMITS[resolved.tier].perMinute,
+          ...(TIER_LIMITS[resolved.tier].perDay != null
+            ? { perDay: TIER_LIMITS[resolved.tier].perDay! }
+            : {}),
+        }
+      : undefined;
 
-    const check = this.usage.checkAndCount(key, path);
+    const check = this.usage.checkAndCount(key, path, overrideRule);
     if (!check.allowed) {
       throw new HttpException(
         {
@@ -48,7 +52,7 @@ export class UsageInterceptor implements NestInterceptor {
       );
     }
 
-    // Expose remaining limits via response headers
+    // Expose current tier and key prefix via response headers
     res.setHeader('X-RateLimit-Key', key.slice(0, 8) + '…');
     res.setHeader('X-RateLimit-Tier', resolved?.tier ?? 'anonymous');
 
@@ -66,5 +70,3 @@ export class UsageInterceptor implements NestInterceptor {
     );
   }
 }
-
-

@@ -38,9 +38,23 @@ export class UsageService {
   }
 
   /** Check limits and increment counters for current request */
-  checkAndCount(key: string, rawPath: string, now = Date.now()): { allowed: boolean; reason?: string } {
+  /**
+   * Check limits and increment counters for the current request.
+   *
+   * @param overrideRule  Per-request rule that takes precedence over the
+   *   globally configured pathRules / defaultRule.  Pass the tier-specific
+   *   limits resolved from the validated API key here — this avoids mutating
+   *   the shared singleton options (which causes race conditions).
+   */
+  checkAndCount(
+    key: string,
+    rawPath: string,
+    overrideRule?: PathRule,
+    now = Date.now(),
+  ): { allowed: boolean; reason?: string } {
     const path = normalizePath(rawPath);
-    const rule = this.getRuleForPath(path);
+    // Per-request override wins; fall back to path/default rule from config
+    const rule = overrideRule ?? this.getRuleForPath(path);
 
     // Record unique key
     this.keys.add(key);
