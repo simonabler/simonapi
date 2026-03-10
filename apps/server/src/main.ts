@@ -21,7 +21,7 @@ async function bootstrap() {
     })
   );
   app.enableCors();
-  app.set('trust proxy', 'loopback'); // Trust requests from the loopback address
+  app.set('trust proxy', 1); // Trust one proxy hop (nginx) — exposes real client IP in req.ip
 
   // Swagger/OpenAPI
   const config = new DocumentBuilder()
