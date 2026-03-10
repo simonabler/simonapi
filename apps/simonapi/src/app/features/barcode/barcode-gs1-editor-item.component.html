@@ -41,24 +41,29 @@
         <legend class="small">Application Identifiers (AI)</legend>
         <div class="d-grid gap-2">
           @for(ctrl of items.controls; track $index){
-          <div class="ai-row">
+          <div class="ai-row" [class.ai-row--conflict]="globalError?.affectedAis?.includes(ctrl.value.ai)">
             <select [formControl]="ctrl.controls.ai">
               <option *ngFor="let k of aiKeys" [value]="k">
                 {{ k }} — {{ aiDb[k].label }}
               </option>
             </select>
-            <div>
-              <input type="text" [formControl]="ctrl.controls.value" />
+            <div class="ai-value-wrap">
+              <input
+                type="text"
+                [formControl]="ctrl.controls.value"
+                [placeholder]="aiPlaceholder(ctrl.value.ai) || (aiDb[ctrl.value.ai] ? patternToFormatHint(aiDb[ctrl.value.ai].pattern) : '')"
+                [class.is-invalid]="!!errors[$index]"
+              />
               @if(errors[$index]; as err){
-              <div class="hint text-danger">{{ err }}</div>
+              <div class="hint hint--error">⚠ {{ err }}</div>
+              } @else if(aiDb[ctrl.value.ai]?.hint) {
+              <div class="hint hint--info">{{ aiDb[ctrl.value.ai].hint }}</div>
+              } @else if(aiDb[ctrl.value.ai]) {
+              <div class="hint hint--format">Format: {{ patternToFormatHint(aiDb[ctrl.value.ai].pattern) }}</div>
               }
-              <div class="hint text-body-secondary"
-                *ngIf="!errors[$index] && aiDb[ctrl.value.ai]?.hint">
-                {{ aiDb[ctrl.value.ai].hint }}
-              </div>
             </div>
-            <button type="button" class="btn btn-outline-danger" (click)="removeItem($index)">
-              Remove
+            <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeItem($index)" title="Remove AI">
+              ✕
             </button>
           </div>
           }
@@ -81,9 +86,21 @@
         </div>
       </fieldset>
 
-      <!-- Client-side combination error -->
+      <!-- Client-side combination error — structured with suggestion -->
       @if(globalError){
-      <div class="hint text-danger">{{ globalError }}</div>
+      <div class="combination-error">
+        <div class="combination-error__icon">
+          @if(globalError.type === 'conflict' || globalError.type === 'mutuallyExclusive') { ⊗ }
+          @else if(globalError.type === 'duplicate') { ⊕ }
+          @else { ℹ }
+        </div>
+        <div class="combination-error__body">
+          <div class="combination-error__msg">{{ globalError.message }}</div>
+          @if(globalError.suggestion){
+          <div class="combination-error__tip">💡 {{ globalError.suggestion }}</div>
+          }
+        </div>
+      </div>
       }
 
       <!-- Server-side validation error (structured, from gs1-error.ts) -->

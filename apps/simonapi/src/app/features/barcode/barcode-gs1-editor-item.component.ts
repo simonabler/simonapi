@@ -11,6 +11,10 @@ import {
   Gs1Symbology,
   validateAiValue,
   validateCombination,
+  validateCombinationDetailed,
+  CombinationError,
+  aiPlaceholder,
+  patternToFormatHint,
 } from './models';
 import { EMPTY, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -41,10 +45,14 @@ export class BarcodeGs1EditorItemComponent implements OnInit, OnDestroy {
   loading      = false;
   /** Per-AI-row validation error messages (index matches items FormArray). */
   errors: (string | null)[] = [];
-  /** Cross-AI combination error (e.g. mutually exclusive AIs). */
-  globalError: string | null = null;
+  /** Cross-AI combination error (structured, with suggestion). */
+  globalError: CombinationError | null = null;
   /** Server-side error shown when the preview request fails. */
   serverError: string | null = null;
+
+  // Expose helpers to the template
+  readonly aiPlaceholder    = aiPlaceholder;
+  readonly patternToFormatHint = patternToFormatHint;
 
   private destroy$ = new Subject<void>();
 
@@ -143,7 +151,7 @@ export class BarcodeGs1EditorItemComponent implements OnInit, OnDestroy {
       value: String(ctrl.value.value),
     }));
     this.globalError = Object.keys(this.aiDb).length
-      ? validateCombination(this.aiDb, items)
+      ? validateCombinationDetailed(this.aiDb, items)
       : null;
   }
 
