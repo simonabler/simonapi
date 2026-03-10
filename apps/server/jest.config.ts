@@ -13,4 +13,9 @@ export default {
   transformIgnorePatterns: [
     'node_modules/(?!(@scure|@noble)/)',
   ],
+  moduleNameMapper: {
+    // Replace the native sharp module with a pure-JS stub so watermark tests
+    // run in any CI environment without requiring the platform binary.
+    '^sharp$': '<rootDir>/src/__mocks__/sharp.ts',
+  },
 };

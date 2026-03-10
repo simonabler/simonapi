@@ -80,15 +80,22 @@ export function validateAndNormalizeGs1Item(ai: string, value: string): string {
   if (ai === '01') return normalizeGtin(value);
   if (ai === '00') return normalizeSscc(value);
 
+  // Semantic date validation first for date AIs — gives a clear "not a valid YYMMDD"
+  // error rather than the generic pattern-mismatch from validateAiByRegex.
+  // GS1 General Specifications §3.4: DD=00 is a valid sentinel meaning "last day of
+  // the month" — e.g. 251200 = December 2025, last day. Only skip validateYYMMDD when
+  // DD (chars 4-5) is '00' AND MM (chars 2-3) is a valid month (01-12).
+  if (DATE_AIS.has(ai)) {
+    const dd = value.slice(4, 6);
+    const mm = parseInt(value.slice(2, 4), 10);
+    const isDayZeroSentinel = dd === '00' && mm >= 1 && mm <= 12;
+    if (!isDayZeroSentinel && !validateYYMMDD(value)) {
+      throw new Error(`AI ${ai}: '${value}' is not a valid YYMMDD date`);
+    }
+  }
+
   // Structural regex check (length, charset, numeric/alphanumeric)
   validateAiByRegex(ai, value);
-
-  // Semantic date validation for date AIs — catches invalid calendar dates
-  // that pass the regex (e.g. 250229 on a non-leap year, month 13, day 32).
-  // DD=00 is explicitly allowed per GS1 General Specifications §3.4.
-  if (DATE_AIS.has(ai) && !value.endsWith('00') && !validateYYMMDD(value)) {
-    throw new Error(`AI ${ai}: '${value}' is not a valid YYMMDD date`);
-  }
 
   return value;
 }
