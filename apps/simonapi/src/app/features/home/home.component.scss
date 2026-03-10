@@ -21,3 +21,18 @@
   overflow: auto;
 }
 .code code { white-space: pre-wrap; word-break: break-word; }
+
+// ── API Playground Banner ────────────────────────────────────────────────────
+.playground-banner {
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius, .5rem);
+  border: 1px solid color-mix(in oklab, var(--brand, #4f46e5), transparent 70%);
+  background: color-mix(in oklab, var(--brand, #4f46e5), transparent 94%);
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .btn { width: 100%; justify-content: center; }
+  }
+}

@@ -31,6 +31,11 @@
             <lucide-icon [img]="BookOpenIcon" [size]="17"></lucide-icon>
             API Docs
           </a>
+          <a href="/api#/" target="_blank" rel="noopener"
+             class="btn btn-outline-primary d-inline-flex align-items-center gap-2 px-4">
+            <lucide-icon [img]="SendIcon" [size]="17"></lucide-icon>
+            Try in Swagger
+          </a>
           <a href="#catalog"
              class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 px-4">
             <lucide-icon [img]="SendIcon" [size]="17"></lucide-icon>
@@ -209,6 +214,32 @@
         </div>
       </div>
       }
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     API PLAYGROUND CALLOUT
+══════════════════════════════════════════════════ -->
+<section class="py-4">
+  <div class="container">
+    <div class="playground-banner d-flex align-items-center justify-content-between gap-4 flex-wrap">
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span style="font-size:1.3rem">⚡</span>
+          <strong>Interactive API Playground</strong>
+        </div>
+        <p class="text-body-secondary mb-0 small">
+          All endpoints are live in Swagger UI — try any request directly in the browser.
+          No setup, no SDK. Paste your API key once and test every route.
+        </p>
+      </div>
+      <a href="/api#/" target="_blank" rel="noopener"
+         class="btn btn-primary d-inline-flex align-items-center gap-2 flex-shrink-0">
+        <lucide-icon [img]="BookOpenIcon" [size]="16"></lucide-icon>
+        Open Swagger UI
+      </a>
     </div>
   </div>
 </section>
