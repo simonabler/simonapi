@@ -17,13 +17,22 @@ export class UsageInterceptor implements NestInterceptor {
     const path = req.originalUrl || req.url;
 
     // Prefer the resolved key attached by ApiKeyGuard (validated, tier known).
-    // Fall back to the raw header string, then IP, then 'anonymous'.
+    // Fall back to the raw header string, then real client IP, then 'anonymous'.
+    //
+    // IP resolution: behind nginx the real client IP is in X-Forwarded-For or
+    // X-Real-IP. Express's req.ip only reflects those headers when trust proxy
+    // is configured correctly — but to be safe we read the headers directly,
+    // consistent with how anomaly.guard and lock.controller handle it.
     const resolved = req[RESOLVED_KEY_PROP] as { id: string; tier: ApiKeyTier } | undefined;
     const rawHeader = req.headers['x-api-key'];
+    const clientIp =
+      (req.headers['x-real-ip'] as string | undefined)?.trim() ||
+      (req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0]?.trim() ||
+      req.ip ||
+      'anonymous';
     const key = resolved?.id
       ?? (typeof rawHeader === 'string' && rawHeader.trim() ? rawHeader.trim() : null)
-      ?? req.ip
-      ?? 'anonymous';
+      ?? clientIp;
 
     // Build a per-request override rule from the resolved tier.
     // This is passed directly into checkAndCount() so we never mutate the
