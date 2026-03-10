@@ -8,7 +8,7 @@ import { createHash } from 'crypto';
 import { ApiKeyService, TIER_LIMITS } from './api-key.service';
 import { ApiKeyGuard } from './api-key.guard';
 import { ApiKeyEntity, ApiKeyTier } from './entities/api-key.entity';
-import { REQUIRES_TIER_KEY } from './api-key.decorator';
+import { REQUIRES_TIER_KEY, TIER_RATE_LIMIT_KEY } from './api-key.decorator';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -41,7 +41,11 @@ function mockRepo(entity: ApiKeyEntity | null = makeEntity()) {
   } as unknown as Repository<ApiKeyEntity>;
 }
 
-function makeContext(overrides: { minTier?: ApiKeyTier | undefined; header?: string } = {}) {
+function makeContext(overrides: {
+  minTier?: ApiKeyTier | undefined;
+  tierRateLimit?: boolean;
+  header?: string;
+} = {}) {
   const req: any = { headers: {} };
   if (overrides.header !== undefined) req.headers['x-api-key'] = overrides.header;
 
@@ -51,8 +55,13 @@ function makeContext(overrides: { minTier?: ApiKeyTier | undefined; header?: str
     getClass: () => ({}),
   } as unknown as ExecutionContext;
 
+  // Reflector returns different values per metadata key
   const reflector = {
-    getAllAndOverride: jest.fn().mockReturnValue(overrides.minTier),
+    getAllAndOverride: jest.fn().mockImplementation((key: string) => {
+      if (key === REQUIRES_TIER_KEY)    return overrides.minTier;
+      if (key === TIER_RATE_LIMIT_KEY)  return overrides.tierRateLimit ?? false;
+      return undefined;
+    }),
   } as unknown as Reflector;
 
   return { ctx, req, reflector };
@@ -325,6 +334,53 @@ describe('ApiKeyGuard', () => {
     const { ctx, reflector } = makeContext({ minTier: 'pro', header: 'sk_pro_valid' });
     const g = new ApiKeyGuard(reflector, svc);
     await expect(g.canActivate(ctx)).rejects.toThrow(UnauthorizedException);
+  });
+
+  // ── @TierRateLimit() — soft gate ─────────────────────────────────────────
+
+  describe('@TierRateLimit() mode', () => {
+    it('allows request with no key (anonymous → IP-based limits)', async () => {
+      const { ctx, reflector } = makeContext({ tierRateLimit: true });
+      const g = new ApiKeyGuard(reflector, svc);
+      expect(await g.canActivate(ctx)).toBe(true);
+    });
+
+    it('allows request and attaches resolved key when valid key is provided', async () => {
+      jest.spyOn(svc, 'validate').mockResolvedValue({ id: 'id-1', label: 'lbl', tier: 'free' });
+      const { ctx, req, reflector } = makeContext({ tierRateLimit: true, header: 'sk_free_valid' });
+      const g = new ApiKeyGuard(reflector, svc);
+      expect(await g.canActivate(ctx)).toBe(true);
+      expect(req['__resolvedApiKey']).toMatchObject({ tier: 'free' });
+    });
+
+    it('allows pro key without blocking (pro can also use soft-gated endpoints)', async () => {
+      jest.spyOn(svc, 'validate').mockResolvedValue({ id: 'id-2', label: 'lbl', tier: 'pro' });
+      const { ctx, req, reflector } = makeContext({ tierRateLimit: true, header: 'sk_pro_valid' });
+      const g = new ApiKeyGuard(reflector, svc);
+      expect(await g.canActivate(ctx)).toBe(true);
+      expect(req['__resolvedApiKey']).toMatchObject({ tier: 'pro' });
+    });
+
+    it('throws UnauthorizedException for invalid key (not silently ignored)', async () => {
+      jest.spyOn(svc, 'validate').mockResolvedValue(null);
+      const { ctx, reflector } = makeContext({ tierRateLimit: true, header: 'sk_pro_garbage' });
+      const g = new ApiKeyGuard(reflector, svc);
+      await expect(g.canActivate(ctx)).rejects.toThrow(UnauthorizedException);
+    });
+
+    it('throws UnauthorizedException on DB error', async () => {
+      jest.spyOn(svc, 'validate').mockRejectedValue(new Error('DB down'));
+      const { ctx, reflector } = makeContext({ tierRateLimit: true, header: 'sk_pro_valid' });
+      const g = new ApiKeyGuard(reflector, svc);
+      await expect(g.canActivate(ctx)).rejects.toThrow(UnauthorizedException);
+    });
+
+    it('does NOT throw ForbiddenException for free key (no tier requirement)', async () => {
+      jest.spyOn(svc, 'validate').mockResolvedValue({ id: 'id-3', label: 'lbl', tier: 'free' });
+      const { ctx, reflector } = makeContext({ tierRateLimit: true, header: 'sk_free_valid' });
+      const g = new ApiKeyGuard(reflector, svc);
+      await expect(g.canActivate(ctx)).resolves.toBe(true);
+    });
   });
 });
 
