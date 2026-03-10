@@ -7,4 +7,10 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/apps/server',
+  testEnvironmentOptions: {
+    customExportConditions: ['require', 'default', 'node'],
+  },
+  transformIgnorePatterns: [
+    'node_modules/(?!(@scure|@noble)/)',
+  ],
 };

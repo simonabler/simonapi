@@ -1,0 +1,628 @@
+<div class="container-xl py-4">
+
+  <!-- Header -->
+  <div class="mb-4">
+    <h1 class="h3 fw-bold mb-1">Crypto API</h1>
+    <p class="text-body-secondary mb-0">TOTP/2FA · Hash &amp; HMAC · Ed25519 · JWT</p>
+  </div>
+
+  <!-- Main tabs -->
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="mainTab==='totp'" (click)="mainTab='totp'">
+        🔐 TOTP / 2FA
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="mainTab==='hash'" (click)="mainTab='hash'">
+        #&nbsp;Hash &amp; HMAC
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="mainTab==='ed25519'" (click)="mainTab='ed25519'">
+        🔑 Ed25519
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="mainTab==='jwt'" (click)="mainTab='jwt'">
+        🪙 JWT
+      </button>
+    </li>
+  </ul>
+
+  <!-- ═══════════════════════════════ TOTP ═══════════════════════════════ -->
+  <div *ngIf="mainTab==='totp'">
+    <ul class="nav nav-pills mb-3">
+      <li class="nav-item"><button class="nav-link" [class.active]="totpTab==='setup'"    (click)="totpTab='setup'">Setup</button></li>
+      <li class="nav-item"><button class="nav-link" [class.active]="totpTab==='verify'"   (click)="totpTab='verify'">Verify</button></li>
+      <li class="nav-item"><button class="nav-link" [class.active]="totpTab==='generate'" (click)="totpTab='generate'">Generate</button></li>
+    </ul>
+
+    <!-- TOTP Setup -->
+    <div *ngIf="totpTab==='setup'">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-body-secondary small mb-3">
+            Generates a new TOTP secret and QR code compatible with Google Authenticator, Authy, and 1Password.
+            <strong>The secret is shown only once — store it securely.</strong>
+          </p>
+          <form [formGroup]="totpSetupForm" (ngSubmit)="submitTotpSetup()">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Issuer</label>
+                <input class="form-control" formControlName="issuer" placeholder="My App">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Account Name <span class="text-danger">*</span></label>
+                <input class="form-control" formControlName="accountName" placeholder="user@example.com">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Algorithm</label>
+                <select class="form-select" formControlName="algorithm">
+                  <option>SHA1</option><option>SHA256</option><option>SHA512</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Digits</label>
+                <select class="form-select" formControlName="digits">
+                  <option [value]="6">6</option><option [value]="8">8</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Period (s)</label>
+                <select class="form-select" formControlName="period">
+                  <option [value]="30">30</option><option [value]="60">60</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">QR Format</label>
+                <select class="form-select" formControlName="qrFormat">
+                  <option value="svg">SVG</option><option value="png">PNG</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="loading() || totpSetupForm.invalid">
+              <span *ngIf="loading()" class="spinner-border spinner-border-sm me-2"></span>
+              Generate Secret &amp; QR Code
+            </button>
+          </form>
+
+          <div *ngIf="totpSetupError" class="alert alert-danger mt-3 mb-0">{{ totpSetupError }}</div>
+
+          <div *ngIf="totpSetupResult" class="mt-4">
+            <hr>
+            <div class="row g-4 align-items-start">
+              <div class="col-md-auto text-center">
+                <div *ngIf="totpSetupResult.qrFormat === 'svg'" [innerHTML]="totpSetupResult.qrCode" style="width:220px;height:220px"></div>
+                <img *ngIf="totpSetupResult.qrFormat === 'png'" [src]="'data:image/png;base64,' + totpSetupResult.qrCode" width="220" height="220" alt="TOTP QR Code">
+                <div class="text-muted small mt-2">Scan with your authenticator app</div>
+              </div>
+              <div class="col">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold text-danger">Secret (one-time display)</label>
+                  <div class="input-group">
+                    <code class="form-control font-monospace bg-light">{{ totpSetupResult.secret }}</code>
+                    <button class="btn btn-outline-secondary" type="button" (click)="copyToClipboard(totpSetupResult!.secret, 'totp-secret')">
+                      {{ copiedKey() === 'totp-secret' ? '✓ Copied' : 'Copy' }}
+                    </button>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">otpauth:// URI</label>
+                  <div class="input-group">
+                    <input class="form-control form-control-sm font-monospace" [value]="totpSetupResult.otpauthUri" readonly>
+                    <button class="btn btn-outline-secondary btn-sm" type="button" (click)="copyToClipboard(totpSetupResult!.otpauthUri, 'totp-uri')">
+                      {{ copiedKey() === 'totp-uri' ? '✓' : 'Copy' }}
+                    </button>
+                  </div>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                  <span class="badge bg-secondary">{{ totpSetupResult.algorithm }}</span>
+                  <span class="badge bg-secondary">{{ totpSetupResult.digits }} digits</span>
+                  <span class="badge bg-secondary">{{ totpSetupResult.period }}s period</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOTP Verify -->
+    <div *ngIf="totpTab==='verify'">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <form [formGroup]="totpVerifyForm" (ngSubmit)="submitTotpVerify()">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Secret (Base32)</label>
+                <input class="form-control font-monospace" formControlName="secret" placeholder="JBSWY3DPEHPK3PXP">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Token</label>
+                <input class="form-control font-monospace" formControlName="token" placeholder="123456" maxlength="8">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Window</label>
+                <select class="form-select" formControlName="window">
+                  <option [value]="0">0</option><option [value]="1">1</option><option [value]="2">2</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="loading() || totpVerifyForm.invalid">
+              <span *ngIf="loading()" class="spinner-border spinner-border-sm me-2"></span>
+              Verify Token
+            </button>
+          </form>
+          <div *ngIf="totpVerifyError" class="alert alert-danger mt-3 mb-0">{{ totpVerifyError }}</div>
+          <div *ngIf="totpVerifyResult" class="mt-3">
+            <div [class]="'alert mb-0 d-flex align-items-center gap-2 ' + (totpVerifyResult.valid ? 'alert-success' : 'alert-danger')">
+              <span style="font-size:1.4rem">{{ totpVerifyResult.valid ? '✅' : '❌' }}</span>
+              <div>
+                <strong>{{ totpVerifyResult.valid ? 'Valid token' : 'Invalid token' }}</strong>
+                <div *ngIf="totpVerifyResult.valid && totpVerifyResult.delta !== null" class="small">
+                  Delta: {{ totpVerifyResult.delta === 0 ? 'current window' : totpVerifyResult.delta + ' window(s) off' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOTP Generate -->
+    <div *ngIf="totpTab==='generate'">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-body-secondary small mb-3">Generates the current TOTP token for a given secret. Useful for automated tests.</p>
+          <form [formGroup]="totpGenerateForm" (ngSubmit)="submitTotpGenerate()">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Secret (Base32)</label>
+                <input class="form-control font-monospace" formControlName="secret" placeholder="JBSWY3DPEHPK3PXP">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Period (s)</label>
+                <select class="form-select" formControlName="period">
+                  <option [value]="30">30</option><option [value]="60">60</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Digits</label>
+                <select class="form-select" formControlName="digits">
+                  <option [value]="6">6</option><option [value]="8">8</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="loading() || totpGenerateForm.invalid">
+              <span *ngIf="loading()" class="spinner-border spinner-border-sm me-2"></span>
+              Generate Token
+            </button>
+          </form>
+          <div *ngIf="totpGenerateError" class="alert alert-danger mt-3 mb-0">{{ totpGenerateError }}</div>
+          <div *ngIf="totpGenerateResult" class="mt-3">
+            <div class="alert alert-info mb-0 d-flex align-items-center gap-3">
+              <div class="font-monospace fs-3 fw-bold">{{ totpGenerateResult.token }}</div>
+              <div>
+                <div class="small text-muted">Valid for {{ totpGenerateResult.validFor }}s</div>
+                <div class="progress mt-1" style="width:120px;height:6px">
+                  <div class="progress-bar" [style.width.%]="(totpGenerateResult.validFor / 30) * 100"></div>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-outline-secondary ms-auto" (click)="copyToClipboard(totpGenerateResult!.token, 'totp-token')">
+                {{ copiedKey() === 'totp-token' ? '✓ Copied' : 'Copy' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ HASH ═══════════════════════════════ -->
+  <div *ngIf="mainTab==='hash'">
+    <ul class="nav nav-pills mb-3">
+      <li class="nav-item"><button class="nav-link" [class.active]="hashTab==='hash'" (click)="hashTab='hash'">Hash</button></li>
+      <li class="nav-item"><button class="nav-link" [class.active]="hashTab==='hmac'" (click)="hashTab='hmac'">HMAC</button></li>
+    </ul>
+
+    <!-- Hash -->
+    <div *ngIf="hashTab==='hash'">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="alert alert-warning small py-2 mb-3">
+            <strong>Note:</strong> <code>POST /api/utils/hash</code> is deprecated. Use <code>POST /api/crypto/hash</code> instead — same format, adds SHA-512.
+          </div>
+          <form [formGroup]="hashForm" (ngSubmit)="submitHash()">
+            <div class="row g-3 mb-3">
+              <div class="col-md-8">
+                <label class="form-label">Data</label>
+                <input class="form-control" formControlName="data" placeholder="hello world">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Algorithm</label>
+                <select class="form-select" formControlName="algo">
+                  <option value="md5">MD5</option>
+                  <option value="sha256">SHA-256</option>
+                  <option value="sha512">SHA-512</option>
+                  <option value="bcrypt">bcrypt</option>
+                </select>
+              </div>
+              <div class="col-md-4" *ngIf="showSaltRounds">
+                <label class="form-label">Salt Rounds (bcrypt)</label>
+                <input type="number" class="form-control" formControlName="saltRounds" min="4" max="15">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="loading() || hashForm.invalid">
+              <span *ngIf="loading()" class="spinner-border spinner-border-sm me-2"></span>
+              Hash
+            </button>
+          </form>
+          <div *ngIf="hashError" class="alert alert-danger mt-3 mb-0">{{ hashError }}</div>
+          <div *ngIf="hashResult" class="mt-3">
+            <label class="form-label fw-semibold">Result ({{ hashResult.algo }})</label>
+            <div class="input-group">
+              <code class="form-control font-monospace bg-light" style="word-break:break-all">{{ hashResult.hash }}</code>
+              <button class="btn btn-outline-secondary" type="button" (click)="copyToClipboard(hashResult!.hash, 'hash')">
+                {{ copiedKey() === 'hash' ? '✓' : 'Copy' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HMAC -->
+    <div *ngIf="hashTab==='hmac'">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <form [formGroup]="hmacForm" (ngSubmit)="submitHmac()">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Data</label>
+                <input class="form-control" formControlName="data" placeholder="Hello World">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Key</label>
+                <input class="form-control" formControlName="key" placeholder="my-secret-key">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Algorithm</label>
+                <select class="form-select" formControlName="algorithm">
+                  <option value="sha256">SHA-256</option>
+                  <option value="sha512">SHA-512</option>
+                  <option value="sha1">SHA-1</option>
+                  <option value="md5">MD5</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Encoding</label>
+                <select class="form-select" formControlName="encoding">
+                  <option value="hex">hex</option>
+                  <option value="base64">base64</option>
+                  <option value="base64url">base64url</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="loading() || hmacForm.invalid">
+              <span *ngIf="loading()" class="spinner-border spinner-border-sm me-2"></span>
+              Compute HMAC
+            </button>
+          </form>
+          <div *ngIf="hmacError" class="alert alert-danger mt-3 mb-0">{{ hmacError }}</div>
+          <div *ngIf="hmacResult" class="mt-3">
+            <label class="form-label fw-semibold">HMAC-{{ hmacResult.algorithm.toUpperCase() }} ({{ hmacResult.encoding }})</label>
+            <div class="input-group">
+              <code class="form-control font-monospace bg-light" style="word-break:break-all">{{ hmacResult.hmac }}</code>
+              <button class="btn btn-outline-secondary" type="button" (click)="copyToClipboard(hmacResult!.hmac, 'hmac')">
+                {{ copiedKey() === 'hmac' ? '✓' : 'Copy' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ Ed25519 ═══════════════════════════════ -->
+  <div *ngIf="mainTab==='ed25519'">
+    <ul class="nav nav-pills mb-3">
+      <li class="nav-item"><button class="nav-link" [class.active]="ed25519Tab==='keypair'" (click)="ed25519Tab='keypair'">Keypair</button></li>
+      <li class="nav-item"><button class="nav-link" [class.active]="ed25519Tab==='sign'"    (click)="ed25519Tab='sign'">Sign</button></li>
+      <li class="nav-item"><button class="nav-link" [class.active]="ed25519Tab==='verify'"  (click)="ed25519Tab='verify'">Verify</button></li>
+    </ul>
+
+    <!-- Ed25519 Keypair -->
+    <div *ngIf="ed25519Tab==='keypair'">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-body-secondary small mb-3">Generates a new Ed25519 key pair in PEM and hex format.</p>
+          <button class="btn btn-primary" (click)="generateEd25519Keypair()" [disabled]="loading()">
+            <span *ngIf="loading()" class="spinner-border spinner-border-sm me-2"></span>
+            Generate Key Pair
+          </button>
+          <div *ngIf="ed25519KeypairError" class="alert alert-danger mt-3 mb-0">{{ ed25519KeypairError }}</div>
+          <div *ngIf="ed25519KeypairResult" class="mt-3">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Public Key (PEM)</label>
+              <div class="input-group">
+                <textarea class="form-control font-monospace small" rows="4" readonly [value]="ed25519KeypairResult.publicKey"></textarea>
+                <button class="btn btn-outline-secondary" (click)="copyToClipboard(ed25519KeypairResult!.publicKey, 'ed-pub')">{{ copiedKey() === 'ed-pub' ? '✓' : 'Copy' }}</button>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Private Key (PEM)</label>
+              <div class="input-group">
+                <textarea class="form-control font-monospace small" rows="4" readonly [value]="ed25519KeypairResult.privateKey"></textarea>
+                <button class="btn btn-outline-secondary" (click)="copyToClipboard(ed25519KeypairResult!.privateKey, 'ed-priv')">{{ copiedKey() === 'ed-priv' ? '✓' : 'Copy' }}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ed25519 Sign -->
+    <div *ngIf="ed25519Tab==='sign'">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <form [formGroup]="ed25519SignForm" (ngSubmit)="submitEd25519Sign()">
+            <div class="mb-3">
+              <label class="form-label">Message</label>
+              <input class="form-control" formControlName="message" placeholder="data to sign">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Private Key (PEM)</label>
+              <textarea class="form-control font-monospace small" rows="5" formControlName="privateKey" placeholder="-----BEGIN PRIVATE KEY-----"></textarea>
+            </div>
+            <div class="mb-3 col-md-4">
+              <label class="form-label">Encoding</label>
+              <select class="form-select" formControlName="encoding">
+                <option value="hex">hex</option><option value="base64">base64</option><option value="base64url">base64url</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="loading() || ed25519SignForm.invalid">
+              <span *ngIf="loading()" class="spinner-border spinner-border-sm me-2"></span>
+              Sign
+            </button>
+          </form>
+          <div *ngIf="ed25519SignError" class="alert alert-danger mt-3 mb-0">{{ ed25519SignError }}</div>
+          <div *ngIf="ed25519SignResult" class="mt-3">
+            <label class="form-label fw-semibold">Signature ({{ ed25519SignResult.encoding }})</label>
+            <div class="input-group">
+              <code class="form-control font-monospace bg-light" style="word-break:break-all">{{ ed25519SignResult.signature }}</code>
+              <button class="btn btn-outline-secondary" (click)="copyToClipboard(ed25519SignResult!.signature, 'ed-sig')">{{ copiedKey() === 'ed-sig' ? '✓' : 'Copy' }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ed25519 Verify -->
+    <div *ngIf="ed25519Tab==='verify'">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <form [formGroup]="ed25519VerifyForm" (ngSubmit)="submitEd25519Verify()">
+            <div class="mb-3">
+              <label class="form-label">Message</label>
+              <input class="form-control" formControlName="message">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Signature</label>
+              <input class="form-control font-monospace" formControlName="signature" placeholder="hex or base64...">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Public Key (PEM)</label>
+              <textarea class="form-control font-monospace small" rows="4" formControlName="publicKey" placeholder="-----BEGIN PUBLIC KEY-----"></textarea>
+            </div>
+            <div class="mb-3 col-md-4">
+              <label class="form-label">Encoding</label>
+              <select class="form-select" formControlName="encoding">
+                <option value="hex">hex</option><option value="base64">base64</option><option value="base64url">base64url</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="loading() || ed25519VerifyForm.invalid">
+              <span *ngIf="loading()" class="spinner-border spinner-border-sm me-2"></span>
+              Verify
+            </button>
+          </form>
+          <div *ngIf="ed25519VerifyError" class="alert alert-danger mt-3 mb-0">{{ ed25519VerifyError }}</div>
+          <div *ngIf="ed25519VerifyResult" class="mt-3">
+            <div [class]="'alert mb-0 d-flex align-items-center gap-2 ' + (ed25519VerifyResult.valid ? 'alert-success' : 'alert-danger')">
+              <span style="font-size:1.4rem">{{ ed25519VerifyResult.valid ? '✅' : '❌' }}</span>
+              <strong>{{ ed25519VerifyResult.valid ? 'Valid signature' : 'Invalid signature' }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ JWT ═══════════════════════════════ -->
+  <div *ngIf="mainTab==='jwt'">
+    <ul class="nav nav-pills mb-3">
+      <li class="nav-item"><button class="nav-link" [class.active]="jwtTab==='keypair'" (click)="jwtTab='keypair'">Keypair</button></li>
+      <li class="nav-item"><button class="nav-link" [class.active]="jwtTab==='encode'"  (click)="jwtTab='encode'">Encode</button></li>
+      <li class="nav-item"><button class="nav-link" [class.active]="jwtTab==='decode'"  (click)="jwtTab='decode'">Decode</button></li>
+      <li class="nav-item"><button class="nav-link" [class.active]="jwtTab==='verify'"  (click)="jwtTab='verify'">Verify</button></li>
+    </ul>
+
+    <!-- JWT Keypair -->
+    <div *ngIf="jwtTab==='keypair'">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-body-secondary small mb-3">Generate key pairs for asymmetric JWT algorithms. RS256 → RSA-2048 · ES256 → ECDSA P-256 · EdDSA → Ed25519</p>
+          <div class="d-flex align-items-end gap-3 mb-3">
+            <div>
+              <label class="form-label">Algorithm</label>
+              <select class="form-select" [(ngModel)]="jwtKeypairAlgo">
+                <option value="RS256">RS256 (RSA-2048)</option>
+                <option value="ES256">ES256 (ECDSA P-256)</option>
+                <option value="EdDSA">EdDSA (Ed25519)</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" (click)="generateJwtKeypair()" [disabled]="loading()">
+              <span *ngIf="loading()" class="spinner-border spinner-border-sm me-2"></span>
+              Generate Key Pair
+            </button>
+          </div>
+          <div *ngIf="jwtKeypairError" class="alert alert-danger mb-0">{{ jwtKeypairError }}</div>
+          <div *ngIf="jwtKeypairResult" class="mt-3">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Public Key (PEM)</label>
+              <div class="input-group">
+                <textarea class="form-control font-monospace small" rows="5" readonly [value]="jwtKeypairResult.publicKey"></textarea>
+                <button class="btn btn-outline-secondary" (click)="copyToClipboard(jwtKeypairResult!.publicKey, 'jwt-pub')">{{ copiedKey() === 'jwt-pub' ? '✓' : 'Copy' }}</button>
+              </div>
+            </div>
+            <div>
+              <label class="form-label fw-semibold">Private Key (PEM)</label>
+              <div class="input-group">
+                <textarea class="form-control font-monospace small" rows="5" readonly [value]="jwtKeypairResult.privateKey"></textarea>
+                <button class="btn btn-outline-secondary" (click)="copyToClipboard(jwtKeypairResult!.privateKey, 'jwt-priv')">{{ copiedKey() === 'jwt-priv' ? '✓' : 'Copy' }}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JWT Encode -->
+    <div *ngIf="jwtTab==='encode'">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <form [formGroup]="jwtEncodeForm" (ngSubmit)="submitJwtEncode()">
+            <div class="row g-3 mb-3">
+              <div class="col-md-8">
+                <label class="form-label">Payload (JSON)</label>
+                <textarea class="form-control font-monospace small" rows="5" formControlName="payload"></textarea>
+                <div *ngIf="jwtPayloadError" class="text-danger small mt-1">{{ jwtPayloadError }}</div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Algorithm</label>
+                <select class="form-select" formControlName="algorithm">
+                  <option value="HS256">HS256</option>
+                  <option value="HS512">HS512</option>
+                  <option value="RS256">RS256</option>
+                  <option value="ES256">ES256</option>
+                  <option value="EdDSA">EdDSA</option>
+                </select>
+                <label class="form-label mt-2">Expires In</label>
+                <input class="form-control" formControlName="expiresIn" placeholder="1h / 7d / 30m">
+              </div>
+              <div class="col-12" *ngIf="jwtEncodeIsSymmetric">
+                <label class="form-label">Secret</label>
+                <input class="form-control" formControlName="secret" placeholder="my-secret">
+              </div>
+              <div class="col-12" *ngIf="!jwtEncodeIsSymmetric">
+                <label class="form-label">Private Key (PEM)</label>
+                <textarea class="form-control font-monospace small" rows="5" formControlName="privateKey" placeholder="-----BEGIN PRIVATE KEY-----"></textarea>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="loading() || jwtEncodeForm.invalid">
+              <span *ngIf="loading()" class="spinner-border spinner-border-sm me-2"></span>
+              Create JWT
+            </button>
+          </form>
+          <div *ngIf="jwtEncodeError" class="alert alert-danger mt-3 mb-0">{{ jwtEncodeError }}</div>
+          <div *ngIf="jwtEncodeResult" class="mt-3">
+            <label class="form-label fw-semibold">Token</label>
+            <div class="input-group mb-2">
+              <code class="form-control font-monospace bg-light small" style="word-break:break-all">{{ jwtEncodeResult.token }}</code>
+              <button class="btn btn-outline-secondary" (click)="copyToClipboard(jwtEncodeResult!.token, 'jwt-token')">{{ copiedKey() === 'jwt-token' ? '✓' : 'Copy' }}</button>
+            </div>
+            <div *ngIf="jwtEncodeResult.expiresAt" class="small text-muted">Expires: {{ jwtEncodeResult.expiresAt }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JWT Decode -->
+    <div *ngIf="jwtTab==='decode'">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-body-secondary small mb-3">Decodes a JWT without verifying the signature — structure inspection only.</p>
+          <form [formGroup]="jwtDecodeForm" (ngSubmit)="submitJwtDecode()">
+            <div class="mb-3">
+              <label class="form-label">Token</label>
+              <textarea class="form-control font-monospace small" rows="3" formControlName="token" placeholder="eyJhbGciOiJIUzI1NiJ9..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="loading() || jwtDecodeForm.invalid">
+              <span *ngIf="loading()" class="spinner-border spinner-border-sm me-2"></span>
+              Decode
+            </button>
+          </form>
+          <div *ngIf="jwtDecodeError" class="alert alert-danger mt-3 mb-0">{{ jwtDecodeError }}</div>
+          <div *ngIf="jwtDecodeResult" class="mt-3">
+            <div class="d-flex gap-2 mb-3 align-items-center">
+              <span [class]="'badge ' + (jwtDecodeResult.expired ? 'bg-danger' : 'bg-success')">
+                {{ jwtDecodeResult.expired ? 'Expired' : 'Not expired' }}
+              </span>
+              <span *ngIf="jwtDecodeResult.expiresAt" class="small text-muted">Expires: {{ jwtDecodeResult.expiresAt }}</span>
+            </div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Header</label>
+                <pre class="bg-light p-2 rounded small">{{ jwtDecodeResult.header | json }}</pre>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Payload</label>
+                <pre class="bg-light p-2 rounded small">{{ jwtDecodeResult.payload | json }}</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JWT Verify -->
+    <div *ngIf="jwtTab==='verify'">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <form [formGroup]="jwtVerifyForm" (ngSubmit)="submitJwtVerify()">
+            <div class="mb-3">
+              <label class="form-label">Token</label>
+              <textarea class="form-control font-monospace small" rows="3" formControlName="token" placeholder="eyJhbGciOiJIUzI1NiJ9..."></textarea>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label class="form-label">Algorithm</label>
+                <select class="form-select" formControlName="algorithm">
+                  <option value="HS256">HS256</option>
+                  <option value="HS512">HS512</option>
+                  <option value="RS256">RS256</option>
+                  <option value="ES256">ES256</option>
+                  <option value="EdDSA">EdDSA</option>
+                </select>
+              </div>
+              <div class="col-md-8" *ngIf="jwtVerifyIsSymmetric">
+                <label class="form-label">Secret</label>
+                <input class="form-control" formControlName="secret" placeholder="my-secret">
+              </div>
+            </div>
+            <div class="mb-3" *ngIf="!jwtVerifyIsSymmetric">
+              <label class="form-label">Public Key (PEM)</label>
+              <textarea class="form-control font-monospace small" rows="5" formControlName="publicKey" placeholder="-----BEGIN PUBLIC KEY-----"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="loading() || jwtVerifyForm.invalid">
+              <span *ngIf="loading()" class="spinner-border spinner-border-sm me-2"></span>
+              Verify
+            </button>
+          </form>
+          <div *ngIf="jwtVerifyError" class="alert alert-danger mt-3 mb-0">{{ jwtVerifyError }}</div>
+          <div *ngIf="jwtVerifyResult" class="mt-3">
+            <div [class]="'alert ' + (jwtVerifyResult.valid ? 'alert-success' : 'alert-danger')">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span style="font-size:1.3rem">{{ jwtVerifyResult.valid ? '✅' : '❌' }}</span>
+                <strong>{{ jwtVerifyResult.valid ? 'Valid JWT' : (jwtVerifyResult.expired ? 'Token expired' : 'Invalid JWT') }}</strong>
+              </div>
+              <div *ngIf="jwtVerifyResult.error" class="small">{{ jwtVerifyResult.error }}</div>
+              <pre *ngIf="jwtVerifyResult.valid && jwtVerifyResult.payload" class="mb-0 mt-2 small bg-white bg-opacity-50 p-2 rounded">{{ jwtVerifyResult.payload | json }}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
