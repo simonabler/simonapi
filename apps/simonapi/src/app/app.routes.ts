@@ -53,6 +53,16 @@ export const appRoutes: Route[] = [
     title: 'Crypto API — TOTP / Hash / JWT',
   },
   {
+    path: 'signpack',
+    loadComponent: () => import('./features/signpack/signpack-upload.component').then(c => c.SignpackUploadComponent),
+    title: 'Signpack — Secure File Signing',
+  },
+  {
+    path: 'signpack/sign/:id',
+    loadComponent: () => import('./features/signpack/signpack-sign.component').then(c => c.SignpackSignComponent),
+    title: 'Sign Document — Signpack',
+  },
+  {
     path: 'impressum',
     loadComponent: () => import('./features/legal/impressum.component').then(c => c.ImpressumComponent),
     title: 'Legal Notice',
