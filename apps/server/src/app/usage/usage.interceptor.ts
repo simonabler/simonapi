@@ -53,7 +53,7 @@ export class UsageInterceptor implements NestInterceptor {
     }
 
     // Expose current tier and key prefix via response headers
-    res.setHeader('X-RateLimit-Key', key.slice(0, 8) + '…');
+    res.setHeader('X-RateLimit-Key', key.slice(0, 8) + '...');
     res.setHeader('X-RateLimit-Tier', resolved?.tier ?? 'anonymous');
 
     const started = Date.now();
