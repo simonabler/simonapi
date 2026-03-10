@@ -93,7 +93,7 @@
             <hr>
             <div class="row g-4 align-items-start">
               <div class="col-md-auto text-center">
-                <div *ngIf="totpSetupResult.qrFormat === 'svg'" [innerHTML]="totpSetupResult.qrCode" style="width:220px;height:220px"></div>
+                <div *ngIf="totpSetupResult.qrFormat === 'svg'" [innerHTML]="safeQrSvg" style="width:220px;height:220px"></div>
                 <img *ngIf="totpSetupResult.qrFormat === 'png'" [src]="'data:image/png;base64,' + totpSetupResult.qrCode" width="220" height="220" alt="TOTP QR Code">
                 <div class="text-muted small mt-2">Scan with your authenticator app</div>
               </div>

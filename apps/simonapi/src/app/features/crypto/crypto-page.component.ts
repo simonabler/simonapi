@@ -1,5 +1,6 @@
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -24,9 +25,10 @@ type JwtTab = 'keypair' | 'encode' | 'decode' | 'verify';
   templateUrl: './crypto-page.component.html',
 })
 export class CryptoPageComponent implements OnDestroy {
-  private fb      = inject(FormBuilder);
-  private api     = inject(CryptoApiService);
-  private destroy$ = new Subject<void>();
+  private fb        = inject(FormBuilder);
+  private api       = inject(CryptoApiService);
+  private sanitizer = inject(DomSanitizer);
+  private destroy$  = new Subject<void>();
 
   // ── Tabs ──────────────────────────────────────────────────────────────────
   mainTab:    MainTab    = 'totp';
@@ -40,6 +42,15 @@ export class CryptoPageComponent implements OnDestroy {
 
   // ── Copied state ──────────────────────────────────────────────────────────
   copiedKey = signal<string | null>(null);
+
+  // ── Safe SVG for QR code (bypasses Angular's HTML sanitizer) ─────────────
+  // Angular strips SVG content from [innerHTML] by default for security.
+  // Since the SVG is generated server-side from a known-safe otpauth:// URI,
+  // it is safe to bypass sanitization here.
+  get safeQrSvg(): SafeHtml | null {
+    if (!this.totpSetupResult?.qrCode || this.totpSetupResult.qrFormat !== 'svg') return null;
+    return this.sanitizer.bypassSecurityTrustHtml(this.totpSetupResult.qrCode);
+  }
 
   copyToClipboard(text: string, key: string) {
     navigator.clipboard.writeText(text).then(() => {
