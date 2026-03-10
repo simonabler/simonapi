@@ -8,6 +8,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
@@ -22,6 +23,36 @@ async function bootstrap() {
   );
   app.enableCors();
   app.set('trust proxy', 1); // Trust one proxy hop (nginx) — exposes real client IP in req.ip
+
+  // Security headers via Helmet.
+  // CSP is relaxed only for /api (Swagger UI) which loads scripts/styles from its own bundle.
+  // All other routes get a strict policy.
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc:     ["'self'"],
+          scriptSrc:      ["'self'", "'unsafe-inline'"],   // Swagger UI requires inline scripts
+          styleSrc:       ["'self'", "'unsafe-inline'"],   // Swagger UI requires inline styles
+          imgSrc:         ["'self'", 'data:', 'blob:'],    // Swagger UI logo + barcode previews
+          connectSrc:     ["'self'"],
+          fontSrc:        ["'self'"],
+          objectSrc:      ["'none'"],
+          frameSrc:       ["'none'"],
+          upgradeInsecureRequests: [],
+        },
+      },
+      crossOriginEmbedderPolicy: false, // Swagger UI needs this off for its resources
+      xFrameOptions:        { action: 'deny' },
+      xContentTypeOptions:  true,
+      referrerPolicy:       { policy: 'strict-origin-when-cross-origin' },
+      hsts: {
+        maxAge:            31_536_000, // 1 year
+        includeSubDomains: true,
+        preload:           true,
+      },
+    }),
+  );
 
   // Swagger/OpenAPI
   const config = new DocumentBuilder()
