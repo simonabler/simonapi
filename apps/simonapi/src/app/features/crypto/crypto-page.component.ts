@@ -1,6 +1,6 @@
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { CryptoApiService } from './crypto.service';
@@ -20,7 +20,7 @@ type JwtTab = 'keypair' | 'encode' | 'decode' | 'verify';
 @Component({
   standalone: true,
   selector: 'app-crypto-page',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './crypto-page.component.html',
 })
 export class CryptoPageComponent implements OnDestroy {

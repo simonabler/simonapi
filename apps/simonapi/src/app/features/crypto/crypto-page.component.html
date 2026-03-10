@@ -3,7 +3,7 @@
   <!-- Header -->
   <div class="mb-4">
     <h1 class="h3 fw-bold mb-1">Crypto API</h1>
-    <p class="text-secondary mb-0">TOTP/2FA · Hash &amp; HMAC · Ed25519 · JWT</p>
+    <p class="text-body-secondary mb-0">TOTP/2FA · Hash &amp; HMAC · Ed25519 · JWT</p>
   </div>
 
   <!-- Main tabs -->
@@ -42,7 +42,7 @@
     <div *ngIf="totpTab==='setup'">
       <div class="card border-0 shadow-sm">
         <div class="card-body">
-          <p class="text-secondary small mb-3">
+          <p class="text-body-secondary small mb-3">
             Generates a new TOTP secret and QR code compatible with Google Authenticator, Authy, and 1Password.
             <strong>The secret is shown only once — store it securely.</strong>
           </p>
@@ -174,7 +174,7 @@
     <div *ngIf="totpTab==='generate'">
       <div class="card border-0 shadow-sm">
         <div class="card-body">
-          <p class="text-secondary small mb-3">Generates the current TOTP token for a given secret. Useful for automated tests.</p>
+          <p class="text-body-secondary small mb-3">Generates the current TOTP token for a given secret. Useful for automated tests.</p>
           <form [formGroup]="totpGenerateForm" (ngSubmit)="submitTotpGenerate()">
             <div class="row g-3 mb-3">
               <div class="col-md-6">
@@ -336,7 +336,7 @@
     <div *ngIf="ed25519Tab==='keypair'">
       <div class="card border-0 shadow-sm">
         <div class="card-body">
-          <p class="text-secondary small mb-3">Generates a new Ed25519 key pair in PEM and hex format.</p>
+          <p class="text-body-secondary small mb-3">Generates a new Ed25519 key pair in PEM and hex format.</p>
           <button class="btn btn-primary" (click)="generateEd25519Keypair()" [disabled]="loading()">
             <span *ngIf="loading()" class="spinner-border spinner-border-sm me-2"></span>
             Generate Key Pair
@@ -451,7 +451,7 @@
     <div *ngIf="jwtTab==='keypair'">
       <div class="card border-0 shadow-sm">
         <div class="card-body">
-          <p class="text-secondary small mb-3">Generate key pairs for asymmetric JWT algorithms. RS256 → RSA-2048 · ES256 → ECDSA P-256 · EdDSA → Ed25519</p>
+          <p class="text-body-secondary small mb-3">Generate key pairs for asymmetric JWT algorithms. RS256 → RSA-2048 · ES256 → ECDSA P-256 · EdDSA → Ed25519</p>
           <div class="d-flex align-items-end gap-3 mb-3">
             <div>
               <label class="form-label">Algorithm</label>
@@ -541,7 +541,7 @@
     <div *ngIf="jwtTab==='decode'">
       <div class="card border-0 shadow-sm">
         <div class="card-body">
-          <p class="text-secondary small mb-3">Decodes a JWT without verifying the signature — structure inspection only.</p>
+          <p class="text-body-secondary small mb-3">Decodes a JWT without verifying the signature — structure inspection only.</p>
           <form [formGroup]="jwtDecodeForm" (ngSubmit)="submitJwtDecode()">
             <div class="mb-3">
               <label class="form-label">Token</label>
