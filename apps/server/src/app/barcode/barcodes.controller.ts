@@ -9,6 +9,7 @@ import {
   Post,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -33,6 +34,8 @@ import { buildSscc, validateSscc } from './sscc';
 import { validateGs1Prefix } from './gs1-prefix-registry';
 import { SsccService } from './sscc.service';
 import { SsccAutoDto, SsccBuildDto, SsccRenderDto, SsccValidateDto } from './dto/sscc.dto';
+import { ApiKeyGuard } from '../api-key/api-key.guard';
+import { RequiresTier } from '../api-key/api-key.decorator';
 
 @ApiTags('barcodes')
 @Controller('barcode')
@@ -178,6 +181,8 @@ export class BarcodesController {
   // ---------------------------------------------------------------------------
 
   @Post('gs1/batch')
+  @UseGuards(ApiKeyGuard)
+  @RequiresTier('pro')
   @ApiOperation({
     summary: 'Batch-render up to 100 GS1 barcodes in a single request',
     description:
@@ -219,6 +224,8 @@ export class BarcodesController {
   // ---------------------------------------------------------------------------
 
   @Post('gs1/digital-link/encode')
+  @UseGuards(ApiKeyGuard)
+  @RequiresTier('pro')
   @ApiOperation({
     summary: 'Convert GS1 AI items to a GS1 Digital Link URL',
     description:
@@ -262,6 +269,8 @@ export class BarcodesController {
   }
 
   @Post('gs1/digital-link/decode')
+  @UseGuards(ApiKeyGuard)
+  @RequiresTier('pro')
   @ApiOperation({
     summary: 'Parse a GS1 Digital Link URL into AI items',
     description:
@@ -300,6 +309,8 @@ export class BarcodesController {
   // ---------------------------------------------------------------------------
 
   @Post('sscc/build')
+  @UseGuards(ApiKeyGuard)
+  @RequiresTier('pro')
   @ApiOperation({
     summary: 'Build SSCC from components and render as GS1-128 barcode',
     description:
@@ -346,6 +357,8 @@ export class BarcodesController {
   }
 
   @Post('sscc/auto')
+  @UseGuards(ApiKeyGuard)
+  @RequiresTier('pro')
   @ApiOperation({
     summary: 'Auto-increment SSCC: allocate next serial for this prefix and render',
     description:

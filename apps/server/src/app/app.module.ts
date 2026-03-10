@@ -19,6 +19,7 @@ import databaseConfig from './config/database.config';
 import throttlerConfig from './config/throttler.config';
 import { MetricsModule } from './metrics/metrics.module';
 import { CryptoModule } from './crypto/crypto.module';
+import { ApiKeyModule } from './api-key/api-key.module';
 
 @Module({
   imports: [
@@ -91,7 +92,8 @@ import { CryptoModule } from './crypto/crypto.module';
     WatermarkModule,
     UtilityModule,
     LockModule,
-    MetricsModule
+    MetricsModule,
+    ApiKeyModule,
   ],
   controllers: [AppController, ReportsController],
   providers: [AppService,
