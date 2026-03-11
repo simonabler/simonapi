@@ -88,7 +88,6 @@ import { UsageModule } from './usage/usage.module';
     // Authenticated callers get TIER_LIMITS from ApiKeyService (applied
     // per-request in UsageInterceptor via overrideRule — no global mutation).
     UsageModule.forRoot({
-      adminToken: process.env.ADMIN_TOKEN,
       defaultRule: {
         perMinute: 10,   // anonymous / free tier fallback
       },

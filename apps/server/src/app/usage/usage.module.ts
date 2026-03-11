@@ -1,4 +1,5 @@
 import { DynamicModule, Module } from '@nestjs/common';
+import { ApiKeyModule } from '../api-key/api-key.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { UsageController } from './usage.controller';
 import { UsageInterceptor } from './usage.interceptor';
@@ -10,6 +11,7 @@ export class UsageModule {
   static forRoot(options: UsageModuleOptions = {}): DynamicModule {
     return {
       module: UsageModule,
+      imports: [ApiKeyModule],
       providers: [
         UsageService,
         { provide: USAGE_OPTS, useValue: options },

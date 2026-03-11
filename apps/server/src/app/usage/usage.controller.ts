@@ -1,29 +1,30 @@
-import { Controller, Get, Headers, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { RequiresTier } from '../api-key/api-key.decorator';
 import { UsageService } from './usage.service';
 
-@Controller('_usage')
+/**
+ * Rate-limit usage snapshot — admin only.
+ * Secured via x-api-key (industrial tier), same as /admin/stats.
+ */
+@ApiTags('Admin')
+@ApiSecurity('x-api-key')
+@Controller('admin/usage')
 export class UsageController {
   constructor(private readonly usage: UsageService) {}
 
-  private authOk(token?: string) {
-    const adminToken = this.usage.getAdminToken();
-    return !!adminToken && token === adminToken;
-  }
-
   @Get('stats')
-  getStats(@Headers('x-admin-token') token?: string) {
-    if (!this.authOk(token)) {
-      return { error: 'unauthorized' };
-    }
+  @RequiresTier('industrial')
+  @ApiOperation({ summary: 'Rate-limit counters snapshot (admin)' })
+  getStats() {
     return this.usage.snapshot();
   }
 
   @Post('reset')
   @HttpCode(HttpStatus.NO_CONTENT)
-  reset(@Headers('x-admin-token') token?: string) {
-    if (!this.authOk(token)) return { error: 'unauthorized' };
+  @RequiresTier('industrial')
+  @ApiOperation({ summary: 'Reset rate-limit counters (admin)' })
+  reset() {
     this.usage.resetAll();
-    return;
   }
 }
-

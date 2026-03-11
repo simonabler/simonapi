@@ -1,5 +1,5 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environments';
 import { isPlatformBrowser } from '@angular/common';
@@ -36,30 +36,60 @@ export interface SecuritySnapshot {
   blocked: BlockEntryView[];
 }
 
+const STORAGE_KEY = 'admin_api_key';
+
 @Injectable({ providedIn: 'root' })
 export class StatsService {
-  private readonly http= inject(HttpClient)
+  private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
 
   private readonly API: string;
   isBrowser = false;
 
+  /** Currently configured admin API key — persisted in sessionStorage. */
+  readonly apiKey = signal<string>('');
+
   constructor() {
     this.isBrowser = isPlatformBrowser(this.platformId);
     const origin = this.isBrowser ? window.origin : '';
     this.API = (environment.API_BASE_URL || origin) + '/api';
+
+    if (this.isBrowser) {
+      const stored = sessionStorage.getItem(STORAGE_KEY) ?? '';
+      this.apiKey.set(stored);
+    }
+  }
+
+  setApiKey(key: string): void {
+    this.apiKey.set(key.trim());
+    if (this.isBrowser) {
+      if (key.trim()) {
+        sessionStorage.setItem(STORAGE_KEY, key.trim());
+      } else {
+        sessionStorage.removeItem(STORAGE_KEY);
+      }
+    }
+  }
+
+  private headers(): { headers: HttpHeaders } {
+    return {
+      headers: new HttpHeaders({ 'x-api-key': this.apiKey() }),
+    };
   }
 
   getStats(): Observable<MetricsSnapshot> {
-    return this.http.get<MetricsSnapshot>(`${this.API}/_stats`);
+    return this.http.get<MetricsSnapshot>(`${this.API}/admin/stats`, this.headers());
   }
 
   getSecurity(): Observable<SecuritySnapshot> {
-    return this.http.get<SecuritySnapshot>(`${this.API}/_stats/security`);
+    return this.http.get<SecuritySnapshot>(`${this.API}/admin/stats/security`, this.headers());
   }
 
   unban(ip: string): Observable<void> {
     const params = new HttpParams({ fromObject: { ip } });
-    return this.http.get<void>(`${this.API}/_stats/security/unban`, { params });
+    return this.http.get<void>(`${this.API}/admin/stats/security/unban`, {
+      ...this.headers(),
+      params,
+    });
   }
 }

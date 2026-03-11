@@ -1,42 +1,59 @@
-import { Controller, Get, HttpCode, Query } from '@nestjs/common';
+import { Controller, Delete, Get, HttpCode, Query } from '@nestjs/common';
+import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { RequiresTier } from '../api-key/api-key.decorator';
 import { MetricsService } from './metrics.service';
 import { SkipMetrics } from './metrics.decorator';
 import { BlocklistService } from './blocklist.service';
 
-@Controller()
+/**
+ * Admin-only metrics & security dashboard.
+ *
+ * All routes require an `industrial` API key via `x-api-key` header.
+ * Rate limiting is intentionally skipped — admin tooling must not be
+ * blocked by its own counters.
+ */
+@ApiTags('Admin')
+@ApiSecurity('x-api-key')
+@Controller('admin/stats')
 export class MetricsController {
   constructor(
     private readonly metrics: MetricsService,
     private readonly blocklist: BlocklistService,
   ) {}
 
-  @Get('_stats')
+  @Get()
   @HttpCode(200)
   @SkipMetrics()
+  @RequiresTier('industrial')
+  @ApiOperation({ summary: 'Request metrics snapshot (admin)' })
   getStats() {
     return this.metrics.snapshot();
   }
 
-  @Get('_stats/reset')
+  @Delete('reset')
   @HttpCode(200)
   @SkipMetrics()
+  @RequiresTier('industrial')
+  @ApiOperation({ summary: 'Reset metrics counters (admin)' })
   async reset() {
     await this.metrics.reset();
     return { ok: true };
   }
 
-  @Get('_stats/security')
+  @Get('security')
   @HttpCode(200)
   @SkipMetrics()
+  @RequiresTier('industrial')
+  @ApiOperation({ summary: 'List currently blocked IPs (admin)' })
   security() {
-    return {
-      blocked: this.blocklist.list(),
-    };
+    return { blocked: this.blocklist.list() };
   }
 
-  @Get('_stats/security/unban')
+  @Get('security/unban')
   @HttpCode(200)
   @SkipMetrics()
+  @RequiresTier('industrial')
+  @ApiOperation({ summary: 'Unban an IP address (admin)' })
   unban(@Query('ip') ip: string) {
     if (!ip) return { ok: false, error: 'ip required' };
     const ok = this.blocklist.unban(ip);

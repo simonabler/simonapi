@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ApiKeyModule } from '../api-key/api-key.module';
 import { APP_GUARD, APP_INTERCEPTOR, Reflector } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MetricsService } from './metrics.service';
@@ -14,6 +15,7 @@ import { SecurityBlockEntity } from './entities/security-block.entity';
 
 @Module({
   imports: [
+    ApiKeyModule,
     TypeOrmModule.forFeature([MetricMetaEntity, MetricRouteEntity, MetricDailyEntity, SecurityBlockEntity]),
   ],
   providers: [

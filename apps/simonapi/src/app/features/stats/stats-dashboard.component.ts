@@ -40,7 +40,7 @@ export class StatsDashboardComponent implements OnDestroy {
   private readonly isBrowser: boolean;
 
     private readonly platformId = inject(PLATFORM_ID);
-      private readonly statsService = inject(StatsService);
+      readonly statsService = inject(StatsService);
   readonly vm$: Observable<ViewModel>;
 
   constructor(
@@ -58,6 +58,12 @@ export class StatsDashboardComponent implements OnDestroy {
     };
 
     this.vm$ = this.isBrowser ? this.createClientStream() : of(this.initialState);
+  }
+
+  onApiKeyChange(e: Event): void {
+    const val = (e.target as HTMLInputElement).value;
+    this.statsService.setApiKey(val);
+    this.refresh();
   }
 
   refresh(): void {
