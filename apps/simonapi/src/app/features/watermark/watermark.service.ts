@@ -64,7 +64,7 @@ export class WatermarkService {
   if (opts.anchor != null) {
     fd.append('anchor', String(opts.anchor));
   }
-  fd.append('opacity', String(1));
+  fd.append('opacity', String(opts.opacity ?? 0.5));
   fd.append('scale', String(opts.scale ?? 1));
   fd.append('margin', String(opts.margin ?? 0));
   fd.append('rotate', String(opts.rotate ?? 0));
