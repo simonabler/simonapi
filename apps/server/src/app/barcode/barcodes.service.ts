@@ -27,6 +27,7 @@ export class BarcodesService {
     scale?: number;
     height?: number;
   }): Promise<Buffer> {
+    this.validateStandardText(params.type, params.text);
     try {
       const { type, text, includetext = false, scale = 3, height } = params;
       const opts: any = { bcid: type, text, includetext, scale };
@@ -52,6 +53,64 @@ export class BarcodesService {
     } catch (e: any) {
       throw new BadRequestException(gs1ErrorBody([classifyGs1Error(e)]));
     }
+  }
+
+
+  // ---------------------------------------------------------------------------
+  // Standard barcode pre-validation (runs before bwip-js to give clear errors)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Validates the text payload for standard barcode types that have strict
+   * format requirements. Throws BadRequestException with a clear message so
+   * the bwip-js opaque error never reaches the client.
+   */
+  private validateStandardText(type: StandardBarcodeType, text: string): void {
+    const t = text.trim();
+
+    switch (type) {
+      case StandardBarcodeType.EAN13: {
+        if (!/^\d{12,13}$/.test(t))
+          throw new BadRequestException('EAN-13 requires 12 or 13 digits (check digit is optional — it will be verified).');
+        if (t.length === 13 && !this.eanCheckDigitValid(t))
+          throw new BadRequestException(`EAN-13 check digit is wrong. Expected ${this.eanCheckDigit(t.slice(0, 12))}, got ${t[12]}.`);
+        break;
+      }
+      case StandardBarcodeType.EAN8: {
+        if (!/^\d{7,8}$/.test(t))
+          throw new BadRequestException('EAN-8 requires 7 or 8 digits (check digit is optional — it will be verified).');
+        if (t.length === 8 && !this.eanCheckDigitValid(t))
+          throw new BadRequestException(`EAN-8 check digit is wrong. Expected ${this.eanCheckDigit(t.slice(0, 7))}, got ${t[7]}.`);
+        break;
+      }
+      case StandardBarcodeType.UPCA: {
+        if (!/^\d{11,12}$/.test(t))
+          throw new BadRequestException('UPC-A requires 11 or 12 digits (check digit is optional — it will be verified).');
+        if (t.length === 12 && !this.eanCheckDigitValid(t))
+          throw new BadRequestException(`UPC-A check digit is wrong. Expected ${this.eanCheckDigit(t.slice(0, 11))}, got ${t[11]}.`);
+        break;
+      }
+      case StandardBarcodeType.ITF14: {
+        if (!/^\d{13,14}$/.test(t))
+          throw new BadRequestException('ITF-14 requires 13 or 14 digits.');
+        break;
+      }
+      // CODE128, CODE39, PDF417, DATAMATRIX accept arbitrary content — bwip handles it
+    }
+  }
+
+  /** Compute EAN/UPC check digit for a digit string (without check digit). */
+  private eanCheckDigit(digits: string): string {
+    let sum = 0;
+    for (let i = 0; i < digits.length; i++) {
+      sum += parseInt(digits[i], 10) * (i % 2 === 0 ? 1 : 3);
+    }
+    return String((10 - (sum % 10)) % 10);
+  }
+
+  /** Verify that the last character is the correct EAN check digit. */
+  private eanCheckDigitValid(full: string): boolean {
+    return this.eanCheckDigit(full.slice(0, -1)) === full[full.length - 1];
   }
 
   // ---------------------------------------------------------------------------
