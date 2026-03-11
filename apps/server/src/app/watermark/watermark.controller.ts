@@ -21,7 +21,7 @@ export class WatermarkController {
 
   @Post('apply')
   @TierRateLimit()
-  @ApiOperation({ summary: 'Bild hochladen und automatisch mit Wasserzeichen versehen (Logo oder Text).' })
+  @ApiOperation({ summary: 'Apply a watermark (logo or text) to an uploaded image.' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Multipart Upload: "file" (Pflicht) + optional "logo" bei mode=logo + weitere Felder',
@@ -57,7 +57,7 @@ export class WatermarkController {
       },
     },
   })
-  @ApiResponse({ status: 200, description: 'Gibt das wasserzeichen-versehene Bild zurück (gleiche Bildart wie Upload wenn möglich).' })
+  @ApiResponse({ status: 201, description: 'Returns the watermarked image in the same format as the upload (when supported).' })
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'file', maxCount: 1 },
@@ -66,7 +66,7 @@ export class WatermarkController {
       limits: { fileSize: 25 * 1024 * 1024 }, // 25 MB per file
       fileFilter: (_req, file, cb) => {
         const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
-        if (!allowed.includes(file.mimetype)) return cb(new BadRequestException('Only JPEG, PNG, WEBP and AVIF are allowed.'), false);
+        if (!allowed.includes(file.mimetype)) return cb(new BadRequestException('Only JPEG, PNG, WEBP and AVIF are accepted.'), false);
         cb(null, true);
       },
     }),

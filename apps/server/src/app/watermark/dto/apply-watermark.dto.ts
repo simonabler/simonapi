@@ -22,7 +22,7 @@ export class ApplyWatermarkDto {
   mode: Mode;
 
   // New absolute position (x,y) in px; when provided, overrides margin-based offset
-  @ApiPropertyOptional({ description: 'Absolute Position "x,y" in px; überschreibt margin-basiertes Offset.' })
+  @ApiPropertyOptional({ description: 'Absolute position "x,y" in px; overrides anchor/margin-based offset.' })
   @IsOptional()
   @IsString()
   position?: string;
@@ -41,7 +41,7 @@ export class ApplyWatermarkDto {
   @Max(1)
   opacity?: number = 0.5;
 
-  @ApiPropertyOptional({ description: 'Logo-Breite relativ zur Bildbreite (0..1)', default: 0.2 })
+  @ApiPropertyOptional({ description: 'Logo width relative to image width (0..1)', default: 0.2 })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
