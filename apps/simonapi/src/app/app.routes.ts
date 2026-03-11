@@ -45,7 +45,12 @@ export const appRoutes: Route[] = [
   {
     path: 'admin/stats',
     loadComponent: () => import('./features/stats/stats-dashboard.component').then(m => m.StatsDashboardComponent),
-    title: 'API Stats',
+    title: 'Admin – Stats',
+  },
+  {
+    path: 'admin/api-keys',
+    loadComponent: () => import('./features/stats/api-keys.component').then(m => m.ApiKeysComponent),
+    title: 'Admin – API Keys',
   },
   {
     path: 'crypto',

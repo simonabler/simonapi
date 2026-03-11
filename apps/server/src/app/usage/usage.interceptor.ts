@@ -16,6 +16,10 @@ export class UsageInterceptor implements NestInterceptor {
 
     const path = req.originalUrl || req.url;
 
+    // Admin routes are authenticated via API key (industrial tier) and must
+    // never be blocked by their own rate-limit counters.
+    if (path.startsWith('/admin/')) return next.handle();
+
     // Prefer the resolved key attached by ApiKeyGuard (validated, tier known).
     // Fall back to the raw header string, then real client IP, then 'anonymous'.
     //

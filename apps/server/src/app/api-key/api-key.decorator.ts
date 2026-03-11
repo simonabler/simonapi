@@ -35,3 +35,16 @@ export const RequiresTier = (minTier: ApiKeyTier) =>
  *   \@Post('sscc/build')
  */
 export const TierRateLimit = () => SetMetadata(TIER_RATE_LIMIT_KEY, true);
+
+/**
+ * Hard gate: the caller MUST supply the static admin key from ADMIN_KEY env var.
+ * Completely independent of the tier system and DB — purely env-based.
+ *
+ * Use only on internal admin/ops endpoints (/admin/stats, /admin/usage).
+ *
+ * @example
+ *   \@RequiresAdminKey()
+ *   \@Get('admin/stats')
+ */
+export const REQUIRES_ADMIN_KEY = 'requiresAdminKey';
+export const RequiresAdminKey = () => SetMetadata(REQUIRES_ADMIN_KEY, true);

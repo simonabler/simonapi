@@ -8,7 +8,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { ApiKeyTier } from './entities/api-key.entity';
 import { ApiKeyService, ResolvedKey } from './api-key.service';
-import { REQUIRES_TIER_KEY, TIER_RATE_LIMIT_KEY } from './api-key.decorator';
+import { REQUIRES_ADMIN_KEY, REQUIRES_TIER_KEY, TIER_RATE_LIMIT_KEY } from './api-key.decorator';
 
 const TIER_ORDER: ApiKeyTier[] = ['free', 'pro', 'industrial'];
 
@@ -27,6 +27,37 @@ export class ApiKeyGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest<any>();
+
+    // ── @RequiresAdminKey() — env-based admin gate ───────────────────────────
+    // Compared with constant-time equality to prevent timing attacks.
+    // The key must be set in the ADMIN_KEY environment variable.
+    const requiresAdmin = this.reflector.getAllAndOverride<boolean | undefined>(
+      REQUIRES_ADMIN_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+    if (requiresAdmin) {
+      const adminKey = process.env['ADMIN_KEY'];
+      if (!adminKey) {
+        // Server misconfiguration — ADMIN_KEY not set
+        throw new ForbiddenException('Admin endpoint not configured (ADMIN_KEY missing)');
+      }
+      const provided: string = req.headers['x-api-key'] ?? '';
+      // Constant-time comparison via Buffer to mitigate timing attacks
+      const aLen = Buffer.byteLength(adminKey);
+      const bLen = Buffer.byteLength(provided);
+      const a = Buffer.alloc(aLen, 0);
+      const b = Buffer.alloc(aLen, 0);
+      Buffer.from(adminKey).copy(a);
+      Buffer.from(provided.slice(0, aLen)).copy(b);
+      const match = a.equals(b) && aLen === bLen;
+      if (!match) {
+        throw new UnauthorizedException({
+          message: 'Admin key required',
+          hint: 'Send your ADMIN_KEY as header: x-api-key: <admin-key>',
+        });
+      }
+      return true;
+    }
 
     // ── Determine mode from metadata ────────────────────────────────────────
     const minTier = this.reflector.getAllAndOverride<ApiKeyTier | undefined>(

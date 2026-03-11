@@ -1,4 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Component, inject, Inject, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable, Subject, forkJoin, merge, of, timer } from 'rxjs';
@@ -25,6 +26,8 @@ interface ViewModel {
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
+    RouterLinkActive,
     StatsCardComponent,
     SecurityTableComponent,
     DurationPipe,
@@ -40,7 +43,7 @@ export class StatsDashboardComponent implements OnDestroy {
   private readonly isBrowser: boolean;
 
     private readonly platformId = inject(PLATFORM_ID);
-      private readonly statsService = inject(StatsService);
+      readonly statsService = inject(StatsService);
   readonly vm$: Observable<ViewModel>;
 
   constructor(
@@ -58,6 +61,12 @@ export class StatsDashboardComponent implements OnDestroy {
     };
 
     this.vm$ = this.isBrowser ? this.createClientStream() : of(this.initialState);
+  }
+
+  onApiKeyChange(e: Event): void {
+    const val = (e.target as HTMLInputElement).value;
+    this.statsService.setApiKey(val);
+    this.refresh();
   }
 
   refresh(): void {
