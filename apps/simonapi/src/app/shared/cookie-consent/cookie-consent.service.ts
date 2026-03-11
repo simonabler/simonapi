@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 export type CookieConsentPreferences = {
@@ -13,7 +13,7 @@ export class CookieConsentService {
   private readonly cookieName = 'simonapi-consent';
   private cache: CookieConsentPreferences | null | undefined;
 
-  constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {}
+  private readonly platformId = inject(PLATFORM_ID);
 
   private isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);

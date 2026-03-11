@@ -121,5 +121,18 @@
       "jest": "^30.0.2",
       "jest-environment-jsdom": "^30.0.2"
     }
+  },
+  "optionalDependencies": {
+    "@swc/core-linux-x64-gnu": "1.5.7",
+    "@swc/core-linux-x64-musl": "1.5.7",
+    "@swc/core-darwin-x64": "1.5.7",
+    "@swc/core-darwin-arm64": "1.5.7",
+    "@swc/core-win32-x64-msvc": "1.5.7",
+    "@esbuild/linux-x64": "0.25.5",
+    "@esbuild/linux-arm64": "0.25.5",
+    "@esbuild/linux-arm": "0.25.5",
+    "@esbuild/darwin-x64": "0.25.5",
+    "@esbuild/darwin-arm64": "0.25.5",
+    "@esbuild/win32-x64": "0.25.5"
   }
 }

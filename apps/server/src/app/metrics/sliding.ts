@@ -34,7 +34,7 @@ export class SlidingDistinct {
 
   distinctCount(now = Date.now()) {
     this.prune(now);
-    let set = new Set<string>();
+    const set = new Set<string>();
     for (const s of this.buckets.values()) for (const v of s) set.add(v);
     return set.size;
   }

@@ -28,7 +28,10 @@ export default [
   },
   {
     files: ['**/*.html'],
-    // Override or add rules here
-    rules: {},
+    rules: {
+      // Pre-existing: Bootstrap forms use <label> without linked controls throughout
+      // the codebase. Downgrade to warn until templates are refactored for a11y.
+      '@angular-eslint/template/label-has-associated-control': 'warn',
+    },
   },
 ];

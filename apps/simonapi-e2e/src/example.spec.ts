@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-test('has title', async ({ page }) => {
+test('home page loads and shows API Hub branding', async ({ page }) => {
   await page.goto('/');
-
-  // Expect h1 to contain a substring.
-  expect(await page.locator('h1').innerText()).toContain('Welcome');
+  await expect(page.locator('h1')).toBeVisible();
+  // Navbar brand is always present
+  await expect(page.locator('.navbar-brand')).toContainText('API Hub');
 });
