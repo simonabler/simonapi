@@ -18,6 +18,8 @@ import { debounceTime, filter, Subscription } from 'rxjs';
 import { WatermarkAnchor, WatermarkOptions, WatermarkService } from '../watermark.service';
 import { DndDirective } from './dnd.directive';
 
+const MAX_FILE_BYTES = 26214400; // 25 MB — must match backend limits.fileSize
+
 @Component({
   selector: 'app-watermark-uploader',
   standalone: true,
@@ -40,6 +42,8 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
 
   loading = false;
   errorMsg: string | null = null;
+  mainFileError: string | null = null;
+  logoFileError: string | null = null;
 
   dragging = false;
   dragOffsetX = 0;
@@ -71,6 +75,12 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
     'top-left',
   ];
 
+
+  private formatBytes(bytes: number): string {
+    return bytes > 1_048_576
+      ? `${(bytes / 1_048_576).toFixed(1)} MB`
+      : `${(bytes / 1024).toFixed(0)} KB`;
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -162,10 +172,14 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
   }
 
   private setMainFile(file: File) {
+    if (file.size > MAX_FILE_BYTES) {
+      this.mainFileError = `File too large (${this.formatBytes(file.size)}). Max 25 MB.`;
+      return;
+    }
+    this.mainFileError = null;
     this.mainFile = file;
     this.cleanupObjectUrl('mainFileUrl');
     this.mainFileUrl = URL.createObjectURL(file);
-    // Reset preview when base image changes
     this.cleanupObjectUrl('previewUrl');
     if (this.form.get('autoPreview')?.value) {
       this.updatePreview();
@@ -173,10 +187,14 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
   }
 
   private setLogoFile(file: File) {
+    if (file.size > MAX_FILE_BYTES) {
+      this.logoFileError = `File too large (${this.formatBytes(file.size)}). Max 25 MB.`;
+      return;
+    }
+    this.logoFileError = null;
     this.logoFile = file;
     this.cleanupObjectUrl('logoFileUrl');
     this.logoFileUrl = URL.createObjectURL(file);
-    // Switch mode to logo automatically
     this.form.patchValue({ mode: 'logo' });
     if (this.form.get('autoPreview')?.value && this.mainFile) {
       this.updatePreview();

@@ -61,9 +61,10 @@ export class WatermarkController {
       { name: 'file', maxCount: 1 },
       { name: 'logo', maxCount: 1 },
     ], {
+      limits: { fileSize: 25 * 1024 * 1024 }, // 25 MB per file
       fileFilter: (_req, file, cb) => {
         const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
-        if (!allowed.includes(file.mimetype)) return cb(new BadRequestException('Nur JPEG, PNG, WEBP, AVIF erlaubt.'), false);
+        if (!allowed.includes(file.mimetype)) return cb(new BadRequestException('Only JPEG, PNG, WEBP and AVIF are allowed.'), false);
         cb(null, true);
       },
     }),

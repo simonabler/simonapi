@@ -12,6 +12,7 @@
             <label class="stretched-link" for="mainFileInput" aria-label="Select main image"></label>
           </div>
           <div class="text-muted small" *ngIf="mainFile">Selected: {{ mainFile.name }}</div>
+          <div class="alert alert-danger py-1 small mb-0" *ngIf="mainFileError">⚠️ {{ mainFileError }}</div>
 
           <!-- Logo Dropzone -->
           <div class="dropzone text-center p-3" appDnd (fileDropped)="onLogoDropped($event)">
@@ -21,6 +22,7 @@
             <label class="stretched-link" for="logoFileInput" aria-label="Select logo"></label>
           </div>
           <div class="text-muted small" *ngIf="logoFile">Selected: {{ logoFile.name }}</div>
+          <div class="alert alert-danger py-1 small mb-0" *ngIf="logoFileError">⚠️ {{ logoFileError }}</div>
         </div>
       </div>
     </div>
