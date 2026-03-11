@@ -36,3 +36,45 @@
     .btn { width: 100%; justify-content: center; }
   }
 }
+
+// ── Unified catalog tabs (Info / Try) ────────────────────────────────────────
+.catalog-tabs {
+  .nav-link {
+    padding: .15rem .5rem;
+    font-size: .72rem;
+    cursor: pointer;
+    color: var(--bs-body-color);
+    border-radius: var(--radius, .375rem);
+
+    &.active {
+      background: linear-gradient(135deg, var(--brand-2), var(--brand));
+      color: #0f172a;
+    }
+  }
+}
+
+.catalog-desc {
+  font-size: .82rem;
+  color: var(--bs-body-secondary, #6c757d);
+  line-height: 1.55;
+  margin-top: .5rem;
+  margin-bottom: 0;
+  flex: 1;                  // pushes CTAs to bottom when cards align in a row
+}
+
+.catalog-try {
+  margin-top: .5rem;
+  flex: 1;
+
+  .code {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: var(--radius, .375rem);
+    padding: .6rem .75rem;
+    overflow: auto;
+    margin-bottom: 0;
+    font-size: .74rem;
+
+    code { white-space: pre-wrap; word-break: break-all; }
+  }
+}

@@ -91,7 +91,7 @@
 
 
 <!-- ══════════════════════════════════════════════
-     API CATALOG
+     API CATALOG  (unified — Info + Try tabs)
 ══════════════════════════════════════════════════ -->
 <section id="catalog" class="py-5">
   <div class="container">
@@ -122,15 +122,31 @@
                   <div class="text-body-secondary" style="font-size:.76rem">{{ card.sub }}</div>
                 </div>
               </div>
-              @if (card.badge) {
-              <span class="badge"
-                    style="background:var(--brand);color:#0f172a;font-size:.7rem">
-                {{ card.badge }}
-              </span>
-              }
+              <div class="d-flex align-items-center gap-2">
+                @if (card.badge) {
+                <span class="badge"
+                      style="background:var(--brand);color:#0f172a;font-size:.7rem">
+                  {{ card.badge }}
+                </span>
+                }
+                @if (card.curl) {
+                <ul class="nav nav-pills catalog-tabs">
+                  <li class="nav-item">
+                    <button type="button" class="nav-link"
+                            [class.active]="card.activeTab === 'info'"
+                            (click)="setTab(card.key, 'info')">Info</button>
+                  </li>
+                  <li class="nav-item">
+                    <button type="button" class="nav-link"
+                            [class.active]="card.activeTab === 'try'"
+                            (click)="setTab(card.key, 'try')">Try</button>
+                  </li>
+                </ul>
+                }
+              </div>
             </div>
 
-            <!-- Routes -->
+            <!-- Routes (always visible) -->
             <div class="catalog-routes">
               @for (r of card.routes; track r.path) {
               <div class="route-row">
@@ -148,15 +164,42 @@
               }
             </div>
 
+            <!-- Tab body -->
+            @if (card.activeTab === 'try' && card.curl) {
+              <div class="catalog-try">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                  <strong class="small text-body-secondary">{{ card.curlTitle }}</strong>
+                  <button class="btn btn-outline-secondary btn-sm py-0 px-2"
+                          style="font-size:.72rem"
+                          (click)="copy(card.curl)">Copy</button>
+                </div>
+                <pre class="code"><code>{{ card.curl }}</code></pre>
+              </div>
+            } @else if (card.description) {
+              <p class="catalog-desc">{{ card.description }}</p>
+            }
+
             <!-- CTAs -->
             <div class="catalog-cta">
-              <a [routerLink]="card.ctaPrimary.href" class="btn btn-sm btn-primary">
-                {{ card.ctaPrimary.label }}
-              </a>
+              @if (card.ctaPrimary.external) {
+                <a [href]="card.ctaPrimary.href" class="btn btn-sm btn-primary">
+                  {{ card.ctaPrimary.label }}
+                </a>
+              } @else {
+                <a [routerLink]="card.ctaPrimary.href" class="btn btn-sm btn-primary">
+                  {{ card.ctaPrimary.label }}
+                </a>
+              }
               @if (card.ctaSecondary) {
-              <a [href]="card.ctaSecondary.href" class="btn btn-sm btn-outline-secondary">
-                {{ card.ctaSecondary.label }}
-              </a>
+                @if (card.ctaSecondary.external) {
+                  <a [href]="card.ctaSecondary.href" class="btn btn-sm btn-outline-secondary">
+                    {{ card.ctaSecondary.label }}
+                  </a>
+                } @else {
+                  <a [routerLink]="card.ctaSecondary.href" class="btn btn-sm btn-outline-secondary">
+                    {{ card.ctaSecondary.label }}
+                  </a>
+                }
               }
             </div>
 
@@ -168,55 +211,6 @@
   </div>
 </section>
 
-
-<!-- ══════════════════════════════════════════════
-     QUICK-START SHOWCASE (Tab-Toggle, 3 highlights)
-══════════════════════════════════════════════════ -->
-<section class="py-4">
-  <div class="container">
-    <p class="section-label mb-4">Quick Start</p>
-    <div class="row g-3">
-      @for (s of services; track s.key) {
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card service-card h-100 glass">
-          <div class="card-header bg-transparent border-0 pb-0
-                      d-flex align-items-center justify-content-between">
-            <h3 class="h6 m-0 d-flex align-items-center gap-2">
-              <span class="icon">{{ s.icon }}</span>{{ s.title }}
-            </h3>
-            <ul class="nav nav-pills small">
-              <li class="nav-item">
-                <button type="button" class="nav-link"
-                        [class.active]="s.activeTab === 'info'"
-                        (click)="setTab(s.key, 'info')">Info</button>
-              </li>
-              <li class="nav-item">
-                <button type="button" class="nav-link"
-                        [class.active]="s.activeTab === 'api'"
-                        (click)="setTab(s.key, 'api')">API</button>
-              </li>
-            </ul>
-          </div>
-          <div class="card-body">
-            @if (s.activeTab === 'info') {
-            <p class="service-desc mb-3">{{ s.description }}</p>
-            <a class="btn btn-primary btn-sm" [routerLink]="s.route">Open</a>
-            } @else {
-            <div class="d-flex align-items-center justify-content-between mb-2">
-              <strong class="small">{{ s.apiTitle }}</strong>
-              <button class="btn btn-outline-secondary btn-sm" (click)="copy(s.curl)">
-                Copy
-              </button>
-            </div>
-            <pre class="code"><code>{{ s.curl }}</code></pre>
-            }
-          </div>
-        </div>
-      </div>
-      }
-    </div>
-  </div>
-</section>
 
 
 <!-- ══════════════════════════════════════════════
