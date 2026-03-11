@@ -218,7 +218,7 @@ export class WatermarkService {
     const gap = dto.gap ?? 128;
     const color = this.colorToRgba(dto.color ?? '#ffffff', dto.opacity ?? 0.2);
     const stroke = dto.strokeWidth && dto.strokeWidth > 0 ? ` stroke="${dto.strokeColor ?? '#000'}" stroke-width="${dto.strokeWidth}"` : '';
-    const rotate = dto.rotate ?? -30;
+    const rotate = dto.rotate ?? 0;
 
     const tileW = gap * 2;
     const tileH = gap * 2;
@@ -241,7 +241,7 @@ export class WatermarkService {
     const meta = await Sharp.default(scaled).metadata();
     const b64 = scaled.toString('base64');
     const gap = dto.gap ?? 256;
-    const rotate = dto.rotate ?? -30;
+    const rotate = dto.rotate ?? 0;
     const h = meta.height ?? targetLogoW; // best effort
 
     return `<?xml version="1.0" encoding="UTF-8"?>
