@@ -43,6 +43,13 @@
     <priority>0.6</priority>
   </url>
 
+  <!-- Signpack — file signing workflow -->
+  <url>
+    <loc>https://hub.abler.tirol/signpack</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
   <!-- Watermark Tool -->
   <url>
     <loc>https://hub.abler.tirol/tools/watermark</loc>

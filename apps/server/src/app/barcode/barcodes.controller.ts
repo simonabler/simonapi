@@ -84,6 +84,9 @@ export class BarcodesController {
   })
   @ApiResponse({ status: 400, description: 'Validation error — see error.details[]' })
   @Header('Content-Type', 'image/png')
+  @Header('Deprecation', 'true')
+  @Header('Sunset', 'Sat, 01 Jan 2026 00:00:00 GMT')
+  @Header('Link', '</api/barcode/gs1/render>; rel="successor-version"')
   @HttpCode(HttpStatus.OK)
   async gs1Png(@Body() q: GenerateGs1QueryDto, @Res() response: Response) {
     const { symbology, items, includetext, scale, height } = q;
@@ -101,6 +104,9 @@ export class BarcodesController {
   })
   @ApiResponse({ status: 400, description: 'Validation error — see error.details[]' })
   @Header('Content-Type', 'image/svg+xml; charset=utf-8')
+  @Header('Deprecation', 'true')
+  @Header('Sunset', 'Sat, 01 Jan 2026 00:00:00 GMT')
+  @Header('Link', '</api/barcode/gs1/render>; rel="successor-version"')
   @HttpCode(HttpStatus.OK)
   async gs1Svg(@Body() q: GenerateGs1QueryDto): Promise<string> {
     const { symbology, items, includetext, scale, height } = q;

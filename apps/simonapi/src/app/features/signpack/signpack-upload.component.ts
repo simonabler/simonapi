@@ -6,6 +6,8 @@ import { SignpackService } from './signpack.service';
 
 interface ExpiryOption { label: string; minutes: number }
 
+const MAX_FILE_BYTES = 25 * 1024 * 1024; // 25 MB — must match server FILE_MAX_BYTES
+
 const EXPIRY_OPTIONS: ExpiryOption[] = [
   { label: 'No expiry',   minutes: 0 },
   { label: '1 hour',      minutes: 60 },
@@ -142,6 +144,9 @@ const EXPIRY_OPTIONS: ExpiryOption[] = [
         }
       </div>
       <input #fileInput type="file" hidden (change)="onFileChange($event)">
+      @if (fileError()) {
+        <div class="alert alert-danger py-2 small mt-2 mb-0">⚠️ {{ fileError() }}</div>
+      }
     </div>
 
     <div class="col-12 col-lg-5">
@@ -183,21 +188,32 @@ export class SignpackUploadComponent {
   readonly selectedFile  = signal<File | null>(null);
   readonly uploading     = signal(false);
   readonly uploadError   = signal<string | null>(null);
+  readonly fileError     = signal<string | null>(null);
 
   isDragOver     = false;
   selectedExpiry = 0;
   readonly expiryOptions = EXPIRY_OPTIONS;
 
+  private setFile(f: File): void {
+    if (f.size > MAX_FILE_BYTES) {
+      this.fileError.set(`File too large (${this.formatBytes(f.size)}). Maximum is 25 MB.`);
+      this.selectedFile.set(null);
+      return;
+    }
+    this.fileError.set(null);
+    this.selectedFile.set(f);
+  }
+
   onFileChange(e: Event): void {
     const f = (e.target as HTMLInputElement).files?.[0];
-    if (f) this.selectedFile.set(f);
+    if (f) this.setFile(f);
   }
 
   onDrop(e: DragEvent): void {
     e.preventDefault();
     this.isDragOver = false;
     const f = e.dataTransfer?.files?.[0];
-    if (f) this.selectedFile.set(f);
+    if (f) this.setFile(f);
   }
 
   upload(): void {

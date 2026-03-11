@@ -59,7 +59,16 @@ async function bootstrap() {
   // Swagger/OpenAPI
   const config = new DocumentBuilder()
     .setTitle('Simon API Hub – Barcode/GS1')
-    .setDescription('API for standard barcodes and GS1 rendering')
+    .setDescription(
+      'Multi-purpose API hub. Covers:\n' +
+      '- **Barcodes & GS1** — standard barcodes (PNG/SVG), GS1-128, DataMatrix, Digital Link, SSCC\n' +
+      '- **QR Codes** — generate PNG/SVG QR codes with custom options\n' +
+      '- **Crypto** — TOTP, HMAC/SHA hashing, JWT sign/verify, Ed25519 keys\n' +
+      '- **Watermark** — apply text or image watermarks to uploaded images\n' +
+      '- **Signpack** — token-protected file hand-off and signing workflow\n' +
+      '- **Dev Utilities** — UUID, slug, hash, markdown, echo\n' +
+      '- **Lock** — webhook/MQTT-based smart lock management'
+    )
     .setVersion('1.0.0')
     .addServer('https://hub.abler.tirol')
     .addApiKey(
