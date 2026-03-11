@@ -10,6 +10,7 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { TierRateLimit } from '../api-key/api-key.decorator';
 import { WatermarkService } from './watermark.service';
 import { ApplyWatermarkDto } from './dto/apply-watermark.dto';
 
@@ -19,6 +20,7 @@ export class WatermarkController {
   constructor(private readonly service: WatermarkService) {}
 
   @Post('apply')
+  @TierRateLimit()
   @ApiOperation({ summary: 'Bild hochladen und automatisch mit Wasserzeichen versehen (Logo oder Text).' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
