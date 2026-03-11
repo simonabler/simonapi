@@ -19,7 +19,10 @@ FROM node:24-alpine AS runtime
 ENV NODE_ENV=production
 
 RUN apk update && apk upgrade
-RUN apk add --no-cache python3 make g++ sqlite-dev py3-setuptools
+RUN apk add --no-cache python3 make g++ sqlite-dev py3-setuptools \
+    # Fontconfig + fonts — required by libvips/Sharp for SVG text rendering \
+    fontconfig ttf-dejavu && \
+    fc-cache -f
 
 
 
