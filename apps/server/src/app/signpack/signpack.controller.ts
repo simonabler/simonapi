@@ -17,12 +17,14 @@ import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SignpackService } from './signpack.service';
+import { TierRateLimit } from '../api-key/api-key.decorator';
 import { CreateSignpackDto } from './dto/create-signpack.dto';
 import { ParseBoolPipe } from '../common/pipes/parse-bool.pipe';
 import { SignUploadDto } from './dto/sign-upload.dto';
 
 @ApiTags('signpacks')
 @Controller('signpacks')
+@TierRateLimit()
 export class SignpackController {
   constructor(private readonly svc: SignpackService) {}
 
