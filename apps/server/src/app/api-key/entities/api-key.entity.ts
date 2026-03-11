@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -15,6 +16,8 @@ export type ApiKeyTier = 'free' | 'pro' | 'industrial';
  * The prefix ("sk_pro_", "sk_ind_", "sk_free_") is stored plain so we can
  * look up candidates by prefix before comparing the hash.
  */
+// Composite index used by the hot validate() path: findOneBy({ prefix, active })
+@Index('IDX_API_KEYS_PREFIX_ACTIVE', ['prefix', 'active'])
 @Entity('api_keys')
 export class ApiKeyEntity {
   @PrimaryGeneratedColumn('uuid')
