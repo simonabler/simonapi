@@ -21,6 +21,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./.env:/app/.env
+      - /home/simon/simonapi/data:/data
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.simonapi-backend.tls=true"
