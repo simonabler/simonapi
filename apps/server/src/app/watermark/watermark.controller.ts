@@ -10,6 +10,7 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { TierRateLimit } from '../api-key/api-key.decorator';
 import { WatermarkService } from './watermark.service';
 import { ApplyWatermarkDto } from './dto/apply-watermark.dto';
 
@@ -19,7 +20,8 @@ export class WatermarkController {
   constructor(private readonly service: WatermarkService) {}
 
   @Post('apply')
-  @ApiOperation({ summary: 'Bild hochladen und automatisch mit Wasserzeichen versehen (Logo oder Text).' })
+  @TierRateLimit()
+  @ApiOperation({ summary: 'Apply a watermark (logo or text) to an uploaded image.' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Multipart Upload: "file" (Pflicht) + optional "logo" bei mode=logo + weitere Felder',
@@ -55,15 +57,16 @@ export class WatermarkController {
       },
     },
   })
-  @ApiResponse({ status: 200, description: 'Gibt das wasserzeichen-versehene Bild zurück (gleiche Bildart wie Upload wenn möglich).' })
+  @ApiResponse({ status: 201, description: 'Returns the watermarked image in the same format as the upload (when supported).' })
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'file', maxCount: 1 },
       { name: 'logo', maxCount: 1 },
     ], {
+      limits: { fileSize: 25 * 1024 * 1024 }, // 25 MB per file
       fileFilter: (_req, file, cb) => {
         const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
-        if (!allowed.includes(file.mimetype)) return cb(new BadRequestException('Nur JPEG, PNG, WEBP, AVIF erlaubt.'), false);
+        if (!allowed.includes(file.mimetype)) return cb(new BadRequestException('Only JPEG, PNG, WEBP and AVIF are accepted.'), false);
         cb(null, true);
       },
     }),

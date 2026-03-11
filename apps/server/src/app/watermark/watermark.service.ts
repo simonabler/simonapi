@@ -28,26 +28,36 @@ export class WatermarkService {
 
     if (dto.mode === WatermarkMode.LOGO) {
       const logo = await this.resolveLogo(logoBuffer);
-      if (!logo) throw new BadRequestException('Logo nicht gefunden. Sende Feld "logo" als Datei oder verwende mode=text.');
+      if (!logo) throw new BadRequestException('No logo found. Send a "logo" file field or use mode=text.');
 
       if (dto.tile) {
         // Create a tiled SVG pattern from the logo
         const svg = await this.buildLogoTileSvg(logo, width, height, dto);
         overlays.push({ input: Buffer.from(svg), top: 0, left: 0 });
       } else {
-        const scaled = await this.scaleLogoToWidth(logo, Math.max(1, Math.round(width * (dto.scale ?? 0.2))));
+        // Cap logo dimensions to image dimensions so Sharp never gets an overlay larger than the base
+        const targetW = Math.max(1, Math.min(Math.round(width * (dto.scale ?? 0.2)), width));
+        const scaled = await this.scaleLogoToWidth(logo, targetW, height);
+        const wmW = scaled.info.width!;
+        const wmH = scaled.info.height!;
+
         const coord = this.resolveAbsolutePosition(dto.position);
         let top: number, left: number;
         if (coord) {
           ({ top, left } = coord);
         } else {
           const anchor = (dto.anchor ?? 'bottom-right') as WatermarkAnchor;
-          ({ top, left } = this.resolveAnchorPosition(width, height, scaled.info.width!, scaled.info.height!, anchor, dto.margin!));
+          ({ top, left } = this.resolveAnchorPosition(width, height, wmW, wmH, anchor, dto.margin!));
         }
+
+        // Clamp so the overlay never exceeds image bounds (Sharp hard requirement)
+        top  = Math.max(0, Math.min(top,  height - wmH));
+        left = Math.max(0, Math.min(left, width  - wmW));
+
         overlays.push({ input: scaled.buffer, top, left });
       }
     } else if (dto.mode === WatermarkMode.TEXT) {
-      if (!dto.text || !dto.text.trim()) throw new BadRequestException('Feld "text" ist erforderlich bei mode=text.');
+      if (!dto.text || !dto.text.trim()) throw new BadRequestException('Field "text" is required when mode=text.');
       const svg = dto.tile
         ? this.buildTextTileSvg(dto.text, width, height, dto)
         : this.buildTextSvg(dto.text, width, height, dto);
@@ -83,26 +93,27 @@ export class WatermarkService {
 
   private async resolveLogo(logoBuffer?: Buffer): Promise<Buffer | null> {
     if (logoBuffer && logoBuffer.length > 0) return logoBuffer;
-    // try to load a default logo from assets if present
+    // Resolve default logo relative to this source file so the path works
+    // in both local (src/) and production (dist/) environments.
     const candidates = [
-      path.resolve(process.cwd(), 'apps/server/src/assets/watermark/default-logo.png'),
-      path.resolve(process.cwd(), 'dist/apps/server/assets/watermark/default-logo.png'),
+      path.resolve(__dirname, 'assets', 'watermark', 'default-logo.png'),
+      path.resolve(__dirname, '..', 'assets', 'watermark', 'default-logo.png'),
     ];
     for (const candidate of candidates) {
       try {
         await fs.promises.access(candidate, fs.constants.R_OK);
         return await fs.promises.readFile(candidate);
       } catch {
-        // try next
+        // try next candidate
       }
     }
-    return null;
+    return null; // no default logo available — caller must handle
   }
 
-  private async scaleLogoToWidth(input: Buffer, targetWidth: number) {
-    const img = Sharp.default(input);
-    await img.metadata();
-    const resized = await img.resize({ width: targetWidth }).png().toBuffer();
+  private async scaleLogoToWidth(input: Buffer, targetWidth: number, maxHeight?: number) {
+    const resizeOpts: Sharp.ResizeOptions = { width: targetWidth, withoutEnlargement: true };
+    if (maxHeight) resizeOpts.height = maxHeight;
+    const resized = await Sharp.default(input).resize(resizeOpts).png().toBuffer();
     const resizedInfo = await Sharp.default(resized).metadata();
     return { buffer: resized, info: resizedInfo };
   }
@@ -218,7 +229,7 @@ export class WatermarkService {
     const gap = dto.gap ?? 128;
     const color = this.colorToRgba(dto.color ?? '#ffffff', dto.opacity ?? 0.2);
     const stroke = dto.strokeWidth && dto.strokeWidth > 0 ? ` stroke="${dto.strokeColor ?? '#000'}" stroke-width="${dto.strokeWidth}"` : '';
-    const rotate = dto.rotate ?? -30;
+    const rotate = dto.rotate ?? 0;
 
     const tileW = gap * 2;
     const tileH = gap * 2;
@@ -241,7 +252,7 @@ export class WatermarkService {
     const meta = await Sharp.default(scaled).metadata();
     const b64 = scaled.toString('base64');
     const gap = dto.gap ?? 256;
-    const rotate = dto.rotate ?? -30;
+    const rotate = dto.rotate ?? 0;
     const h = meta.height ?? targetLogoW; // best effort
 
     return `<?xml version="1.0" encoding="UTF-8"?>

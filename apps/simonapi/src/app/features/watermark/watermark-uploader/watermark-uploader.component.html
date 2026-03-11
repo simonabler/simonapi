@@ -12,6 +12,7 @@
             <label class="stretched-link" for="mainFileInput" aria-label="Select main image"></label>
           </div>
           <div class="text-muted small" *ngIf="mainFile">Selected: {{ mainFile.name }}</div>
+          <div class="alert alert-danger py-1 small mb-0" *ngIf="mainFileError">⚠️ {{ mainFileError }}</div>
 
           <!-- Logo Dropzone -->
           <div class="dropzone text-center p-3" appDnd (fileDropped)="onLogoDropped($event)">
@@ -21,6 +22,7 @@
             <label class="stretched-link" for="logoFileInput" aria-label="Select logo"></label>
           </div>
           <div class="text-muted small" *ngIf="logoFile">Selected: {{ logoFile.name }}</div>
+          <div class="alert alert-danger py-1 small mb-0" *ngIf="logoFileError">⚠️ {{ logoFileError }}</div>
         </div>
       </div>
     </div>
@@ -155,14 +157,14 @@
         <div class="card-body">
           <div class="preview-wrapper">
             <div #previewCanvas class="preview-canvas" (pointermove)="onPointerMove($event)" (pointerup)="endDrag($event)">
-              <img *ngIf="(previewUrl || mainFileUrl) as imgSrc" [src]="imgSrc" class="img-preview img-fluid" alt="Preview" />
+              <img #previewImg *ngIf="(previewUrl || mainFileUrl) as imgSrc" [src]="imgSrc" class="img-preview img-fluid" alt="Preview" (load)="onImageLoad($event)" />
 
               <!-- Draggable overlay: shows text or logo to position with mouse -->
               <ng-container *ngIf="mainFile && form.value.positionMode==='absolute'">
                 <div
                   class="overlay-draggable"
-                  [style.left.px]="form.value.positionX"
-                  [style.top.px]="form.value.positionY"
+                  [style.left.px]="(form.value.positionX ?? 0) / scaleX"
+                  [style.top.px]="(form.value.positionY ?? 0) / scaleY"
                   (pointerdown)="startDrag($event)"
                   [style.opacity]="form.value.opacity"
                   [style.transform]="'translate(-50%, -50%) rotate(' + form.value.rotate + 'deg) scale(' + form.value.scale + ')'

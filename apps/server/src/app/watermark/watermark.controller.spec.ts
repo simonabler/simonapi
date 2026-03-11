@@ -1,11 +1,19 @@
 import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { WatermarkModule } from './watermark.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
+import { WatermarkController } from './watermark.controller';
+import { WatermarkService } from './watermark.service';
+import { ApiKeyGuard } from '../api-key/api-key.guard';
 import * as Sharp from 'sharp';
 
 async function makePng(w = 200, h = 120) {
-  return await Sharp.default({ create: { width: w, height: h, channels: 3, background: { r: 255, g: 255, b: 255 } } }).png().toBuffer();
+  return await Sharp.default({
+    create: { width: w, height: h, channels: 3, background: { r: 255, g: 255, b: 255 } },
+  })
+    .png()
+    .toBuffer();
 }
 
 describe('WatermarkController (e2e-light)', () => {
@@ -13,8 +21,22 @@ describe('WatermarkController (e2e-light)', () => {
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [WatermarkModule],
-    }).compile();
+      imports: [
+        MulterModule.register({ storage: memoryStorage() }),
+      ],
+      controllers: [WatermarkController],
+      providers: [
+        WatermarkService,
+        // Mock ApiKeyGuard so the test module doesn't need TypeORM / DataSource
+        {
+          provide: ApiKeyGuard,
+          useValue: { canActivate: () => true },
+        },
+      ],
+    })
+      .overrideGuard(ApiKeyGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     app = moduleRef.createNestApplication();
     await app.init();
@@ -32,7 +54,7 @@ describe('WatermarkController (e2e-light)', () => {
       .field('mode', 'text')
       .field('text', '© Test')
       .attach('file', img, { filename: 'in.png', contentType: 'image/png' })
-      .expect(201); // Created
+      .expect(201);
 
     expect(res.headers['content-type']).toMatch(/image\/(png|jpeg|webp|avif)/);
     expect(res.body.length).toBeGreaterThan(100);

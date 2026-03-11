@@ -18,6 +18,8 @@ import { debounceTime, filter, Subscription } from 'rxjs';
 import { WatermarkAnchor, WatermarkOptions, WatermarkService } from '../watermark.service';
 import { DndDirective } from './dnd.directive';
 
+const MAX_FILE_BYTES = 26214400; // 25 MB — must match backend limits.fileSize
+
 @Component({
   selector: 'app-watermark-uploader',
   standalone: true,
@@ -40,6 +42,8 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
 
   loading = false;
   errorMsg: string | null = null;
+  mainFileError: string | null = null;
+  logoFileError: string | null = null;
 
   dragging = false;
   dragOffsetX = 0;
@@ -47,6 +51,32 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
 
   @ViewChild('previewCanvas', { static: false })
   previewCanvas?: ElementRef<HTMLDivElement>;
+
+  @ViewChild('previewImg', { static: false })
+  previewImg?: ElementRef<HTMLImageElement>;
+
+  /** Natural pixel dimensions of the loaded image — used to scale drag coords */
+  private naturalWidth = 0;
+  private naturalHeight = 0;
+
+  onImageLoad(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    this.naturalWidth = img.naturalWidth;
+    this.naturalHeight = img.naturalHeight;
+  }
+
+  /** Scale factor: CSS pixels → image pixels */
+  protected get scaleX(): number {
+    if (!this.previewImg || !this.naturalWidth) return 1;
+    const rendered = this.previewImg.nativeElement.getBoundingClientRect().width;
+    return rendered > 0 ? this.naturalWidth / rendered : 1;
+  }
+
+  protected get scaleY(): number {
+    if (!this.previewImg || !this.naturalHeight) return 1;
+    const rendered = this.previewImg.nativeElement.getBoundingClientRect().height;
+    return rendered > 0 ? this.naturalHeight / rendered : 1;
+  }
 
   private subs = new Subscription();
 
@@ -71,6 +101,12 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
     'top-left',
   ];
 
+
+  private formatBytes(bytes: number): string {
+    return bytes > 1_048_576
+      ? `${(bytes / 1_048_576).toFixed(1)} MB`
+      : `${(bytes / 1024).toFixed(0)} KB`;
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -162,10 +198,14 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
   }
 
   private setMainFile(file: File) {
+    if (file.size > MAX_FILE_BYTES) {
+      this.mainFileError = `File too large (${this.formatBytes(file.size)}). Max 25 MB.`;
+      return;
+    }
+    this.mainFileError = null;
     this.mainFile = file;
     this.cleanupObjectUrl('mainFileUrl');
     this.mainFileUrl = URL.createObjectURL(file);
-    // Reset preview when base image changes
     this.cleanupObjectUrl('previewUrl');
     if (this.form.get('autoPreview')?.value) {
       this.updatePreview();
@@ -173,10 +213,14 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
   }
 
   private setLogoFile(file: File) {
+    if (file.size > MAX_FILE_BYTES) {
+      this.logoFileError = `File too large (${this.formatBytes(file.size)}). Max 25 MB.`;
+      return;
+    }
+    this.logoFileError = null;
     this.logoFile = file;
     this.cleanupObjectUrl('logoFileUrl');
     this.logoFileUrl = URL.createObjectURL(file);
-    // Switch mode to logo automatically
     this.form.patchValue({ mode: 'logo' });
     if (this.form.get('autoPreview')?.value && this.mainFile) {
       this.updatePreview();
@@ -186,11 +230,11 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
   // Dragging overlay inside preview
   startDrag(event: PointerEvent) {
     if (!this.previewCanvas) return;
-    const canvas = this.previewCanvas.nativeElement;
-    const rect = canvas.getBoundingClientRect();
-    const x = this.form.value.positionX ?? 0;
-    const y = this.form.value.positionY ?? 0;
-    // Switch to absolute positioning when user drags
+    const imgEl = this.previewImg?.nativeElement ?? this.previewCanvas.nativeElement;
+    const rect = imgEl.getBoundingClientRect();
+    // Convert stored image-pixel coords back to CSS-pixel space for drag offset
+    const x = (this.form.value.positionX ?? 0) / this.scaleX;
+    const y = (this.form.value.positionY ?? 0) / this.scaleY;
     if (this.form.value.positionMode !== 'absolute') {
       this.form.patchValue({ positionMode: 'absolute' });
     }
@@ -201,16 +245,18 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
 
   onPointerMove(event: PointerEvent) {
     if (!this.dragging || !this.previewCanvas) return;
-    const canvas = this.previewCanvas.nativeElement;
-    const rect = canvas.getBoundingClientRect();
+    const imgEl = this.previewImg?.nativeElement ?? this.previewCanvas.nativeElement;
+    const rect = imgEl.getBoundingClientRect();
 
-    let newX = event.clientX - rect.left - this.dragOffsetX;
-    let newY = event.clientY - rect.top - this.dragOffsetY;
-    // Constrain within canvas bounds
-    newX = Math.max(0, Math.min(newX, rect.width));
-    newY = Math.max(0, Math.min(newY, rect.height));
+    // Position in CSS pixels within the rendered image
+    let cssX = event.clientX - rect.left - this.dragOffsetX;
+    let cssY = event.clientY - rect.top - this.dragOffsetY;
+    cssX = Math.max(0, Math.min(cssX, rect.width));
+    cssY = Math.max(0, Math.min(cssY, rect.height));
+
+    // Convert to actual image pixel coordinates for the backend
     this.form.patchValue(
-      { positionX: Math.round(newX), positionY: Math.round(newY) },
+      { positionX: Math.round(cssX * this.scaleX), positionY: Math.round(cssY * this.scaleY) },
       { emitEvent: true }
     );
   }
