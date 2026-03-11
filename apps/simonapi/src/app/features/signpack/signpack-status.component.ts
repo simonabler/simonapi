@@ -115,6 +115,23 @@ import { SignpackMeta, SignpackStatus } from './signpack.models';
     }
     @keyframes shimmer { to { background-position: -200% 0; } }
 
+    .save-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      padding: .2rem .6rem;
+      border-radius: 99px;
+      font-size: .72rem;
+      font-weight: 700;
+      background: color-mix(in oklab,#f59e0b,transparent 82%);
+      color: #92400e;
+      white-space: nowrap;
+    }
+    .status-link-card {
+      border-color: color-mix(in oklab,#f59e0b,transparent 60%);
+      background: color-mix(in oklab,#fef9c3,var(--surface) 60%);
+    }
+
     .bookmark-hint {
       display: inline-flex;
       align-items: center;
@@ -205,13 +222,30 @@ import { SignpackMeta, SignpackStatus } from './signpack.models';
           <p class="section-title">Signing link — share with signer</p>
           <div class="link-box mb-2">
             <span>{{ signLink }}</span>
-            <button class="btn btn-outline-secondary copy-btn" (click)="copy(signLink)">
-              {{ copied() ? '✓ Copied' : 'Copy' }}
+            <button class="btn btn-outline-secondary copy-btn" (click)="copy(signLink, 'sign')">
+              {{ copiedSign() ? '✓ Copied' : 'Copy' }}
             </button>
           </div>
           <p class="text-body-secondary small mb-0">
             Anyone with this link can upload the signed version.
+          </p>        </div>
+
+        <!-- Status link -->
+        <div class="card mt-3 status-link-card">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <p class="section-title mb-0">Your status link — save this!</p>
+            <span class="save-badge">⚠️ Keep it safe</span>
+          </div>
+          <p class="text-body-secondary small mb-2">
+            This is your personal link to check the signing status and download the bundle.
+            <strong>Save it now</strong> — it cannot be recovered without the token.
           </p>
+          <div class="link-box mb-0">
+            <span>{{ statusLink }}</span>
+            <button class="btn btn-outline-secondary copy-btn" (click)="copy(statusLink, 'status')">
+              {{ copiedStatus() ? '✓ Copied' : 'Copy' }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -256,11 +290,13 @@ export class SignpackStatusComponent implements OnInit, OnDestroy {
   readonly meta = signal<SignpackMeta | null>(null);
   readonly status = signal<SignpackStatus>('UPLOADED');
   readonly errorMsg = signal<string | null>(null);
-  readonly copied = signal(false);
+  readonly copiedSign   = signal(false);
+  readonly copiedStatus = signal(false);
 
   id = '';
   token = '';
-  signLink = '';
+  signLink   = '';
+  statusLink = '';
   bundleHref = '';
 
   private pollTimer: ReturnType<typeof setInterval> | null = null;
@@ -276,6 +312,7 @@ export class SignpackStatusComponent implements OnInit, OnDestroy {
     }
 
     this.signLink   = `${window.origin}/signpack/sign/${this.id}?token=${this.token}`;
+    this.statusLink = `${window.origin}/signpack/status/${this.id}?token=${this.token}`;
     this.bundleHref = this.svc.bundleUrl(this.id, this.token);
 
     this.fetchMeta();
@@ -314,11 +351,12 @@ export class SignpackStatusComponent implements OnInit, OnDestroy {
     if (this.pollTimer) { clearInterval(this.pollTimer); this.pollTimer = null; }
   }
 
-  async copy(text: string): Promise<void> {
+  async copy(text: string, which: 'sign' | 'status'): Promise<void> {
     try {
       await navigator.clipboard.writeText(text);
-      this.copied.set(true);
-      setTimeout(() => this.copied.set(false), 2000);
+      const sig = which === 'sign' ? this.copiedSign : this.copiedStatus;
+      sig.set(true);
+      setTimeout(() => sig.set(false), 2000);
     } catch { /* ignore */ }
   }
 
