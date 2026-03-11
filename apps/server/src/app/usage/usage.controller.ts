@@ -1,6 +1,7 @@
 import { Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { RequiresAdminKey } from '../api-key/api-key.decorator';
+import { SkipAnomalyGuard } from '../metrics/anomaly.guard';
 import { UsageService } from './usage.service';
 
 /**
@@ -9,6 +10,7 @@ import { UsageService } from './usage.service';
  */
 @ApiTags('Admin')
 @ApiSecurity('x-api-key')
+@SkipAnomalyGuard()
 @Controller('admin/usage')
 export class UsageController {
   constructor(private readonly usage: UsageService) {}

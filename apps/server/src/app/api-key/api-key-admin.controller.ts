@@ -10,11 +10,13 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { RequiresAdminKey } from './api-key.decorator';
+import { SkipAnomalyGuard } from '../metrics/anomaly.guard';
 import { ApiKeyService } from './api-key.service';
 import { ApiKeyTier } from './entities/api-key.entity';
 
 @ApiTags('Admin')
 @ApiSecurity('x-api-key')
+@SkipAnomalyGuard()
 @Controller('admin/api-keys')
 export class ApiKeyAdminController {
   constructor(private readonly svc: ApiKeyService) {}

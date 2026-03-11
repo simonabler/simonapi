@@ -3,6 +3,7 @@ import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { RequiresAdminKey } from '../api-key/api-key.decorator';
 import { MetricsService } from './metrics.service';
 import { SkipMetrics } from './metrics.decorator';
+import { SkipAnomalyGuard } from './anomaly.guard';
 import { BlocklistService } from './blocklist.service';
 
 /**
@@ -14,6 +15,7 @@ import { BlocklistService } from './blocklist.service';
  */
 @ApiTags('Admin')
 @ApiSecurity('x-api-key')
+@SkipAnomalyGuard()
 @Controller('admin/stats')
 export class MetricsController {
   constructor(
