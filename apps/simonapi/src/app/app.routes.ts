@@ -58,6 +58,11 @@ export const appRoutes: Route[] = [
     title: 'Signpack — Secure File Signing',
   },
   {
+    path: 'signpack/status/:id',
+    loadComponent: () => import('./features/signpack/signpack-status.component').then(c => c.SignpackStatusComponent),
+    title: 'Signpack Status',
+  },
+  {
     path: 'signpack/sign/:id',
     loadComponent: () => import('./features/signpack/signpack-sign.component').then(c => c.SignpackSignComponent),
     title: 'Sign Document — Signpack',
@@ -68,5 +73,3 @@ export const appRoutes: Route[] = [
     title: 'Legal Notice',
   },
 ];
-
-
