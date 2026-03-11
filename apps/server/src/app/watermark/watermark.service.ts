@@ -28,26 +28,36 @@ export class WatermarkService {
 
     if (dto.mode === WatermarkMode.LOGO) {
       const logo = await this.resolveLogo(logoBuffer);
-      if (!logo) throw new BadRequestException('Logo nicht gefunden. Sende Feld "logo" als Datei oder verwende mode=text.');
+      if (!logo) throw new BadRequestException('No logo found. Send a "logo" file field or use mode=text.');
 
       if (dto.tile) {
         // Create a tiled SVG pattern from the logo
         const svg = await this.buildLogoTileSvg(logo, width, height, dto);
         overlays.push({ input: Buffer.from(svg), top: 0, left: 0 });
       } else {
-        const scaled = await this.scaleLogoToWidth(logo, Math.max(1, Math.round(width * (dto.scale ?? 0.2))));
+        // Cap logo dimensions to image dimensions so Sharp never gets an overlay larger than the base
+        const targetW = Math.max(1, Math.min(Math.round(width * (dto.scale ?? 0.2)), width));
+        const scaled = await this.scaleLogoToWidth(logo, targetW, height);
+        const wmW = scaled.info.width!;
+        const wmH = scaled.info.height!;
+
         const coord = this.resolveAbsolutePosition(dto.position);
         let top: number, left: number;
         if (coord) {
           ({ top, left } = coord);
         } else {
           const anchor = (dto.anchor ?? 'bottom-right') as WatermarkAnchor;
-          ({ top, left } = this.resolveAnchorPosition(width, height, scaled.info.width!, scaled.info.height!, anchor, dto.margin!));
+          ({ top, left } = this.resolveAnchorPosition(width, height, wmW, wmH, anchor, dto.margin!));
         }
+
+        // Clamp so the overlay never exceeds image bounds (Sharp hard requirement)
+        top  = Math.max(0, Math.min(top,  height - wmH));
+        left = Math.max(0, Math.min(left, width  - wmW));
+
         overlays.push({ input: scaled.buffer, top, left });
       }
     } else if (dto.mode === WatermarkMode.TEXT) {
-      if (!dto.text || !dto.text.trim()) throw new BadRequestException('Feld "text" ist erforderlich bei mode=text.');
+      if (!dto.text || !dto.text.trim()) throw new BadRequestException('Field "text" is required when mode=text.');
       const svg = dto.tile
         ? this.buildTextTileSvg(dto.text, width, height, dto)
         : this.buildTextSvg(dto.text, width, height, dto);
@@ -100,10 +110,10 @@ export class WatermarkService {
     return null; // no default logo available — caller must handle
   }
 
-  private async scaleLogoToWidth(input: Buffer, targetWidth: number) {
-    const img = Sharp.default(input);
-    await img.metadata();
-    const resized = await img.resize({ width: targetWidth }).png().toBuffer();
+  private async scaleLogoToWidth(input: Buffer, targetWidth: number, maxHeight?: number) {
+    const resizeOpts: Sharp.ResizeOptions = { width: targetWidth, withoutEnlargement: true };
+    if (maxHeight) resizeOpts.height = maxHeight;
+    const resized = await Sharp.default(input).resize(resizeOpts).png().toBuffer();
     const resizedInfo = await Sharp.default(resized).metadata();
     return { buffer: resized, info: resizedInfo };
   }
