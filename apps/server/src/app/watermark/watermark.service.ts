@@ -83,20 +83,21 @@ export class WatermarkService {
 
   private async resolveLogo(logoBuffer?: Buffer): Promise<Buffer | null> {
     if (logoBuffer && logoBuffer.length > 0) return logoBuffer;
-    // try to load a default logo from assets if present
+    // Resolve default logo relative to this source file so the path works
+    // in both local (src/) and production (dist/) environments.
     const candidates = [
-      path.resolve(process.cwd(), 'apps/server/src/assets/watermark/default-logo.png'),
-      path.resolve(process.cwd(), 'dist/apps/server/assets/watermark/default-logo.png'),
+      path.resolve(__dirname, 'assets', 'watermark', 'default-logo.png'),
+      path.resolve(__dirname, '..', 'assets', 'watermark', 'default-logo.png'),
     ];
     for (const candidate of candidates) {
       try {
         await fs.promises.access(candidate, fs.constants.R_OK);
         return await fs.promises.readFile(candidate);
       } catch {
-        // try next
+        // try next candidate
       }
     }
-    return null;
+    return null; // no default logo available — caller must handle
   }
 
   private async scaleLogoToWidth(input: Buffer, targetWidth: number) {
