@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule, CronExpression, Cron } from '@nestjs/schedule';
 import { HttpModule } from '@nestjs/axios';
+import { ApiKeyModule } from '../api-key/api-key.module';
 import { Signpack } from './entities/signpack.entity';
 import { SignpackService } from './signpack.service';
 import { SignpackController } from './signpack.controller';
@@ -26,6 +27,7 @@ export class PurgeService {
     ScheduleModule.forRoot(),
     HttpModule,
     TypeOrmModule.forFeature([Signpack]),
+    ApiKeyModule,
   ],
   controllers: [SignpackController],
   providers: [SignpackService, PurgeService],

@@ -92,6 +92,11 @@ import { UsageModule } from './usage/usage.module';
       defaultRule: {
         perMinute: 10,   // anonymous / free tier fallback
       },
+      pathRules: {
+        // Signpack endpoints get a higher anonymous limit — file upload/sign
+        // workflows require more round-trips than a simple barcode generate.
+        '/api/signpacks': { perMinute: 20 },
+      },
     }),
   ],
   controllers: [AppController, ReportsController],
