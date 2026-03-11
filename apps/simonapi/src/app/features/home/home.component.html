@@ -1,87 +1,123 @@
 <!-- ══════════════════════════════════════════════
-     HERO  — zwei Spalten
+     HERO  — Terminal / Industrial Cyber Aesthetic
 ══════════════════════════════════════════════════ -->
-<header class="hero-bg py-5">
-  <div class="container py-3 py-lg-4">
-    <div class="row align-items-center g-4">
+<header class="hero-bg">
 
-      <!-- Linke Spalte: Text + CTAs -->
-      <div class="col-12 col-lg-7">
-        <span class="badge border fw-semibold px-3 py-2 mb-3 d-inline-block"
-              style="color:var(--brand);border-color:var(--brand)!important;
-                     background:color-mix(in oklab,var(--brand),transparent 92%);">
-          hub.abler.tirol
-        </span>
-        <h1 class="fw-bold mb-3"
-            style="font-size:clamp(2rem,5vw,3rem);line-height:1.1;letter-spacing:-.025em">
-          Secure APIs.<br>
-          <span style="background:linear-gradient(100deg,var(--brand-2),var(--brand));
-                       -webkit-background-clip:text;background-clip:text;color:transparent;">
-            Resilient Systems.
-          </span>
+  <!-- Subtile Grid-Lines (pure CSS) -->
+  <div class="hero-grid" aria-hidden="true"></div>
+
+  <div class="container hero-inner py-5">
+    <div class="row align-items-center g-5">
+
+      <!-- ── Left: Text + CTAs ── -->
+      <div class="col-12 col-lg-6">
+
+        <!-- Status badge -->
+        <div class="hero-status mb-4">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span class="status-text">hub.abler.tirol &mdash; all systems operational</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="hero-title mb-3">
+          <span class="hero-title-line">Secure APIs.</span><br>
+          <span class="hero-title-accent">Resilient Systems.</span>
         </h1>
-        <p class="text-body-secondary mb-4"
-           style="font-size:1.05rem;max-width:500px;line-height:1.65">
-          GS1 barcodes, QR codes, watermarking and dev utilities —
-          built by a Cyber Security Engineer from Tyrol.
+
+        <!-- Sub -->
+        <p class="hero-sub mb-5">
+          GS1 barcodes &middot; QR codes &middot; watermarking &middot; crypto &middot; signing &mdash;
+          engineered by a Cyber Security Engineer from Tyrol.
         </p>
+
+        <!-- CTAs -->
         <div class="d-flex gap-2 flex-wrap">
           <a href="/api" target="_blank" rel="noopener"
-             class="btn btn-primary d-inline-flex align-items-center gap-2 px-4">
-            <lucide-icon [img]="BookOpenIcon" [size]="17"></lucide-icon>
+             class="hero-btn-primary d-inline-flex align-items-center gap-2">
+            <lucide-icon [img]="BookOpenIcon" [size]="16"></lucide-icon>
             API Docs
           </a>
           <a href="/api#/" target="_blank" rel="noopener"
-             class="btn btn-outline-primary d-inline-flex align-items-center gap-2 px-4">
-            <lucide-icon [img]="SendIcon" [size]="17"></lucide-icon>
+             class="hero-btn-secondary d-inline-flex align-items-center gap-2">
+            <lucide-icon [img]="SendIcon" [size]="16"></lucide-icon>
             Try in Swagger
           </a>
-          <a href="#catalog"
-             class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 px-4">
-            <lucide-icon [img]="SendIcon" [size]="17"></lucide-icon>
-            Explore APIs
-          </a>
-          <a href="mailto:simon@abler.tirol"
-             class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 px-4">
-            <lucide-icon [img]="MailIcon" [size]="17"></lucide-icon>
-            Contact
+          <a href="#catalog" class="hero-btn-ghost">
+            Explore APIs ↓
           </a>
         </div>
+
       </div>
 
-      <!-- Rechte Spalte: 3 Feature-Items -->
-      <div class="col-12 col-lg-5">
-        <div class="d-flex flex-column gap-2">
-          <div class="d-flex align-items-center gap-3 p-3 rounded-3 border bg-white"
-               style="box-shadow:var(--shadow-sm)">
-            <span style="font-size:1.4rem;flex-shrink:0">🏭</span>
-            <div>
-              <div class="fw-semibold small">Industrial GS1</div>
-              <div class="text-body-secondary" style="font-size:.8rem">
-                GS1-128, DataMatrix, batch up to 100 barcodes/request
-              </div>
+      <!-- ── Right: Terminal Widget ── -->
+      <div class="col-12 col-lg-6">
+        <div class="terminal-widget">
+
+          <!-- Title bar -->
+          <div class="terminal-bar">
+            <span class="t-dot t-red"  aria-hidden="true"></span>
+            <span class="t-dot t-yellow" aria-hidden="true"></span>
+            <span class="t-dot t-green" aria-hidden="true"></span>
+            <span class="terminal-title">hub.abler.tirol &mdash; api</span>
+          </div>
+
+          <!-- Body -->
+          <div class="terminal-body" aria-label="Example API requests">
+            <div class="t-line">
+              <span class="t-prompt">$</span>
+              <span class="t-cmd"> curl -X POST https://hub.abler.tirol/api/qr \</span>
+            </div>
+            <div class="t-line">
+              <span class="t-flag">  -H</span><span class="t-string"> "Content-Type: application/json" \</span>
+            </div>
+            <div class="t-line">
+              <span class="t-flag">  -d</span><span class="t-string"> '&#123;"type":"url","payload":&#123;"url":"https://example.com"&#125;&#125;'</span>
+            </div>
+            <div class="t-blank"></div>
+            <div class="t-line">
+              <span class="t-comment"># 200 OK &middot; image/png &middot; 3.2 KB &middot; 41ms</span>
+            </div>
+            <div class="t-blank"></div>
+            <div class="t-line">
+              <span class="t-prompt">$</span>
+              <span class="t-cmd"> curl https://hub.abler.tirol/api/barcode/png?type=ean13&text=12222222222222&includetext=true&scale=3 \</span>
+            </div>
+            <div class="t-line">
+              <span class="t-flag">  -H</span><span class="t-string"> "x-api-key: sk_pro_&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"</span>
+            </div>
+            <div class="t-blank"></div>
+            <div class="t-line">
+              <span class="t-comment"># 200 OK &middot; image/svg+xml &middot; 4.8 KB &middot; 28ms</span>
+            </div>
+            <div class="t-blank"></div>
+            <div class="t-line">
+              <span class="t-prompt">$</span><span class="t-cursor" aria-hidden="true"></span>
             </div>
           </div>
-          <div class="d-flex align-items-center gap-3 p-3 rounded-3 border bg-white"
-               style="box-shadow:var(--shadow-sm)">
-            <span style="font-size:1.4rem;flex-shrink:0">🔐</span>
-            <div>
-              <div class="fw-semibold small">Security-first</div>
-              <div class="text-body-secondary" style="font-size:.8rem">
-                Rate limiting, anomaly detection, blocklist
-              </div>
+
+          <!-- Stats strip -->
+          <div class="terminal-stats">
+            <div class="t-stat">
+              <span class="t-stat-val">7</span>
+              <span class="t-stat-label">APIs</span>
+            </div>
+            <div class="t-stat-sep" aria-hidden="true"></div>
+            <div class="t-stat">
+              <span class="t-stat-val">&lt;50ms</span>
+              <span class="t-stat-label">avg latency</span>
+            </div>
+            <div class="t-stat-sep" aria-hidden="true"></div>
+            <div class="t-stat">
+              <span class="t-stat-val">free</span>
+              <span class="t-stat-label">to start</span>
+            </div>
+            <div class="t-stat-sep" aria-hidden="true"></div>
+            <div class="t-stat">
+              <span class="t-stat-val">GS1</span>
+              <span class="t-stat-label">certified</span>
             </div>
           </div>
-          <div class="d-flex align-items-center gap-3 p-3 rounded-3 border bg-white"
-               style="box-shadow:var(--shadow-sm)">
-            <span style="font-size:1.4rem;flex-shrink:0">⚡</span>
-            <div>
-              <div class="fw-semibold small">Open &amp; free</div>
-              <div class="text-body-secondary" style="font-size:.8rem">
-                Standard APIs free to use · GS1 with API key
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
 
