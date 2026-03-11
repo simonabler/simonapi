@@ -52,8 +52,16 @@
             type="text"
             formControlName="text"
             placeholder="Text / Numbers"
+            [class.is-invalid]="form.controls['text'].errors?.['barcodeFormat']"
           />
         </label>
+        @if (form.controls['text'].errors?.['barcodeFormat']) {
+          <div class="invalid-feedback d-block small text-danger mt-1">
+            ⚠️ {{ form.controls['text'].errors?.['barcodeFormat'] }}
+          </div>
+        } @else if (errorMsg) {
+          <div class="small text-danger mt-1">⚠️ {{ errorMsg }}</div>
+        }
       </div>
 
       <fieldset>
