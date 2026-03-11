@@ -79,6 +79,26 @@ export class WatermarkService {
     if (opts.strokeWidth != null) fd.append('strokeWidth', String(opts.strokeWidth));
     if (opts.download != null) fd.append('download', String(!!opts.download));
 
-    return this.http.post(`${this.API}/watermark/apply`, fd, { responseType: 'blob' });
+    return new Observable(observer => {
+      this.http.post(`${this.API}/watermark/apply`, fd, { responseType: 'blob' }).subscribe({
+        next: async (blob) => {
+          // If server returned an error as JSON (e.g. 400/413) Angular still gives us a Blob.
+          // Detect by content-type: if it is not an image, parse as text and re-throw.
+          if (blob.type && !blob.type.startsWith('image/')) {
+            try {
+              const text = await blob.text();
+              const json = JSON.parse(text);
+              observer.error(new Error(json?.message ?? json?.error ?? 'Server error'));
+            } catch {
+              observer.error(new Error('Unexpected server response'));
+            }
+            return;
+          }
+          observer.next(blob);
+          observer.complete();
+        },
+        error: (err) => observer.error(err),
+      });
+    });
   }
 }
