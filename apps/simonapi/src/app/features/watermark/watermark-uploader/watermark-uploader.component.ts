@@ -66,13 +66,13 @@ export class WatermarkUploaderComponent implements OnInit, OnDestroy {
   }
 
   /** Scale factor: CSS pixels → image pixels */
-  private get scaleX(): number {
+  protected get scaleX(): number {
     if (!this.previewImg || !this.naturalWidth) return 1;
     const rendered = this.previewImg.nativeElement.getBoundingClientRect().width;
     return rendered > 0 ? this.naturalWidth / rendered : 1;
   }
 
-  private get scaleY(): number {
+  protected get scaleY(): number {
     if (!this.previewImg || !this.naturalHeight) return 1;
     const rendered = this.previewImg.nativeElement.getBoundingClientRect().height;
     return rendered > 0 ? this.naturalHeight / rendered : 1;
