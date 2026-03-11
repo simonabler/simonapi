@@ -1,6 +1,6 @@
 import { Controller, Delete, Get, HttpCode, Query } from '@nestjs/common';
 import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
-import { RequiresTier } from '../api-key/api-key.decorator';
+import { RequiresAdminKey } from '../api-key/api-key.decorator';
 import { MetricsService } from './metrics.service';
 import { SkipMetrics } from './metrics.decorator';
 import { BlocklistService } from './blocklist.service';
@@ -24,7 +24,7 @@ export class MetricsController {
   @Get()
   @HttpCode(200)
   @SkipMetrics()
-  @RequiresTier('industrial')
+  @RequiresAdminKey()
   @ApiOperation({ summary: 'Request metrics snapshot (admin)' })
   getStats() {
     return this.metrics.snapshot();
@@ -33,7 +33,7 @@ export class MetricsController {
   @Delete('reset')
   @HttpCode(200)
   @SkipMetrics()
-  @RequiresTier('industrial')
+  @RequiresAdminKey()
   @ApiOperation({ summary: 'Reset metrics counters (admin)' })
   async reset() {
     await this.metrics.reset();
@@ -43,7 +43,7 @@ export class MetricsController {
   @Get('security')
   @HttpCode(200)
   @SkipMetrics()
-  @RequiresTier('industrial')
+  @RequiresAdminKey()
   @ApiOperation({ summary: 'List currently blocked IPs (admin)' })
   security() {
     return { blocked: this.blocklist.list() };
@@ -52,7 +52,7 @@ export class MetricsController {
   @Get('security/unban')
   @HttpCode(200)
   @SkipMetrics()
-  @RequiresTier('industrial')
+  @RequiresAdminKey()
   @ApiOperation({ summary: 'Unban an IP address (admin)' })
   unban(@Query('ip') ip: string) {
     if (!ip) return { ok: false, error: 'ip required' };
