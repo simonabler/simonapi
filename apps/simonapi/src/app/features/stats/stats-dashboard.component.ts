@@ -1,4 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Component, inject, Inject, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable, Subject, forkJoin, merge, of, timer } from 'rxjs';
@@ -25,6 +26,8 @@ interface ViewModel {
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
+    RouterLinkActive,
     StatsCardComponent,
     SecurityTableComponent,
     DurationPipe,

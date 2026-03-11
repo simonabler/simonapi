@@ -21,6 +21,22 @@
   </div>
 </div>
 
+<!-- ── Admin navigation ───────────────────────────────────────────────────── -->
+<div class="container pt-4">
+  <ul class="nav nav-tabs border-bottom mb-0">
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/admin/stats" routerLinkActive="active">
+        📊 Stats
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/admin/api-keys" routerLinkActive="active">
+        🔑 API Keys
+      </a>
+    </li>
+  </ul>
+</div>
+
 <div class="stats-dashboard container py-4" *ngIf="vm$ | async as vm">
   <div class="stats-grid">
     <app-stats-card title="API Overview" subTitle="Current backend metrics">
