@@ -100,7 +100,7 @@ export class SignpackService {
     return sp;
   }
 
-  private assertToken(sp: Signpack, token?: string) {
+  assertToken(sp: Signpack, token?: string) {
     if (!token || token !== sp.accessToken) throw new ForbiddenException('Invalid token');
   }
 

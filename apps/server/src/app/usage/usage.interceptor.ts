@@ -49,13 +49,16 @@ export class UsageInterceptor implements NestInterceptor {
 
     const check = this.usage.checkAndCount(key, path, overrideRule);
     if (!check.allowed) {
+      const retryAfter = 60;
+      // Standard header — lets clients / browsers know when to retry
+      res.setHeader('Retry-After', String(retryAfter));
       throw new HttpException(
         {
           statusCode: 429,
           error: 'Too Many Requests',
           message: 'Rate limit exceeded',
           reason: check.reason,
-          retryAfter: 60,
+          retryAfter,
         },
         429,
       );

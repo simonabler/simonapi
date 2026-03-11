@@ -11,7 +11,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(
@@ -21,7 +21,9 @@ async function bootstrap() {
       forbidNonWhitelisted: false,
     })
   );
-  app.enableCors();
+  // Public API — allow all origins. The double-activation (cors:true + enableCors)
+  // was removed; enableCors() alone is sufficient and avoids duplicate headers.
+  app.enableCors({ origin: '*', methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS' });
   app.set('trust proxy', 1); // Trust one proxy hop (nginx) — exposes real client IP in req.ip
 
   // Security headers via Helmet.

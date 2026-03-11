@@ -62,7 +62,7 @@ export class SignpackController {
   async meta(@Param('id') id: string, @Query('token') token: string) {
     const sp = await this.svc.findById(id);
     // token required even for meta to avoid leak of existence
-    (this.svc as any)['assertToken']?.(sp, token);
+    this.svc.assertToken(sp, token);
     return {
       id: sp.id,
       status: sp.status,
@@ -78,7 +78,7 @@ export class SignpackController {
   @HttpCode(HttpStatus.OK)
   async original(@Param('id') id: string, @Query('token') token: string, @Res() res: Response) {
     const sp = await this.svc.findById(id);
-    (this.svc as any)['assertToken']?.(sp, token);
+    this.svc.assertToken(sp, token);
     const stream = this.svc.streamFile(sp.originalPath);
     res.setHeader('Content-Type', sp.originalMime || 'application/octet-stream');
     res.setHeader('Content-Disposition', `attachment; filename="${sp.originalName || 'original.bin'}"`);
@@ -89,7 +89,7 @@ export class SignpackController {
   @HttpCode(HttpStatus.OK)
   async signed(@Param('id') id: string, @Query('token') token: string, @Res() res: Response) {
     const sp = await this.svc.findById(id);
-    (this.svc as any)['assertToken']?.(sp, token);
+    this.svc.assertToken(sp, token);
     if (!sp.signedPath) throw new BadRequestException('Signed file not available');
     const stream = this.svc.streamFile(sp.signedPath);
     res.setHeader('Content-Type', sp.signedMime || 'application/octet-stream');
@@ -134,7 +134,7 @@ export class SignpackController {
     @Res() res: Response,
   ) {
     const sp = await this.svc.findById(id);
-    (this.svc as any)['assertToken']?.(sp, token);
+    this.svc.assertToken(sp, token);
     res.setHeader('Content-Type', 'application/zip');
     res.setHeader('Content-Disposition', `attachment; filename="bundle-${sp.id}.zip"`);
     const zip = this.svc.streamBundleZip(sp);
