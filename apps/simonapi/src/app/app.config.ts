@@ -11,12 +11,13 @@ import {
   withEventReplay,
 } from '@angular/platform-browser';
 import { rateLimitInterceptor } from './shared/toast/rate-limit.interceptor';
+import { timeoutInterceptor } from './shared/toast/timeout.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideClientHydration(withEventReplay()),
     provideBrowserGlobalErrorListeners(),
-    provideHttpClient(withInterceptors([rateLimitInterceptor])),
+    provideHttpClient(withInterceptors([timeoutInterceptor, rateLimitInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
   ],
