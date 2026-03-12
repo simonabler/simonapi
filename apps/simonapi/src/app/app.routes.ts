@@ -53,6 +53,11 @@ export const appRoutes: Route[] = [
     title: 'Admin – API Keys',
   },
   {
+    path: 'admin/visitors',
+    loadComponent: () => import('./features/stats/visitors/visitors.component').then(m => m.VisitorsComponent),
+    title: 'Admin – Visitors',
+  },
+  {
     path: 'crypto',
     loadComponent: () => import('./features/crypto/crypto-page.component').then(c => c.CryptoPageComponent),
     title: 'Crypto API — TOTP / Hash / JWT',
