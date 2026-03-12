@@ -20,7 +20,7 @@ services:
     container_name: simonapi-backend
     restart: unless-stopped
     volumes:
-      - ./.env:/app/.env
+      - ./.env:/app/.env  # must contain DATA_DIR=/data/signpacks and IP_HASH_SECRET=<openssl rand -hex 32>
       - /home/simon/simonapi/data:/data
     labels:
       - "traefik.enable=true"
