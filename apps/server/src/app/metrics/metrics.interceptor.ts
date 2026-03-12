@@ -11,6 +11,8 @@ import { MetricsService } from './metrics.service';
 import { Reflector } from '@nestjs/core';
 import { SKIP_METRICS } from './metrics.decorator';
 import { AnomalyDetectorService } from './anomaly-detector.service';
+import { VisitorService } from './visitor.service';
+import { RESOLVED_KEY_PROP } from '../api-key/api-key.guard';
 
 function resolveRoutePath(req: any): string {
   const expressRoute =
@@ -34,6 +36,7 @@ export class MetricsInterceptor implements NestInterceptor {
     private readonly metrics: MetricsService,
     private readonly reflector: Reflector,
     private readonly anomaly: AnomalyDetectorService,
+    private readonly visitor: VisitorService,
   ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
@@ -62,6 +65,18 @@ export class MetricsInterceptor implements NestInterceptor {
         if (!skip) {
           this.metrics.record(path, method, status, durationMs).catch((err) => {
             this.log.error('Failed to store request metric', err instanceof Error ? err.stack : String(err));
+          });
+
+          // Visitor stats — resolve IP, tier and API-key prefix from request
+          const resolved = req[RESOLVED_KEY_PROP] as { tier?: string; prefix?: string } | undefined;
+          const xff = (req?.headers?.['x-forwarded-for'] as string) || '';
+          const rawIp = xff.split(',')[0]?.trim() || req?.ip || req?.socket?.remoteAddress || 'unknown';
+          this.visitor.record({
+            rawIp,
+            route: path,
+            status,
+            tier: resolved?.tier ?? 'anonymous',
+            apiKeyPrefix: resolved?.prefix ? resolved.prefix.slice(0, 8) : null,
           });
         }
         this.anomaly.observe(req, path, method, status);
