@@ -288,10 +288,12 @@ export class VisitorService implements OnModuleInit, OnModuleDestroy {
             errorCount: bucket.errorCount,
           })
           .orUpdate(
-            ['request_count', 'error_count', 'updated_at'],
+            // Note: updated_at is a @UpdateDateColumn — not in VALUES clause,
+            // so excluded.updated_at does not exist. Set it via NOW() instead.
+            ['request_count', 'error_count'],
             ['day', 'ip_hash', 'route_group', 'tier', 'api_key_prefix'],
-            { skipUpdateIfNoValuesChanged: true },
           )
+          .setParameter('now', new Date().toISOString())
           .execute();
         bucket.dirty = false;
       } catch (err) {

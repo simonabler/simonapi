@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { QrModule } from './qr/qr.module';
@@ -17,6 +18,7 @@ import databaseConfig from './config/database.config';
 import { MetricsModule } from './metrics/metrics.module';
 import { CryptoModule } from './crypto/crypto.module';
 import { ApiKeyModule } from './api-key/api-key.module';
+import { ApiKeyGuard } from './api-key/api-key.guard';
 import { UsageModule } from './usage/usage.module';
 
 @Module({
@@ -99,6 +101,11 @@ import { UsageModule } from './usage/usage.module';
     }),
   ],
   controllers: [AppController, ReportsController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // Global guard — reads @RequiresAdminKey() / @RequiresTier() / @TierRateLimit()
+    // metadata set by decorators. Without this, those decorators are no-ops.
+    { provide: APP_GUARD, useClass: ApiKeyGuard },
+  ],
 })
 export class AppModule {}
