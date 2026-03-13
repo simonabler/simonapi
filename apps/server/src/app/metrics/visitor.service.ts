@@ -288,12 +288,14 @@ export class VisitorService implements OnModuleInit, OnModuleDestroy {
             errorCount: bucket.errorCount,
           })
           .orUpdate(
-            // Note: updated_at is a @UpdateDateColumn — not in VALUES clause,
-            // so excluded.updated_at does not exist. Set it via NOW() instead.
+            // Columns to UPDATE on conflict.
+            // excluded.updated_at must NOT be listed — @UpdateDateColumn is not
+            // part of the INSERT values clause so it does not exist in EXCLUDED.
             ['request_count', 'error_count'],
-            ['day', 'ip_hash', 'route_group', 'tier', 'api_key_prefix'],
+            // Conflict target: the @Unique constraint name on the entity.
+            // TypeORM maps this to: ON CONFLICT ON CONSTRAINT "UQ_VD_BUCKET"
+            'UQ_VD_BUCKET',
           )
-          .setParameter('now', new Date().toISOString())
           .execute();
         bucket.dirty = false;
       } catch (err) {

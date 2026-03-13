@@ -1,4 +1,4 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 
 /**
  * One row = one (date, ip_hash, route_group, tier) combination.
@@ -10,7 +10,10 @@ import { Column, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 
  *   → raw IP is NEVER stored
  */
 @Entity({ name: 'visitor_daily' })
-@Index('IDX_VD_DATE_HASH', ['day', 'ipHash'])
+// UNIQUE constraint is required for ON CONFLICT DO UPDATE (upsert) in flush().
+// The combination (day, ip_hash, route_group, tier, api_key_prefix) uniquely
+// identifies one bucket. @Index alone does not create a unique constraint.
+@Unique('UQ_VD_BUCKET', ['day', 'ipHash', 'routeGroup', 'tier', 'apiKeyPrefix'])
 @Index('IDX_VD_DATE', ['day'])
 export class VisitorDailyEntity {
   @PrimaryGeneratedColumn()
