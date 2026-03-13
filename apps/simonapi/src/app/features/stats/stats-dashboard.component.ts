@@ -9,6 +9,7 @@ import { StatsCardComponent } from './stats-card.component';
 import { SecurityTableComponent } from './security-table.component';
 import { DurationPipe } from './duration.pipe';
 import { IsoDatePipe } from './iso-date.pipe';
+import { AdminNavComponent } from './admin-nav.component';
 
 interface ViewModel {
   loading: boolean;
@@ -26,8 +27,7 @@ interface ViewModel {
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink,
-    RouterLinkActive,
+    AdminNavComponent,
     StatsCardComponent,
     SecurityTableComponent,
     DurationPipe,
@@ -61,12 +61,6 @@ export class StatsDashboardComponent implements OnDestroy {
     };
 
     this.vm$ = this.isBrowser ? this.createClientStream() : of(this.initialState);
-  }
-
-  onApiKeyChange(e: Event): void {
-    const val = (e.target as HTMLInputElement).value;
-    this.statsService.setApiKey(val);
-    this.refresh();
   }
 
   refresh(): void {

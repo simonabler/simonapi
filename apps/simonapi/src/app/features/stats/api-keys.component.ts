@@ -4,11 +4,12 @@ import { Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApiKeyRecord, ApiKeyTier, ApiKeysService, CreateApiKeyDto } from './api-keys.service';
 import { StatsService } from './stats.service';
+import { AdminNavComponent } from './admin-nav.component';
 
 @Component({
   selector: 'app-api-keys',
   standalone: true,
-  imports: [CommonModule, DatePipe, FormsModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, DatePipe, FormsModule, AdminNavComponent],
   templateUrl: './api-keys.component.html',
 })
 export class ApiKeysComponent implements OnInit {
@@ -35,7 +36,7 @@ export class ApiKeysComponent implements OnInit {
   readonly tiers: ApiKeyTier[] = ['free', 'pro', 'industrial'];
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId) && this.statsService.apiKey()) {
       this.load();
     }
   }
@@ -104,12 +105,6 @@ export class ApiKeysComponent implements OnInit {
 
   dismissRawKey(): void {
     this.createdRawKey.set(null);
-  }
-
-  onApiKeyChange(e: Event): void {
-    const val = (e.target as HTMLInputElement).value;
-    this.statsService.setApiKey(val);
-    this.load();
   }
 
   tierBadgeClass(tier: ApiKeyTier): string {

@@ -1,184 +1,170 @@
-<div class="visitors-wrap">
+<app-admin-nav></app-admin-nav>
 
-  <!-- Error state -->
-  @if (errorMsg()) {
-    <div class="alert alert-danger">⚠️ {{ errorMsg() }}</div>
-  }
+<!-- ── Gate ──────────────────────────────────────────────────────────────── -->
+@if (!statsService.apiKey()) {
+  <div class="container py-5 text-center text-body-secondary">
+    <div class="fs-1 mb-3">🔒</div>
+    <p class="mb-0">Enter your admin key above to view visitor statistics.</p>
+  </div>
+} @else {
+  <div class="container py-4">
+    <div class="visitors-wrap">
 
-  @if (loading()) {
-    <div class="text-center py-5 text-body-secondary">Loading visitor stats…</div>
-  }
+      @if (errorMsg()) {
+        <div class="alert alert-danger">⚠️ {{ errorMsg() }}</div>
+      }
 
-  @if (summary(); as s) {
-
-    <!-- ── Row 1: Summary Cards ───────────────────────────────────────── -->
-    <div class="row g-3 mb-4">
-
-      <!-- Today unique IPs -->
-      <div class="col-6 col-md-3">
-        <div class="vstat-card">
-          <div class="vstat-val">{{ s.today.uniqueIps }}</div>
-          <div class="vstat-label">Unique IPs today</div>
+      @if (loading()) {
+        <div class="text-center py-5 text-body-secondary">
+          <span class="spinner-border spinner-border-sm me-2"></span>Loading visitor stats…
         </div>
-      </div>
+      }
 
-      <!-- Today requests -->
-      <div class="col-6 col-md-3">
-        <div class="vstat-card">
-          <div class="vstat-val">{{ s.today.totalRequests | number }}</div>
-          <div class="vstat-label">Requests today</div>
-        </div>
-      </div>
+      @if (summary(); as s) {
 
-      <!-- 7-day unique -->
-      <div class="col-6 col-md-3">
-        <div class="vstat-card">
-          <div class="vstat-val">{{ s.last7d.uniqueIps }}</div>
-          <div class="vstat-label">Unique IPs (7d)</div>
-        </div>
-      </div>
-
-      <!-- 30-day unique -->
-      <div class="col-6 col-md-3">
-        <div class="vstat-card">
-          <div class="vstat-val">{{ s.last30d.uniqueIps }}</div>
-          <div class="vstat-label">Unique IPs (30d)</div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ── Row 2: Sparkline + Tier Breakdown ──────────────────────────── -->
-    <div class="row g-3 mb-4">
-
-      <!-- Sparkline: unique IPs last 14 days -->
-      <div class="col-12 col-md-7">
-        <div class="vstat-panel">
-          <div class="vstat-panel-title">Unique IPs — last 14 days</div>
-          @if (daily().length > 1) {
-            <svg viewBox="0 0 200 36" preserveAspectRatio="none" class="sparkline">
-              <polyline
-                [attr.points]="sparklinePoints"
-                fill="none"
-                stroke="var(--brand)"
-                stroke-width="1.5"
-                stroke-linejoin="round"
-                stroke-linecap="round"
-              />
-            </svg>
-            <div class="sparkline-labels">
-              <span>{{ daily()[daily().length - 14 < 0 ? 0 : daily().length - 14]?.day | slice:5 }}</span>
-              <span>{{ daily()[daily().length - 1]?.day | slice:5 }}</span>
+        <!-- ── Row 1: Summary Cards ─────────────────────────────────────── -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="vstat-card">
+              <div class="vstat-val">{{ s.today.uniqueIps }}</div>
+              <div class="vstat-label">Unique IPs today</div>
             </div>
-          } @else {
-            <div class="text-body-secondary small">Not enough data yet</div>
-          }
-        </div>
-      </div>
-
-      <!-- Tier breakdown today -->
-      <div class="col-12 col-md-5">
-        <div class="vstat-panel h-100">
-          <div class="vstat-panel-title">Tier breakdown — today</div>
-          <div class="d-flex flex-column gap-2 mt-2">
-            @for (tier of tierKeys(s.today.byTier); track tier) {
-              <div class="d-flex align-items-center gap-2">
-                <span class="tier-dot" [style.background]="tierColor(tier)"></span>
-                <span class="small text-capitalize" style="width:90px">{{ tier }}</span>
-                <div class="tier-bar-wrap flex-grow-1">
-                  <div class="tier-bar"
-                    [style.background]="tierColor(tier)"
-                    [style.width.%]="s.today.byTier[tier] / s.today.uniqueIps * 100">
-                  </div>
-                </div>
-                <span class="small text-body-secondary ms-1">{{ s.today.byTier[tier] }}</span>
-              </div>
-            }
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="vstat-card">
+              <div class="vstat-val">{{ s.today.totalRequests | number }}</div>
+              <div class="vstat-label">Requests today</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="vstat-card">
+              <div class="vstat-val">{{ s.last7d.uniqueIps }}</div>
+              <div class="vstat-label">Unique IPs (7d)</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="vstat-card">
+              <div class="vstat-val">{{ s.last30d.uniqueIps }}</div>
+              <div class="vstat-label">Unique IPs (30d)</div>
+            </div>
           </div>
         </div>
-      </div>
 
-    </div>
-
-    <!-- ── Row 3: API Breakdown + Country ─────────────────────────────── -->
-    <div class="row g-3">
-
-      <!-- By API -->
-      <div class="col-12 col-md-6">
-        <div class="vstat-panel">
-          <div class="vstat-panel-title">By API — today</div>
-          <table class="vstat-table mt-2">
-            <thead>
-              <tr>
-                <th>API</th>
-                <th class="text-end">Unique IPs</th>
-                <th class="text-end">Requests</th>
-                <th class="text-end">Err %</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (row of byApi(); track row.routeGroup) {
-                <tr>
-                  <td><span class="route-badge">{{ row.routeGroup }}</span></td>
-                  <td class="text-end">{{ row.uniqueIps }}</td>
-                  <td class="text-end">{{ row.totalRequests | number }}</td>
-                  <td class="text-end"
-                      [class.text-danger]="row.errorRate > 10">
-                    {{ row.errorRate }}%
-                  </td>
-                </tr>
+        <!-- ── Row 2: Sparkline + Tier Breakdown ────────────────────────── -->
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-md-7">
+            <div class="vstat-panel">
+              <div class="vstat-panel-title">Unique IPs — last 14 days</div>
+              @if (daily().length > 1) {
+                <svg viewBox="0 0 200 36" preserveAspectRatio="none" class="sparkline">
+                  <polyline
+                    [attr.points]="sparklinePoints"
+                    fill="none"
+                    stroke="var(--brand)"
+                    stroke-width="1.5"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                <div class="sparkline-labels">
+                  <span>{{ daily()[daily().length - 14 < 0 ? 0 : daily().length - 14]?.day | slice:5 }}</span>
+                  <span>{{ daily()[daily().length - 1]?.day | slice:5 }}</span>
+                </div>
+              } @else {
+                <div class="text-body-secondary small mt-2">Not enough data yet</div>
               }
-              @if (!byApi().length) {
-                <tr><td colspan="4" class="text-body-secondary text-center py-2">No data yet</td></tr>
-              }
-            </tbody>
-          </table>
+            </div>
+          </div>
+          <div class="col-12 col-md-5">
+            <div class="vstat-panel h-100">
+              <div class="vstat-panel-title">Tier breakdown — today</div>
+              <div class="d-flex flex-column gap-2 mt-2">
+                @for (tier of tierKeys(s.today.byTier); track tier) {
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="tier-dot" [style.background]="tierColor(tier)"></span>
+                    <span class="small text-capitalize" style="width:90px">{{ tier }}</span>
+                    <div class="tier-bar-wrap flex-grow-1">
+                      <div class="tier-bar"
+                        [style.background]="tierColor(tier)"
+                        [style.width.%]="s.today.uniqueIps > 0 ? s.today.byTier[tier] / s.today.uniqueIps * 100 : 0">
+                      </div>
+                    </div>
+                    <span class="small text-body-secondary ms-1">{{ s.today.byTier[tier] }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Row 3: API + Country ──────────────────────────────────────── -->
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <div class="vstat-panel">
+              <div class="vstat-panel-title">By API — today</div>
+              <table class="vstat-table mt-2">
+                <thead>
+                  <tr>
+                    <th>API</th>
+                    <th class="text-end">Unique IPs</th>
+                    <th class="text-end">Requests</th>
+                    <th class="text-end">Err %</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of byApi(); track row.routeGroup) {
+                    <tr>
+                      <td><span class="route-badge">{{ row.routeGroup }}</span></td>
+                      <td class="text-end">{{ row.uniqueIps }}</td>
+                      <td class="text-end">{{ row.totalRequests | number }}</td>
+                      <td class="text-end" [class.text-danger]="row.errorRate > 10">{{ row.errorRate }}%</td>
+                    </tr>
+                  }
+                  @if (!byApi().length) {
+                    <tr><td colspan="4" class="text-body-secondary text-center py-2">No data yet</td></tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="vstat-panel">
+              <div class="vstat-panel-title">By Country — today (top 10)</div>
+              <table class="vstat-table mt-2">
+                <thead>
+                  <tr>
+                    <th>Country</th>
+                    <th class="text-end">Unique IPs</th>
+                    <th class="text-end">Requests</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of byCountry().slice(0, 10); track row.countryCode) {
+                    <tr>
+                      <td><span class="me-1">{{ flagEmoji(row.countryCode) }}</span>{{ row.countryCode }}</td>
+                      <td class="text-end">{{ row.uniqueIps }}</td>
+                      <td class="text-end">{{ row.totalRequests | number }}</td>
+                    </tr>
+                  }
+                  @if (!byCountry().length) {
+                    <tr><td colspan="3" class="text-body-secondary text-center py-2">No data yet</td></tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      }
+
+      <!-- Refresh + privacy note -->
+      <div class="mt-3 text-end">
+        <button class="btn btn-sm btn-outline-secondary" (click)="load()" [disabled]="loading()">↻ Refresh</button>
+        <div class="small text-body-secondary mt-1">
+          IPs are stored as daily-rotating SHA-256 hashes — raw IPs are never persisted.
         </div>
       </div>
 
-      <!-- By Country -->
-      <div class="col-12 col-md-6">
-        <div class="vstat-panel">
-          <div class="vstat-panel-title">By Country — today (top 10)</div>
-          <table class="vstat-table mt-2">
-            <thead>
-              <tr>
-                <th>Country</th>
-                <th class="text-end">Unique IPs</th>
-                <th class="text-end">Requests</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (row of byCountry().slice(0, 10); track row.countryCode) {
-                <tr>
-                  <td>
-                    <span class="me-1">{{ flagEmoji(row.countryCode) }}</span>
-                    {{ row.countryCode }}
-                  </td>
-                  <td class="text-end">{{ row.uniqueIps }}</td>
-                  <td class="text-end">{{ row.totalRequests | number }}</td>
-                </tr>
-              }
-              @if (!byCountry().length) {
-                <tr><td colspan="3" class="text-body-secondary text-center py-2">No data yet</td></tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-
-  } <!-- end @if summary -->
-
-  <!-- Refresh button -->
-  <div class="mt-3 text-end">
-    <button class="btn btn-sm btn-outline-secondary" (click)="load()" [disabled]="loading()">
-      ↻ Refresh
-    </button>
-    <div class="small text-body-secondary mt-1">
-      IPs are stored as daily-rotating SHA-256 hashes — raw IPs are never persisted.
     </div>
   </div>
-
-</div>
+}

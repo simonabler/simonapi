@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AdminNavComponent } from '../admin-nav.component';
 import {
   StatsService,
   VisitorSummary,
@@ -11,11 +12,12 @@ import {
 @Component({
   selector: 'app-visitors',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AdminNavComponent],
   templateUrl: './visitors.component.html',
 })
 export class VisitorsComponent implements OnInit {
   private readonly svc = inject(StatsService);
+  readonly statsService = inject(StatsService);
 
   summary = signal<VisitorSummary | null>(null);
   daily   = signal<VisitorDailyPoint[]>([]);
@@ -26,7 +28,9 @@ export class VisitorsComponent implements OnInit {
   errorMsg = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.load();
+    if (this.statsService.apiKey()) {
+      this.load();
+    }
   }
 
   load(): void {
