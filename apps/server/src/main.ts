@@ -18,7 +18,7 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       whitelist: true,
-      forbidNonWhitelisted: false,
+      forbidNonWhitelisted: true,
     })
   );
   // Public API — allow all origins. The double-activation (cors:true + enableCors)
