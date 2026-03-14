@@ -1,182 +1,152 @@
-<!-- ── API-Key gate (shared with stats) ──────────────────────────────────── -->
-<div class="container py-4">
-  <div class="card border-0 shadow-sm mb-4">
-    <div class="card-body d-flex align-items-center gap-3 flex-wrap">
-      <span class="fw-semibold text-body-secondary small text-uppercase">Admin API Key</span>
-      <input
-        type="password"
-        class="form-control form-control-sm"
-        style="max-width:320px"
-        placeholder="Admin key…"
-        [value]="statsService.apiKey()"
-        (change)="onApiKeyChange($event)"
-        autocomplete="off"
-      />
-      @if (statsService.apiKey()) {
-        <span class="badge border px-2 py-1 small bg-success-subtle text-success border-success-subtle">Key set</span>
-      } @else {
-        <span class="badge border px-2 py-1 small bg-warning-subtle text-warning border-warning-subtle">No key — requests will fail</span>
-      }
-    </div>
+<app-admin-nav></app-admin-nav>
+
+<!-- ── Gate ──────────────────────────────────────────────────────────────── -->
+@if (!statsService.apiKey()) {
+  <div class="container py-5 text-center text-body-secondary">
+    <div class="fs-1 mb-3">🔒</div>
+    <p class="mb-0">Enter your admin key above to manage API keys.</p>
   </div>
+} @else {
+  <div class="container py-4">
 
-<!-- ── Admin navigation ───────────────────────────────────────────────────── -->
-<div class="container pt-4">
-  <ul class="nav nav-tabs border-bottom mb-0">
-    <li class="nav-item">
-      <a class="nav-link" routerLink="/admin/stats" routerLinkActive="active">
-        📊 Stats
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" routerLink="/admin/api-keys" routerLinkActive="active">
-        🔑 API Keys
-      </a>
-    </li>
-  </ul>
-</div>
-
-<!-- ── Raw key banner (moved outside container) -->
-<div class="container">
-  <!-- ── Raw key banner ────────────────────────────────────────────────── -->
-  @if (createdRawKey()) {
-    <div class="alert alert-success d-flex flex-column gap-2 mb-4" role="alert">
-      <div class="d-flex justify-content-between align-items-start">
-        <strong>🔑 New key created — copy it now, it won't be shown again</strong>
-        <button class="btn-close" (click)="dismissRawKey()" aria-label="Dismiss"></button>
-      </div>
-      <div class="d-flex align-items-center gap-2 flex-wrap">
-        <code class="user-select-all bg-white border rounded px-3 py-2 flex-grow-1" style="word-break:break-all">{{ createdRawKey() }}</code>
-        <button class="btn btn-sm btn-outline-success" (click)="copyKey(createdRawKey()!)">Copy</button>
-      </div>
-    </div>
-  }
-
-  <!-- ── Create new key ────────────────────────────────────────────────── -->
-  <div class="card border-0 shadow-sm mb-4">
-    <div class="card-header bg-transparent border-bottom fw-semibold py-3">
-      Create API Key
-    </div>
-    <div class="card-body">
-      @if (createError()) {
-        <div class="alert alert-danger py-2 small mb-3">{{ createError() }}</div>
-      }
-      <div class="row g-3 align-items-end">
-        <div class="col-12 col-md-4">
-          <label class="form-label small fw-semibold text-body-secondary">Label</label>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="e.g. customer-acme"
-            [value]="newLabel()"
-            (input)="newLabel.set($any($event.target).value)"
-          />
+    <!-- Raw key banner -->
+    @if (createdRawKey()) {
+      <div class="alert alert-success d-flex flex-column gap-2 mb-4" role="alert">
+        <div class="d-flex justify-content-between align-items-start">
+          <strong>🔑 New key created — copy it now, it won't be shown again</strong>
+          <button class="btn-close" (click)="dismissRawKey()" aria-label="Dismiss"></button>
         </div>
-        <div class="col-6 col-md-3">
-          <label class="form-label small fw-semibold text-body-secondary">Tier</label>
-          <select class="form-select" [value]="newTier()" (change)="newTier.set($any($event.target).value)">
-            @for (t of tiers; track t) {
-              <option [value]="t">{{ t }}</option>
-            }
-          </select>
-        </div>
-        <div class="col-6 col-md-3">
-          <label class="form-label small fw-semibold text-body-secondary">Expires (optional)</label>
-          <input
-            type="date"
-            class="form-control"
-            [value]="newExpiry()"
-            (change)="newExpiry.set($any($event.target).value)"
-          />
-        </div>
-        <div class="col-12 col-md-2">
-          <button
-            class="btn btn-primary w-100"
-            [disabled]="!newLabel().trim() || creating()"
-            (click)="submitCreate()"
-          >
-            @if (creating()) { <span class="spinner-border spinner-border-sm me-1"></span> }
-            Create
-          </button>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <code class="user-select-all bg-white border rounded px-3 py-2 flex-grow-1" style="word-break:break-all">{{ createdRawKey() }}</code>
+          <button class="btn btn-sm btn-outline-success" (click)="copyKey(createdRawKey()!)">Copy</button>
         </div>
       </div>
-    </div>
-  </div>
+    }
 
-  <!-- ── Keys table ────────────────────────────────────────────────────── -->
-  <div class="card border-0 shadow-sm">
-    <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center py-3">
-      <span class="fw-semibold">API Keys</span>
-      <button class="btn btn-sm btn-outline-secondary" (click)="load()" [disabled]="loading()">
-        @if (loading()) { <span class="spinner-border spinner-border-sm me-1"></span> }
-        Refresh
-      </button>
-    </div>
-    <div class="card-body p-0">
-      @if (error()) {
-        <div class="alert alert-danger m-3 py-2 small">{{ error() }}</div>
-      }
-      @if (loading() && !keys().length) {
-        <div class="text-center text-body-secondary py-5">
-          <span class="spinner-border spinner-border-sm me-2"></span>Loading…
-        </div>
-      } @else if (!keys().length) {
-        <p class="text-body-secondary text-center py-5 mb-0">No API keys yet.</p>
-      } @else {
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr>
-                <th class="ps-4">Label</th>
-                <th>Prefix</th>
-                <th>Tier</th>
-                <th>Status</th>
-                <th>Expires</th>
-                <th>Created</th>
-                <th class="pe-4"></th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (key of keys(); track key.id) {
-                <tr [class.table-danger]="!key.active" [class.opacity-50]="!key.active">
-                  <td class="ps-4 fw-medium">{{ key.label }}</td>
-                  <td><code class="small">{{ key.prefix }}…</code></td>
-                  <td>
-                    <span class="badge border small" [ngClass]="tierBadgeClass(key.tier)">{{ key.tier }}</span>
-                  </td>
-                  <td>
-                    <span class="badge border small" [ngClass]="activeBadge(key.active)">
-                      {{ key.active ? 'active' : 'revoked' }}
-                    </span>
-                  </td>
-                  <td class="small text-body-secondary">
-                    {{ key.expiresAt ? (key.expiresAt | date:'mediumDate') : '—' }}
-                  </td>
-                  <td class="small text-body-secondary">{{ key.createdAt | date:'mediumDate' }}</td>
-                  <td class="pe-4 text-end">
-                    @if (key.active) {
-                      @if (confirmRevoke() === key.id) {
-                        <span class="me-2 small text-danger fw-semibold">Revoke?</span>
-                        <button class="btn btn-sm btn-danger me-1" (click)="confirmRevokeKey(key.id)">Yes</button>
-                        <button class="btn btn-sm btn-outline-secondary" (click)="cancelRevoke()">No</button>
-                      } @else {
-                        <button
-                          class="btn btn-sm btn-outline-danger"
-                          [disabled]="revoking() === key.id"
-                          (click)="startRevoke(key.id)"
-                        >
-                          @if (revoking() === key.id) { <span class="spinner-border spinner-border-sm me-1"></span> }
-                          Revoke
-                        </button>
-                      }
-                    }
-                  </td>
-                </tr>
+    <!-- Create new key -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-transparent border-bottom fw-semibold py-3">Create API Key</div>
+      <div class="card-body">
+        @if (createError()) {
+          <div class="alert alert-danger py-2 small mb-3">{{ createError() }}</div>
+        }
+        <div class="row g-3 align-items-end">
+          <div class="col-12 col-md-4">
+            <label class="form-label small fw-semibold text-body-secondary">Label</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="e.g. customer-acme"
+              [value]="newLabel()"
+              (input)="newLabel.set($any($event.target).value)"
+            />
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label small fw-semibold text-body-secondary">Tier</label>
+            <select class="form-select" [value]="newTier()" (change)="newTier.set($any($event.target).value)">
+              @for (t of tiers; track t) {
+                <option [value]="t">{{ t }}</option>
               }
-            </tbody>
-          </table>
+            </select>
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label small fw-semibold text-body-secondary">Expires (optional)</label>
+            <input
+              type="date"
+              class="form-control"
+              [value]="newExpiry()"
+              (change)="newExpiry.set($any($event.target).value)"
+            />
+          </div>
+          <div class="col-12 col-md-2">
+            <button
+              class="btn btn-primary w-100"
+              [disabled]="!newLabel().trim() || creating()"
+              (click)="submitCreate()"
+            >
+              @if (creating()) { <span class="spinner-border spinner-border-sm me-1"></span> }
+              Create
+            </button>
+          </div>
         </div>
-      }
+      </div>
+    </div>
+
+    <!-- Keys table -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center py-3">
+        <span class="fw-semibold">API Keys</span>
+        <button class="btn btn-sm btn-outline-secondary" (click)="load()" [disabled]="loading()">
+          @if (loading()) { <span class="spinner-border spinner-border-sm me-1"></span> }
+          Refresh
+        </button>
+      </div>
+      <div class="card-body p-0">
+        @if (error()) {
+          <div class="alert alert-danger m-3 py-2 small">{{ error() }}</div>
+        }
+        @if (loading() && !keys().length) {
+          <div class="text-center text-body-secondary py-5">
+            <span class="spinner-border spinner-border-sm me-2"></span>Loading…
+          </div>
+        } @else if (!keys().length) {
+          <p class="text-body-secondary text-center py-5 mb-0">No API keys yet.</p>
+        } @else {
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-4">Label</th>
+                  <th>Prefix</th>
+                  <th>Tier</th>
+                  <th>Status</th>
+                  <th>Expires</th>
+                  <th>Created</th>
+                  <th class="pe-4"></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (key of keys(); track key.id) {
+                  <tr [class.table-danger]="!key.active" [class.opacity-50]="!key.active">
+                    <td class="ps-4 fw-medium">{{ key.label }}</td>
+                    <td><code class="small">{{ key.prefix }}…</code></td>
+                    <td>
+                      <span class="badge border small" [ngClass]="tierBadgeClass(key.tier)">{{ key.tier }}</span>
+                    </td>
+                    <td>
+                      <span class="badge border small" [ngClass]="activeBadge(key.active)">
+                        {{ key.active ? 'active' : 'revoked' }}
+                      </span>
+                    </td>
+                    <td class="small text-body-secondary">
+                      {{ key.expiresAt ? (key.expiresAt | date:'mediumDate') : '—' }}
+                    </td>
+                    <td class="small text-body-secondary">{{ key.createdAt | date:'mediumDate' }}</td>
+                    <td class="pe-4 text-end">
+                      @if (key.active) {
+                        @if (confirmRevoke() === key.id) {
+                          <span class="me-2 small text-danger fw-semibold">Revoke?</span>
+                          <button class="btn btn-sm btn-danger me-1" (click)="confirmRevokeKey(key.id)">Yes</button>
+                          <button class="btn btn-sm btn-outline-secondary" (click)="cancelRevoke()">No</button>
+                        } @else {
+                          <button
+                            class="btn btn-sm btn-outline-danger"
+                            [disabled]="revoking() === key.id"
+                            (click)="startRevoke(key.id)"
+                          >
+                            @if (revoking() === key.id) { <span class="spinner-border spinner-border-sm me-1"></span> }
+                            Revoke
+                          </button>
+                        }
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
     </div>
   </div>
-</div>
+}

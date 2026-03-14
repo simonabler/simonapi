@@ -1,4 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+
+/** How often to sweep stale IP entries (ms). Default: 10 min */
+const SWEEP_INTERVAL_MS = 10 * 60_000;
+/** IP not seen for this long is evicted from in-memory Maps. */
+const STALE_AFTER_MS = 20 * 60_000;
 import { SlidingCounter, SlidingDistinct } from './sliding';
 import { BlocklistService } from './blocklist.service';
 
@@ -19,7 +24,7 @@ const cfgFromEnv = (): AnomalyConfig => ({
 });
 
 @Injectable()
-export class AnomalyDetectorService {
+export class AnomalyDetectorService implements OnModuleInit, OnModuleDestroy {
   private readonly log = new Logger(AnomalyDetectorService.name);
   private readonly cfg = cfgFromEnv();
 
@@ -30,7 +35,41 @@ export class AnomalyDetectorService {
   private perIpReq5m = new Map<string, SlidingCounter>();      // requests 5min
   private perIpErr5m = new Map<string, SlidingCounter>();      // errors   5min
 
+  /** Tracks the last-seen timestamp per IP for stale-entry eviction. */
+  private lastSeen = new Map<string, number>();
+  private sweepTimer: ReturnType<typeof setInterval> | null = null;
+
   constructor(private readonly blocklist: BlocklistService) {}
+
+  onModuleInit(): void {
+    this.sweepTimer = setInterval(() => this.sweepStale(), SWEEP_INTERVAL_MS);
+    if (this.sweepTimer.unref) this.sweepTimer.unref();
+  }
+
+  onModuleDestroy(): void {
+    if (this.sweepTimer) clearInterval(this.sweepTimer);
+  }
+
+  /** Remove in-memory counters for IPs that haven't been seen recently. */
+  sweepStale(now = Date.now()): number {
+    const cutoff = now - STALE_AFTER_MS;
+    let evicted = 0;
+    for (const [ip, ts] of this.lastSeen) {
+      if (ts < cutoff) {
+        this.perIpMinute.delete(ip);
+        this.perIpFiveMin.delete(ip);
+        this.perIpRoutes.delete(ip);
+        this.perIpReq5m.delete(ip);
+        this.perIpErr5m.delete(ip);
+        this.lastSeen.delete(ip);
+        evicted++;
+      }
+    }
+    if (evicted > 0) {
+      this.log.debug(`AnomalyDetector sweep: evicted ${evicted} stale IP entries`);
+    }
+    return evicted;
+  }
 
   private getIp(req: any): string {
     const xff = (req?.headers?.['x-forwarded-for'] as string) || '';
@@ -41,6 +80,8 @@ export class AnomalyDetectorService {
   observe(req: any, route: string, method: string, status: number) {
     const ip = this.getIp(req);
     const now = Date.now();
+
+    this.lastSeen.set(ip, now);
 
     const minute = (this.perIpMinute.get(ip) ?? new SlidingCounter(60_000, 5_000));
     const five   = (this.perIpFiveMin.get(ip) ?? new SlidingCounter(300_000, 10_000));

@@ -36,6 +36,39 @@ export interface SecuritySnapshot {
   blocked: BlockEntryView[];
 }
 
+export interface VisitorTierBreakdown { anonymous: number; free: number; pro: number; industrial: number; [key: string]: number }
+
+export interface VisitorToday {
+  uniqueIps: number;
+  totalRequests: number;
+  totalErrors: number;
+  byTier: VisitorTierBreakdown;
+}
+
+export interface VisitorPeriod { uniqueIps: number; totalRequests: number }
+
+export interface VisitorSummary {
+  today: VisitorToday;
+  last7d: VisitorPeriod;
+  last30d: VisitorPeriod;
+}
+
+export interface VisitorDailyPoint { day: string; uniqueIps: number; totalRequests: number }
+
+export interface VisitorByApi {
+  routeGroup: string;
+  uniqueIps: number;
+  totalRequests: number;
+  errorRate: number;
+}
+
+export interface VisitorByCountry {
+  countryCode: string;
+  uniqueIps: number;
+  totalRequests: number;
+}
+
+
 const STORAGE_KEY = 'admin_api_key';
 
 @Injectable({ providedIn: 'root' })
@@ -88,6 +121,34 @@ export class StatsService {
   unban(ip: string): Observable<void> {
     const params = new HttpParams({ fromObject: { ip } });
     return this.http.get<void>(`${this.API}/admin/stats/security/unban`, {
+      ...this.headers(),
+      params,
+    });
+  }
+
+  getVisitorSummary(): Observable<VisitorSummary> {
+    return this.http.get<VisitorSummary>(`${this.API}/admin/stats/visitors/summary`, this.headers());
+  }
+
+  getVisitorDaily(days = 30): Observable<VisitorDailyPoint[]> {
+    const params = new HttpParams({ fromObject: { days: String(days) } });
+    return this.http.get<VisitorDailyPoint[]>(`${this.API}/admin/stats/visitors/daily`, {
+      ...this.headers(),
+      params,
+    });
+  }
+
+  getVisitorByApi(day?: string): Observable<VisitorByApi[]> {
+    const params = day ? new HttpParams({ fromObject: { day } }) : new HttpParams();
+    return this.http.get<VisitorByApi[]>(`${this.API}/admin/stats/visitors/by-api`, {
+      ...this.headers(),
+      params,
+    });
+  }
+
+  getVisitorByCountry(day?: string): Observable<VisitorByCountry[]> {
+    const params = day ? new HttpParams({ fromObject: { day } }) : new HttpParams();
+    return this.http.get<VisitorByCountry[]>(`${this.API}/admin/stats/visitors/by-country`, {
       ...this.headers(),
       params,
     });

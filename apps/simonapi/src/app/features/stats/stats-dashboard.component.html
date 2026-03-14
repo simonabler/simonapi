@@ -1,157 +1,128 @@
-<!-- ── API-Key gate ────────────────────────────────────────────────────── -->
-<div class="container py-4">
-  <div class="card border-0 shadow-sm mb-4">
-    <div class="card-body d-flex align-items-center gap-3 flex-wrap">
-      <span class="fw-semibold text-body-secondary small text-uppercase letter-spacing-1">Admin API Key</span>
-      <input
-        type="password"
-        class="form-control form-control-sm"
-        style="max-width:320px"
-        placeholder="sk_ind_…"
-        [value]="statsService.apiKey()"
-        (change)="onApiKeyChange($event)"
-        autocomplete="off"
-      />
-      @if (statsService.apiKey()) {
-        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small">Key set</span>
-      } @else {
-        <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 small">No key — requests will fail</span>
-      }
-    </div>
+<app-admin-nav></app-admin-nav>
+
+<!-- ── Gate: show nothing until key is set ───────────────────────────────── -->
+@if (!statsService.apiKey()) {
+  <div class="container py-5 text-center text-body-secondary">
+    <div class="fs-1 mb-3">🔒</div>
+    <p class="mb-0">Enter your admin key above to view statistics.</p>
   </div>
-</div>
-
-<!-- ── Admin navigation ───────────────────────────────────────────────────── -->
-<div class="container pt-4">
-  <ul class="nav nav-tabs border-bottom mb-0">
-    <li class="nav-item">
-      <a class="nav-link" routerLink="/admin/stats" routerLinkActive="active">
-        📊 Stats
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" routerLink="/admin/api-keys" routerLinkActive="active">
-        🔑 API Keys
-      </a>
-    </li>
-  </ul>
-</div>
-
-<div class="stats-dashboard container py-4" *ngIf="vm$ | async as vm">
-  <div class="stats-grid">
-    <app-stats-card title="API Overview" subTitle="Current backend metrics">
-      <div card-actions class="d-flex align-items-center gap-2">
-        <label class="form-check form-switch m-0">
-          <input
-            type="checkbox"
-            class="form-check-input"
-            [(ngModel)]="autoRefresh"
-            (ngModelChange)="onAutoRefreshChange($event)"
-          />
-          <span class="form-check-label">Auto-Refresh (5s)</span>
-        </label>
-        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="refresh()">
-          Refresh now
-        </button>
-      </div>
-
-      <ng-container *ngIf="vm.loading; else overviewContent">
-        <div class="loading-state">
-          <div class="spinner-border" role="status" aria-hidden="true"></div>
-          <span>Loading</span>
-        </div>
-      </ng-container>
-
-      <ng-template #overviewContent>
-        <div class="stat-kpis">
-          <div class="stat-kpi">
-            <span class="label">Total Requests</span>
-            <span class="value">{{ vm.stats?.totalCount ?? 0 | number }}</span>
-          </div>
-          <div class="stat-kpi">
-            <span class="label">Uptime</span>
-            <span class="value">{{ vm.uptimeMs | duration }}</span>
-          </div>
-          <div class="stat-kpi">
-            <span class="label">Distinct Routes</span>
-            <span class="value">{{ distinctRoutes(vm.stats) }}</span>
-          </div>
+} @else {
+  <div class="stats-dashboard container py-4" *ngIf="vm$ | async as vm">
+    <div class="stats-grid">
+      <app-stats-card title="API Overview" subTitle="Current backend metrics">
+        <div card-actions class="d-flex align-items-center gap-2">
+          <label class="form-check form-switch m-0">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [(ngModel)]="autoRefresh"
+              (ngModelChange)="onAutoRefreshChange($event)"
+            />
+            <span class="form-check-label">Auto-Refresh (5s)</span>
+          </label>
+          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="refresh()">
+            Refresh now
+          </button>
         </div>
 
-        <div class="started-at">
-          <span class="text-body-secondary">Started:</span>
-          <strong>{{ vm.stats?.startedAtIso | isoDate }}</strong>
-          <span class="text-body-secondary">( {{ vm.startedRelative }} )</span>
-        </div>
-
-        <ng-container *ngIf="dailyEntries(vm.stats) as dailyEntriesList; else noDaily">
-          <div class="daily-chart-wrap">
-            <div class="daily-chart">
-              <div class="daily-bar" *ngFor="let entry of dailyEntriesList">
-                <div class="bar" [style.height.%]="entry.percent"></div>
-                <span class="day-label">{{ entry.day | slice:5 }}</span>
-                <span class="day-count">{{ entry.count }}</span>
-              </div>
-            </div>
+        <ng-container *ngIf="vm.loading; else overviewContent">
+          <div class="loading-state">
+            <div class="spinner-border" role="status" aria-hidden="true"></div>
+            <span>Loading</span>
           </div>
         </ng-container>
-        <ng-template #noDaily>
-          <p class="text-body-secondary small m-0">No daily values available.</p>
-        </ng-template>
 
-        <div>
-          <h3 class="h6 mb-2">Top Routes</h3>
-          <ng-container *ngIf="topRoutes(vm.stats) as routes; else noRoutes">
-            <div class="routes-table-wrap">
-              <table class="table table-sm align-middle mb-0">
-                <thead>
-                  <tr>
-                    <th scope="col">Route</th>
-                    <th scope="col" class="text-end">Count</th>
-                    <th scope="col" class="text-end">Avg (ms)</th>
-                    <th scope="col" class="text-end">Top Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let route of routes; trackBy: trackByRoute">
-                    <th scope="row" class="text-truncate">{{ route.route }}</th>
-                    <td class="text-end">{{ route.count | number }}</td>
-                    <td class="text-end">{{ route.avgMs | number:'1.0-1' }}</td>
-                    <td class="text-end">{{ dominantStatus(route) }}</td>
-                  </tr>
-                </tbody>
-              </table>
+        <ng-template #overviewContent>
+          <div class="stat-kpis">
+            <div class="stat-kpi">
+              <span class="label">Total Requests</span>
+              <span class="value">{{ vm.stats?.totalCount ?? 0 | number }}</span>
+            </div>
+            <div class="stat-kpi">
+              <span class="label">Uptime</span>
+              <span class="value">{{ vm.uptimeMs | duration }}</span>
+            </div>
+            <div class="stat-kpi">
+              <span class="label">Distinct Routes</span>
+              <span class="value">{{ distinctRoutes(vm.stats) }}</span>
+            </div>
+          </div>
+
+          <div class="started-at">
+            <span class="text-body-secondary">Started:</span>
+            <strong>{{ vm.stats?.startedAtIso | isoDate }}</strong>
+            <span class="text-body-secondary">( {{ vm.startedRelative }} )</span>
+          </div>
+
+          <ng-container *ngIf="dailyEntries(vm.stats) as dailyEntriesList; else noDaily">
+            <div class="daily-chart-wrap">
+              <div class="daily-chart">
+                <div class="daily-bar" *ngFor="let entry of dailyEntriesList">
+                  <div class="bar" [style.height.%]="entry.percent"></div>
+                  <span class="day-label">{{ entry.day | slice:5 }}</span>
+                  <span class="day-count">{{ entry.count }}</span>
+                </div>
+              </div>
             </div>
           </ng-container>
-          <ng-template #noRoutes>
-            <p class="text-body-secondary small mb-0">No route statistics available.</p>
+          <ng-template #noDaily>
+            <p class="text-body-secondary small m-0">No daily values available.</p>
           </ng-template>
+
+          <div>
+            <h3 class="h6 mb-2">Top Routes</h3>
+            <ng-container *ngIf="topRoutes(vm.stats) as routes; else noRoutes">
+              <div class="routes-table-wrap">
+                <table class="table table-sm align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th scope="col">Route</th>
+                      <th scope="col" class="text-end">Count</th>
+                      <th scope="col" class="text-end">Avg (ms)</th>
+                      <th scope="col" class="text-end">Top Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let route of routes; trackBy: trackByRoute">
+                      <th scope="row" class="text-truncate">{{ route.route }}</th>
+                      <td class="text-end">{{ route.count | number }}</td>
+                      <td class="text-end">{{ route.avgMs | number:'1.0-1' }}</td>
+                      <td class="text-end">{{ dominantStatus(route) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </ng-container>
+            <ng-template #noRoutes>
+              <p class="text-body-secondary small mb-0">No route statistics available.</p>
+            </ng-template>
+          </div>
+        </ng-template>
+
+        <div *ngIf="vm.statsError" class="alert alert-warning mb-0" role="alert">
+          {{ vm.statsError }}
         </div>
-      </ng-template>
+      </app-stats-card>
 
-      <div *ngIf="vm.statsError" class="alert alert-warning mb-0" role="alert">
-        {{ vm.statsError }}
-      </div>
-    </app-stats-card>
+      <app-stats-card title="Security / Blocklist" subTitle="Active blocks and rate limits">
+        <ng-container *ngIf="vm.loading; else securityContent">
+          <div class="loading-state">
+            <div class="spinner-border" role="status" aria-hidden="true"></div>
+            <span>Loading</span>
+          </div>
+        </ng-container>
 
-    <app-stats-card title="Security / Blocklist" subTitle="Active blocks and rate limits">
-      <ng-container *ngIf="vm.loading; else securityContent">
-        <div class="loading-state">
-          <div class="spinner-border" role="status" aria-hidden="true"></div>
-          <span>Loading</span>
+        <ng-template #securityContent>
+          <app-security-table
+            [data]="vm.security?.blocked ?? []"
+            (refreshRequested)="refresh()"
+          ></app-security-table>
+        </ng-template>
+
+        <div *ngIf="vm.securityError" class="alert alert-warning mb-0" role="alert">
+          {{ vm.securityError }}
         </div>
-      </ng-container>
-
-      <ng-template #securityContent>
-        <app-security-table
-          [data]="vm.security?.blocked ?? []"
-          (refreshRequested)="refresh()"
-        ></app-security-table>
-      </ng-template>
-
-      <div *ngIf="vm.securityError" class="alert alert-warning mb-0" role="alert">
-        {{ vm.securityError }}
-      </div>
-    </app-stats-card>
+      </app-stats-card>
+    </div>
   </div>
-</div>
+}

@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Signpack } from './entities/signpack.entity';
@@ -101,7 +101,9 @@ export class SignpackService {
   }
 
   assertToken(sp: Signpack, token?: string) {
-    if (!token || token !== sp.accessToken) throw new ForbiddenException('Invalid token');
+    // Use NotFoundException (not ForbiddenException) to avoid revealing
+    // whether a pack with this ID exists — prevents timing oracle attacks.
+    if (!token || token !== sp.accessToken) throw new NotFoundException('Signpack not found');
   }
 
   async uploadSignedFromBuffer(id: string, token: string, file: UploadFile): Promise<Signpack> {

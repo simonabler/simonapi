@@ -718,3 +718,103 @@ kbd {
   border-radius: var(--radius);
   border: 1px solid var(--border);
 }
+/* ── Admin: Visitor Stats ─────────────────────────────────────────── */
+.visitors-wrap { padding: 1rem 0; }
+
+.vstat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .2s var(--ease);
+
+  &:hover { box-shadow: var(--shadow); }
+}
+.vstat-val {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.vstat-label {
+  font-size: .72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-top: .2rem;
+}
+.vstat-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+.vstat-panel-title {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--brand-dark, #0891b2);
+}
+.sparkline {
+  display: block;
+  width: 100%;
+  height: 40px;
+  margin: .5rem 0 .2rem;
+}
+.sparkline-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: .68rem;
+  color: var(--muted);
+}
+.tier-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.tier-bar-wrap {
+  height: 6px;
+  background: var(--surface-2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.tier-bar {
+  height: 100%;
+  border-radius: 99px;
+  transition: width .4s var(--ease);
+}
+.vstat-table {
+  width: 100%;
+  font-size: .8rem;
+  border-collapse: collapse;
+
+  th {
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--muted);
+    padding: .3rem .4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: .35rem .4rem;
+    border-bottom: 1px solid color-mix(in oklab, var(--border), transparent 50%);
+    color: var(--text);
+  }
+  tr:last-child td { border-bottom: none; }
+}
+.route-badge {
+  font-size: .7rem;
+  padding: .1rem .45rem;
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--brand), transparent 88%);
+  color: var(--brand-dark, #0891b2);
+  border: 1px solid color-mix(in oklab, var(--brand), transparent 68%);
+  font-weight: 600;
+}
