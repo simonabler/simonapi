@@ -20,6 +20,7 @@ import { CryptoModule } from './crypto/crypto.module';
 import { ApiKeyModule } from './api-key/api-key.module';
 import { ApiKeyGuard } from './api-key/api-key.guard';
 import { UsageModule } from './usage/usage.module';
+import { FontsModule } from './fonts/fonts.module';
 
 @Module({
   imports: [
@@ -85,6 +86,7 @@ import { UsageModule } from './usage/usage.module';
     LockModule,
     MetricsModule,
     ApiKeyModule,
+    FontsModule,
     // Rate limiting — applies to every request via APP_INTERCEPTOR.
     // Anonymous callers (no valid API key) get the defaultRule.
     // Authenticated callers get TIER_LIMITS from ApiKeyService (applied

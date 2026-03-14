@@ -13,7 +13,10 @@ import helmet from 'helmet';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix(globalPrefix, {
+    // Font endpoints live at /fonts/*, outside the /api prefix
+    exclude: ['fonts/(.*)'],
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -70,6 +73,7 @@ async function bootstrap() {
       '- **Lock** — webhook/MQTT-based smart lock management'
     )
     .setVersion('1.0.0')
+    .addServer('https://api.abler.tirol')
     .addServer('https://hub.abler.tirol')
     .addApiKey(
       {
