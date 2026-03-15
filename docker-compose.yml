@@ -5,15 +5,28 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.simonapi-frontend.tls=true"
-      - "traefik.http.routers.simonapi-frontend.tls.certresolver=letsEncrypt"
-      - "traefik.http.routers.simonapi-frontend.entrypoints=websecure"
-      - "traefik.http.routers.simonapi-frontend.rule=Host(`hub.abler.tirol`) && PathPrefix(`/`)"
-      - "traefik.http.routers.simonapi-frontend.priority=10"
-      - "traefik.http.routers.simonapi-frontend.middlewares=simonapi-frontend-compress"
       - "traefik.http.middlewares.simonapi-frontend-compress.compress=true"
-      # Interner Container-Port des Frontends (ggf. anpassen)
-      - "traefik.http.services.simonapi-frontend.loadbalancer.server.port=80"
+
+      # ── hub.abler.tirol frontend ──────────────────────────────────────────
+      - "traefik.http.routers.hub-frontend.tls=true"
+      - "traefik.http.routers.hub-frontend.tls.certresolver=letsEncrypt"
+      - "traefik.http.routers.hub-frontend.entrypoints=websecure"
+      - "traefik.http.routers.hub-frontend.rule=Host(`hub.abler.tirol`) && PathPrefix(`/`)"
+      - "traefik.http.routers.hub-frontend.priority=10"
+      - "traefik.http.routers.hub-frontend.middlewares=simonapi-frontend-compress"
+      - "traefik.http.routers.hub-frontend.service=simonapi-frontend-svc"
+
+      # ── api.abler.tirol frontend ──────────────────────────────────────────
+      - "traefik.http.routers.api-frontend.tls=true"
+      - "traefik.http.routers.api-frontend.tls.certresolver=letsEncrypt"
+      - "traefik.http.routers.api-frontend.entrypoints=websecure"
+      - "traefik.http.routers.api-frontend.rule=Host(`api.abler.tirol`) && PathPrefix(`/`)"
+      - "traefik.http.routers.api-frontend.priority=10"
+      - "traefik.http.routers.api-frontend.middlewares=simonapi-frontend-compress"
+      - "traefik.http.routers.api-frontend.service=simonapi-frontend-svc"
+
+      # ── shared service ────────────────────────────────────────────────────
+      - "traefik.http.services.simonapi-frontend-svc.loadbalancer.server.port=80"
 
   backend:
     image: simonapi-backend:latest
@@ -26,16 +39,26 @@ services:
       - DATA_DIR=/data/signpacks
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.simonapi-backend.tls=true"
-      - "traefik.http.routers.simonapi-backend.tls.certresolver=letsEncrypt"
-      - "traefik.http.routers.simonapi-backend.entrypoints=websecure"
-      - "traefik.http.routers.simonapi-backend.rule=Host(`hub.abler.tirol`) && PathPrefix(`/api`)"
-      # Strippt das Prefix /api bevor es an den Service geht
-     # - "traefik.http.middlewares.simonapi-backend-strip.stripprefixregex.regex=/api"
-     # - "traefik.http.routers.simonapi-backend.middlewares=simonapi-backend-strip@docker"
-      - "traefik.http.routers.simonapi-backend.priority=100"
-      # Interner Container-Port des Backends (ggf. anpassen)
-      - "traefik.http.services.simonapi-backend.loadbalancer.server.port=3000"
+
+      # ── hub.abler.tirol backend ───────────────────────────────────────────
+      - "traefik.http.routers.hub-backend.tls=true"
+      - "traefik.http.routers.hub-backend.tls.certresolver=letsEncrypt"
+      - "traefik.http.routers.hub-backend.entrypoints=websecure"
+      - "traefik.http.routers.hub-backend.rule=Host(`hub.abler.tirol`) && (PathPrefix(`/api`) || PathPrefix(`/fonts`))"
+      - "traefik.http.routers.hub-backend.priority=100"
+      - "traefik.http.routers.hub-backend.service=simonapi-backend-svc"
+
+      # ── api.abler.tirol backend ───────────────────────────────────────────
+      - "traefik.http.routers.api-backend.tls=true"
+      - "traefik.http.routers.api-backend.tls.certresolver=letsEncrypt"
+      - "traefik.http.routers.api-backend.entrypoints=websecure"
+      - "traefik.http.routers.api-backend.rule=Host(`api.abler.tirol`) && (PathPrefix(`/api`) || PathPrefix(`/fonts`))"
+      - "traefik.http.routers.api-backend.priority=100"
+      - "traefik.http.routers.api-backend.service=simonapi-backend-svc"
+
+      # ── shared service ────────────────────────────────────────────────────
+      - "traefik.http.services.simonapi-backend-svc.loadbalancer.server.port=3000"
+
 #    depends_on:
 #      - postgres
     networks:

@@ -1,6 +1,8 @@
-# Simon API Hub
+# Simon API Hub · api.abler.tirol
 
-Production-grade NX monorepo — NestJS backend + Angular frontend, deployed at **https://hub.abler.tirol**.
+Production-grade NX monorepo — NestJS backend + Angular frontend.
+
+Deployed at **https://api.abler.tirol** (formerly `hub.abler.tirol` — both domains are active and point to the same service).
 
 Built by a Cyber Security Engineer from Tyrol focused on industrial high-availability systems, reverse engineering and secure API platforms.
 
@@ -16,6 +18,7 @@ Built by a Cyber Security Engineer from Tyrol focused on industrial high-availab
 | Barcode engine | `bwip-js` |
 | API docs | Swagger UI at `/api` |
 | Rate limiting | `@nestjs/throttler` |
+| Font server | Self-hosted via `/fonts/*` — serves `DM Serif Display`, `Inter`, `DM Mono` as woff2 |
 
 ---
 
@@ -44,10 +47,10 @@ Standard and GS1-compliant barcodes as PNG or SVG.
 
 ```bash
 # Code128 PNG
-curl "https://hub.abler.tirol/api/barcode/png?type=code128&text=Hello123&includetext=true" -o out.png
+curl "https://api.abler.tirol/api/barcode/png?type=code128&text=Hello123&includetext=true" -o out.png
 
 # EAN-13 SVG
-curl "https://hub.abler.tirol/api/barcode/svg?type=ean13&text=5901234123457&includetext=true" -o out.svg
+curl "https://api.abler.tirol/api/barcode/svg?type=ean13&text=5901234123457&includetext=true" -o out.svg
 ```
 
 **Query params:** `type` · `text` · `includetext` · `scale` · `height`
@@ -299,7 +302,46 @@ Use the key via header: `x-api-key: sk_pro_...`
 
 ---
 
+## Font Server — `/fonts`
+
+The backend self-hosts all fonts used across the `abler.tirol` ecosystem. No Google Fonts — DSGVO-konform by design.
+
+| Endpoint | Description |
+|---|---|
+| `GET /fonts/abler-stack.css` | Combined `@font-face` stylesheet for all three font families |
+| `GET /fonts/files/:filename` | Individual woff2 files |
+
+**Usage in any abler.tirol frontend:**
+
+```html
+<link rel="preconnect" href="https://api.abler.tirol" />
+<link rel="stylesheet" href="https://api.abler.tirol/fonts/abler-stack.css" />
+```
+
+**Font stack:**
+
+| Family | Weights | Role |
+|---|---|---|
+| `DM Serif Display` | 400 normal + italic | Headlines, Hero-Titel |
+| `Inter` | 300 · 400 · 500 · 600 | Body, UI |
+| `DM Mono` | 400 · 500 | Code, Tags, Badges |
+
+Font files are sourced from `@fontsource` npm packages and committed to `apps/server/src/assets/fonts/files/`. They are copied to `dist/` at build time via the webpack asset pipeline.
+
+---
+
 ## Deployment
+
+### Domain Routing
+
+Both `hub.abler.tirol` and `api.abler.tirol` are routed identically via Traefik:
+
+- `/api/*` and `/fonts/*` → backend (port 3000)
+- all other paths → frontend (port 80)
+
+See `docker-compose.yml` for the exact Traefik label configuration.
+
+---
 
 ### Docker
 
@@ -391,4 +433,4 @@ The Angular frontend ships with a first-party cookie banner. The consent status 
 
 ---
 
-Swagger UI: **https://hub.abler.tirol/api**
+Swagger UI: **https://api.abler.tirol/api** (also reachable at `https://hub.abler.tirol/api`)
